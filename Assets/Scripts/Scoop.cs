@@ -23,6 +23,8 @@ public class Scoop : MonoBehaviour
 
     bool falling = false;
 
+    public MoveCone cone;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +71,11 @@ public class Scoop : MonoBehaviour
             percentageBetweenPoints = 0;
             currentRow = nextRow;
             nextRow = currentRow - 1;
+            Vector2Int coneDimensions = cone.GetConeDimensions();
+            if(coneDimensions.x == lane && coneDimensions.y == currentRow) {
+                falling = false;
+                cone.AddHeight();
+            }
         }
 
         return newPos - transform.position;

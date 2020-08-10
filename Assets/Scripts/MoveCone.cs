@@ -18,14 +18,18 @@ public class MoveCone : MonoBehaviour
     private int nextLane;
     private int lastLane;
 
+    private int currentHeight;
+
     [SerializeField]
     private RenderQuad renderQuad;
     private void Start() {
         nextMoveTime = Time.time;
         lastLane = laneHelper.MiddleLane;
+        currentHeight = 1; // Cone takes up one space;
 
         renderQuad.Render(transform.position);
         transform.position = laneHelper.GetPosition(lastLane, 0);
+
         // Add gesture listeners
         Gestures.OnSwipe += HandleSwipe;
         Gestures.SwipeEnded += EndSwipe;
@@ -91,6 +95,14 @@ public class MoveCone : MonoBehaviour
 
     private float Ease(float x) {
         return x;
+    }
+
+    public Vector2Int GetConeDimensions() {
+        return new Vector2Int(nextLane, currentHeight);
+    }
+
+    public void AddHeight() {
+        currentHeight++;
     }
 }
  
