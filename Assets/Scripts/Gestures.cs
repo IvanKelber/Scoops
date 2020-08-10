@@ -10,7 +10,7 @@ public class Gestures : MonoBehaviour
     private bool detectBeforeRelase = true;
 
     [SerializeField]
-    private float minSwipeDistance = 5f;
+    private float minSwipeDistance = 20f;
 
 
     private Vector3 fingerUpPosition;

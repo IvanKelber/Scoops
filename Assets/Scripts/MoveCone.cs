@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MoveCone : MonoBehaviour
 {
-    public Camera cam;
     public float speed;
     public float waitTime;
 
@@ -15,13 +14,12 @@ public class MoveCone : MonoBehaviour
     private float percentageBetweenPoints = 0;
     private bool lerping = false;
     private bool handlingSwipe = false;
-    private LaneHelper laneHelper;
+    public LaneHelper laneHelper;
     private int nextLane;
     private int lastLane;
 
     private void Start() {
         nextMoveTime = Time.time;
-        laneHelper = new LaneHelper(cam);
         lastLane = laneHelper.MiddleLane;
 
         // Add gesture listeners
@@ -54,7 +52,7 @@ public class MoveCone : MonoBehaviour
     }
 
     private Vector3 CalculateLanePosition(int lane) {
-        return new Vector3(laneHelper.GetLaneCenter(lane), transform.position.y, transform.position.z);
+        return laneHelper.GetPosition(lane, 0); //Cone is always on lane 0
     }
 
     private Vector3 CalculateConeMovement() {
@@ -85,8 +83,6 @@ public class MoveCone : MonoBehaviour
     }
 
     private float Ease(float x) {
-        float a = easeAmount + 1;
-        //return Mathf.Pow(x,a) / (Mathf.Pow(x,a) + Mathf.Pow(1-x,a));
         return x;
     }
 
