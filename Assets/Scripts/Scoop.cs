@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Material))]
-[RequireComponent(typeof(Sprite))]
+
 public class Scoop : MonoBehaviour
 {
 
-    public Material flavor;
-    public Sprite shape;
+
+    private RenderQuad renderQuad;
 
     public float speed = 10;
 
@@ -27,15 +26,16 @@ public class Scoop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        flavor = GetComponent<Material>();
-        shape = GetComponent<Sprite>();
+
         SetAtTopOfLane();
         falling = true;
     }
 
     private void SetAtTopOfLane() {
+        renderQuad = GetComponent<RenderQuad>();
         currentRow = grid.numberOfRows - 1;
         nextRow = currentRow - 1;
+        renderQuad.Render(transform.position);
         transform.position = grid.GetPosition(lane, currentRow);
  
     }

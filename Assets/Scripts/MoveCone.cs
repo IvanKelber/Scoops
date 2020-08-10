@@ -18,10 +18,14 @@ public class MoveCone : MonoBehaviour
     private int nextLane;
     private int lastLane;
 
+    [SerializeField]
+    private RenderQuad renderQuad;
     private void Start() {
         nextMoveTime = Time.time;
         lastLane = laneHelper.MiddleLane;
 
+        renderQuad.Render(transform.position);
+        transform.position = laneHelper.GetPosition(lastLane, 0);
         // Add gesture listeners
         Gestures.OnSwipe += HandleSwipe;
         Gestures.SwipeEnded += EndSwipe;
@@ -62,7 +66,10 @@ public class MoveCone : MonoBehaviour
         }
 
         Vector3 lastPosition = CalculateLanePosition(lastLane);
+        Debug.Log("LastPosition: " + lastPosition);
         Vector3 nextPosition = CalculateLanePosition(nextLane);
+        Debug.Log("LastPosition: " + lastPosition);
+
         float distanceBetweenPoints = Vector3.Distance(lastPosition, nextPosition);
 
         percentageBetweenPoints += Time.deltaTime * speed;

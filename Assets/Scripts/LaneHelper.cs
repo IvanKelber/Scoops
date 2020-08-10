@@ -9,6 +9,9 @@ public class LaneHelper : MonoBehaviour
     public int numberOfRows = 10;
     private float screenHeight;
     private float screenWidth;
+
+    public float laneWidth;
+    public float rowHeight;
     private Bounds cameraBounds;
     private GridLocation[][] grid;
 
@@ -28,6 +31,8 @@ public class LaneHelper : MonoBehaviour
     {
         screenHeight = 2f * cam.orthographicSize;
         screenWidth = screenHeight * cam.aspect;
+        laneWidth = screenWidth/numberOfLanes;
+        rowHeight = screenHeight/numberOfRows;
         cameraBounds = new Bounds(cam.transform.position, new Vector3(screenWidth, screenHeight, 0));
         grid = InitializeGrid();
     }
@@ -57,8 +62,7 @@ public class LaneHelper : MonoBehaviour
             return cellCenter + cellLength * i;
         }
     public Vector3 GetPosition(int lane, int row) {
-        Debug.Log("Get Position: (" + lane + ", " + row +")");
-        return grid[lane][row].gamePosition;
+        return transform.TransformPoint(transform.TransformPoint(grid[lane][row].gamePosition));
     }
 
     public int GetNextLane(int currentLane, SwipeInfo.SwipeDirection direction) {
@@ -87,9 +91,13 @@ public class LaneHelper : MonoBehaviour
     private void OnDrawGizmos() {
         if(grid != null) {
             for(int i = 0; i < numberOfLanes; i++) {
+                Gizmos.DrawRay(new Vector3(cameraBounds.min.x + laneWidth * i, cameraBounds.min.y, 0), Vector3.up * screenHeight);
                 for(int j = 0; j < numberOfRows; j++) {
                     Gizmos.DrawWireSphere(GetPosition(i,j),.01f);
                 }
+            }
+            for(int j = 0; j < numberOfRows; j++) {
+                Gizmos.DrawRay(new Vector3(cameraBounds.min.x, cameraBounds.min.y + rowHeight * j, 0), Vector3.right * screenWidth);
             }
         }
 
