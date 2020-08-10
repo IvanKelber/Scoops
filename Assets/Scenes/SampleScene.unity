@@ -133,13 +133,14 @@ GameObject:
   m_Component:
   - component: {fileID: 143628672}
   - component: {fileID: 143628671}
+  - component: {fileID: 143628673}
   m_Layer: 0
   m_Name: Scoop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &143628671
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -199,11 +200,68 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143628670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.33, y: -5.46, z: 301.3245}
-  m_LocalScale: {x: 4.174467, y: 4.174467, z: 4.174467}
+  m_LocalPosition: {x: 0.01, y: -2.02, z: 301.3245}
+  m_LocalScale: {x: 2.7727025, y: 2.7727025, z: 2.7727025}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &143628673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143628670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4ffb3de585df954ab18b603d1f6ed88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &272042612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 272042614}
+  - component: {fileID: 272042613}
+  m_Layer: 0
+  m_Name: ScoopSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &272042613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272042612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 332cdeeeebb1dee49aeac5bc296ee5c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoopOutlines: []
+  scoopFlavors: []
+--- !u!4 &272042614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272042612}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.7402818, y: -0.6277814, z: -0.94260836}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &614882998
 GameObject:
@@ -297,6 +355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 624344845}
   - component: {fileID: 624344846}
+  - component: {fileID: 624344844}
   m_Layer: 0
   m_Name: Lanes
   m_TagString: Untagged
@@ -304,6 +363,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &624344844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624344843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65f200976a0423e49a16922d2a325d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfLanes: 3
+  numberOfRows: 10
+  cam: {fileID: 1604922325}
+  LeftLane: 0
+  MiddleLane: 1
+  RightLane: 2
 --- !u!4 &624344845
 Transform:
   m_ObjectHideFlags: 0
@@ -316,7 +393,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &624344846
 MonoBehaviour:
@@ -409,8 +486,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786270577}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.171, z: 1}
-  m_LocalScale: {x: 2.492206, y: 2.492206, z: 2.492206}
+  m_LocalPosition: {x: 0.000000029802322, y: -2.5970275, z: 1}
+  m_LocalScale: {x: 2.284962, y: 2.354044, z: 2.492206}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -427,10 +504,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e668ba656c724fc4f8bb173534eebbc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1604922325}
   speed: 13
   waitTime: 0
   easeAmount: 0
+  laneHelper: {fileID: 624344844}
 --- !u!1 &1075226727
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,5 +769,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -85,8 +85,5 @@ public class MoveCone : MonoBehaviour
     private float Ease(float x) {
         return x;
     }
-
-
-
 }
  

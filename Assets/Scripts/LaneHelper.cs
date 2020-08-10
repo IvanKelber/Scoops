@@ -5,24 +5,26 @@ using UnityEngine;
 public class LaneHelper : MonoBehaviour
 {
     public int numberOfLanes = 3;
+
     public int numberOfRows = 10;
     private float screenHeight;
     private float screenWidth;
-    public float laneWidth;
-    public float rowHeight;
     private Bounds cameraBounds;
-    public GridLocation[][] grid;
+    private GridLocation[][] grid;
 
-    public Camera cam;
+    [SerializeField]
+    private Camera cam;
 
 
     //lane Constants
+    [HideInInspector]
     public int LeftLane = 0;
+    [HideInInspector]
     public int MiddleLane = 1;
-    public int RightLane = 2;
-    public int OOBLane = -1;
+    [HideInInspector]
+     public int RightLane = 2;
 
-    private void Start()
+    private void Awake()
     {
         screenHeight = 2f * cam.orthographicSize;
         screenWidth = screenHeight * cam.aspect;
@@ -55,6 +57,7 @@ public class LaneHelper : MonoBehaviour
             return cellCenter + cellLength * i;
         }
     public Vector3 GetPosition(int lane, int row) {
+        Debug.Log("Get Position: (" + lane + ", " + row +")");
         return grid[lane][row].gamePosition;
     }
 
