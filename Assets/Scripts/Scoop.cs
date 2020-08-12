@@ -2,83 +2,60 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(Lerp))]
 public class Scoop : MonoBehaviour
 {
 
+    public Lerp verticalLerp;
+    private Cone cone;
+    private Vector2Int currentIndex;
 
-    private RenderQuad renderQuad;
+    private Color flavor;
 
-    public float speed = 10;
-
-    [SerializeField]
-    private LaneHelper grid;
-
-    private float percentageBetweenPoints;
+    public Grid grid;
     
-
-    int lane = 0;
-    int currentRow;
-    int nextRow;
-
-    bool falling = false;
-
-    public MoveCone cone;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-        SetAtTopOfLane();
-        falling = true;
+    private void Awake() {
+        verticalLerp = GetComponent<Lerp>();
+        verticalLerp.ReachedPoint += CheckCollisions;
     }
 
-    private void SetAtTopOfLane() {
-        renderQuad = GetComponent<RenderQuad>();
-        currentRow = grid.numberOfRows - 1;
-        nextRow = currentRow - 1;
-        renderQuad.Render(transform.position);
-        transform.position = grid.GetPosition(lane, currentRow);
- 
+    public void Initialize(Grid grid, Vector2Int currentIndex) {
+        this.grid = grid;
+        this.currentIndex = currentIndex;
+        transform.position = grid.GetPosition(currentIndex);
+        Fall();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        Vector3 velocity = CalculateScoopMovement();
-        transform.Translate(velocity);
-        if(currentRow == 0) {
-            falling = false;
+    private bool HitFloor() {
+        return currentIndex.y == 0;
+    }
+
+    // Checks collisions when a scoop has reached a new index
+    private void CheckCollisions() {
+        if(!HitFloor()) {
+            Fall();
+        } else {
+            Destroy(this.gameObject);
+        }
+    }
+    public void SetSpeed(float speed) {
+        verticalLerp.speed = speed;
+    }
+
+    private void Fall() {
+        Vector2Int nextIndex = grid.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
+        if(verticalLerp == null) {
+            Debug.Log("Lerp is null");
+            return;
+        } 
+        if(verticalLerp.DoLerp(grid.GetPosition(currentIndex), grid.GetPosition(nextIndex))) {
+            currentIndex = nextIndex;
         }
     }
 
-     private Vector3 CalculateScoopMovement() {
-
-        if(!falling) {
-            return Vector3.zero;
-        }
-
-        Vector3 lastPosition = grid.GetPosition(lane, currentRow);
-        Vector3 nextPosition = grid.GetPosition(lane, nextRow);
-        float distanceBetweenPoints = Vector3.Distance(lastPosition, nextPosition);
-
-        percentageBetweenPoints += Time.deltaTime * speed;
-        percentageBetweenPoints = Mathf.Clamp01(percentageBetweenPoints);
-
-        Vector3 newPos = Vector3.Lerp(lastPosition, nextPosition, percentageBetweenPoints);
-
-        if(percentageBetweenPoints >= 1) {
-            percentageBetweenPoints = 0;
-            currentRow = nextRow;
-            nextRow = currentRow - 1;
-            Vector2Int coneDimensions = cone.GetConeDimensions();
-            if(coneDimensions.x == lane && coneDimensions.y == currentRow) {
-                falling = false;
-                cone.AddHeight();
-            }
-        }
-
-        return newPos - transform.position;
+    public void SetFlavor(Color flavor) {
+        this.flavor = flavor;
     }
+
     
 }

@@ -9,7 +9,7 @@ public class RenderQuad : MonoBehaviour
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
     
-    public LaneHelper laneHelper;
+    public Grid grid;
     public Material material;
     private void Start()
     {
@@ -19,6 +19,9 @@ public class RenderQuad : MonoBehaviour
         meshRenderer.sharedMaterial = material;
         meshRenderer.material.color = color;
         meshFilter.mesh = new Mesh();
+    }
+    public void SetColor(Color color) {
+        this.color = color;
     }
 
     public void Render(Vector3 position)
@@ -45,19 +48,13 @@ public class RenderQuad : MonoBehaviour
                 new Vector2(1, 1)
         };
         mesh.uv = uv;
-
-        // Color[] colors = new Color[mesh.vertices.Length];
-        // for(int i = 0; i < mesh.vertices.Length; i++) {
-        //     colors[i] = this.color;
-        // }
-        // mesh.colors = colors;
     }
 
     private Vector3[] GetVertices(Vector3 position)
     {
         Debug.Log(position);
-        float laneWidth = laneHelper.laneWidth;
-        float rowHeight = laneHelper.rowHeight;
+        float laneWidth = grid.laneWidth;
+        float rowHeight = grid.rowHeight;
         Vector3[] vertices = new Vector3[4]
         {
                 transform.InverseTransformPoint(new Vector3(position.x - laneWidth/2, position.y - rowHeight/2, 0)),

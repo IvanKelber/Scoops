@@ -2,30 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaneHelper : MonoBehaviour
+public class Grid : MonoBehaviour
 {
+    // Grid dimensions
     public int numberOfLanes = 3;
-
     public int numberOfRows = 10;
-    private float screenHeight;
-    private float screenWidth;
-
-    public float laneWidth;
-    public float rowHeight;
-    private Bounds cameraBounds;
     private GridLocation[][] grid;
 
+
+    // Values derived from the camera
     [SerializeField]
     private Camera cam;
+    private Bounds cameraBounds;
+    private float screenWidth;
+    private float screenHeight;
 
+    [HideInInspector]
+    public float laneWidth;
 
-    //lane Constants
     [HideInInspector]
-    public int LeftLane = 0;
-    [HideInInspector]
-    public int MiddleLane = 1;
-    [HideInInspector]
-     public int RightLane = 2;
+    public float rowHeight;
+
 
     private void Awake()
     {
@@ -53,28 +50,39 @@ public class LaneHelper : MonoBehaviour
             float xPosition = CalculateCoordinate(cameraBounds.min.x, cameraBounds.max.x, this.numberOfLanes, lane);
             float yPosition = CalculateCoordinate(cameraBounds.min.y, cameraBounds.max.y, this.numberOfRows, row);
             return new Vector3(xPosition, yPosition, 1);
-        }
+    }
 
-        private float CalculateCoordinate(float minimum, float maximum, float totalNumber, float i) {
-            float dimensionLength = maximum - minimum; // total grid dimensionLength
-            float cellLength = dimensionLength / totalNumber;
-            float cellCenter = minimum + cellLength / 2;
-            return cellCenter + cellLength * i;
-        }
+    private float CalculateCoordinate(float minimum, float maximum, float totalNumber, float i) {
+        float dimensionLength = maximum - minimum; // total grid dimensionLength
+        float cellLength = dimensionLength / totalNumber;
+        float cellCenter = minimum + cellLength / 2;
+        return cellCenter + cellLength * i;
+    }
+    
     public Vector3 GetPosition(int lane, int row) {
         return transform.TransformPoint(transform.TransformPoint(grid[lane][row].gamePosition));
     }
 
-    public int GetNextLane(int currentLane, SwipeInfo.SwipeDirection direction) {
-        int nextLane = currentLane;
-        if(direction == SwipeInfo.SwipeDirection.LEFT) {
-            nextLane = Mathf.Clamp(nextLane - 1, LeftLane, RightLane);
-        } else if(direction == SwipeInfo.SwipeDirection.RIGHT) {
-            nextLane = Mathf.Clamp(nextLane + 1, LeftLane, RightLane);
-        }
-        return nextLane;
+    public Vector3 GetPosition(Vector2Int index) {
+        return GetPosition(index.x, index.y);
     }
 
+    public Vector2Int GetNextIndex(Vector2Int index, SwipeInfo.SwipeDirection direction) {
+        Vector2Int nextIndex = index;
+        if(direction == SwipeInfo.SwipeDirection.LEFT) {
+            nextIndex.x = Mathf.Clamp(index.x - 1, 0, numberOfLanes-1);
+        } else if(direction == SwipeInfo.SwipeDirection.RIGHT) {
+            nextIndex.x = Mathf.Clamp(index.x + 1, 0, numberOfLanes-1);
+        }
+
+        if(direction == SwipeInfo.SwipeDirection.DOWN) {
+            nextIndex.y = Mathf.Clamp(index.y - 1, 0, numberOfRows-1);
+        } else if(direction == SwipeInfo.SwipeDirection.UP) {
+            nextIndex.y = Mathf.Clamp(index.y + 1, 0, numberOfRows-1);
+        }
+
+        return nextIndex;
+    }
 
     public struct GridLocation {
         int lane, row;
