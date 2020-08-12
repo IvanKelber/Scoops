@@ -19,23 +19,33 @@ public class Scoop : MonoBehaviour
         verticalLerp.ReachedPoint += CheckCollisions;
     }
 
-    public void Initialize(Grid grid, Vector2Int currentIndex) {
+    public void Initialize(Grid grid, Vector2Int currentIndex, Cone cone) {
         this.grid = grid;
         this.currentIndex = currentIndex;
+        this.cone = cone;
         transform.position = grid.GetPosition(currentIndex);
-        Fall();
+
+        if(!HitCone()) { 
+            Fall();
+        }
     }
 
     private bool HitFloor() {
         return currentIndex.y == 0;
     }
 
+    private bool HitCone() {
+        return currentIndex.x == cone.Lane() && currentIndex.y == cone.StackHeight();
+    }
+
     // Checks collisions when a scoop has reached a new index
     private void CheckCollisions() {
-        if(!HitFloor()) {
-            Fall();
-        } else {
+        if(HitCone()) {
+            cone.AddScoop(this);
+        }else if(HitFloor()) {
             Destroy(this.gameObject);
+        } else {
+            Fall();
         }
     }
     public void SetSpeed(float speed) {

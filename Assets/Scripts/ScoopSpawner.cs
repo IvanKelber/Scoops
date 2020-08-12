@@ -7,6 +7,7 @@ public class ScoopSpawner : MonoBehaviour
 
     public Scoop scoopPrefab;
     public Grid grid;
+    public Cone cone;
     public float speed;
 
     public Color[] flavors;
@@ -24,7 +25,8 @@ public class ScoopSpawner : MonoBehaviour
         Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
         scoop.SetFlavor(RandomFlavor());
         scoop.SetSpeed(speed);
-        scoop.Initialize(grid, new Vector2Int(Random.Range(0,3), grid.numberOfRows - 1));
+        Vector2Int startIndex = new Vector2Int(Random.Range(0,3), grid.numberOfRows - 1);
+        scoop.Initialize(grid, startIndex, cone);
     }
 
     private Color RandomFlavor() {

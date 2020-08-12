@@ -14,6 +14,8 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private Grid grid;
 
+    private List<Scoop> scoopStack = new List<Scoop>();
+
     private void Start() {
         horizontalLerp = GetComponent<Lerp>();
         currentIndex = new Vector2Int(1,0); // Start in middle lane
@@ -28,10 +30,6 @@ public class Cone : MonoBehaviour
         // Other event listeners
     }
 
-    private void Update() {
-        // Vector3 velocity = CalculateConeMovement();
-        // transform.Translate(velocity);
-    }
     private void HandleSwipe(SwipeInfo swipe) {
         if(handlingSwipe || 
            swipe.Direction == SwipeInfo.SwipeDirection.UP || 
@@ -51,9 +49,21 @@ public class Cone : MonoBehaviour
         handlingSwipe = false;
     }
 
-
-    public void AddHeight() {
-        currentIndex.y++;
+    public void AddScoop(Scoop scoop) {
+        scoopStack.Add(scoop);
+        if(StackHeight() == grid.numberOfRows) {
+            Debug.Log("GAME OVER");
+            // Emit game over event
+        }
     }
+
+    public int StackHeight() {
+        return scoopStack.Count + 1; //Add one to account for the cone itself
+    }
+
+    public int Lane() {
+        return currentIndex.x;
+    }
+
 }
  
