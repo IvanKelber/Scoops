@@ -30,6 +30,10 @@ public class Cone : MonoBehaviour
         // Other event listeners
     }
 
+    public float GetHorizontalLerpSpeed() {
+        return horizontalLerp.speed;
+    }
+
     private void HandleSwipe(SwipeInfo swipe) {
         if(handlingSwipe || 
            swipe.Direction == SwipeInfo.SwipeDirection.UP || 
