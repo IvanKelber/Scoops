@@ -4,28 +4,51 @@ using UnityEngine;
 
 public class StackableScoop 
 {
+    // Reference to Scoop game object
     Scoop scoop;
-    Stack<StackableScoop> stack;
+    ScoopStack stack;
     Color flavor;
+    int index;
 
-    public int ConsecutiveFlavorScoops;
+    // Below/Above/Total for determining matches efficiently
+    public BAT bat;
 
-    public StackableScoop(Scoop scoop, Stack<StackableScoop> stack) {
+    public int ConsecutiveFlavorScoops {
+        get {return bat.Total;}
+    }
+
+    public StackableScoop(Scoop scoop, ScoopStack stack, int index) {
         this.scoop = scoop;
         this.flavor = scoop.flavor;
         this.stack = stack;
-        this.ConsecutiveFlavorScoops = DetermineConsecutiveFlavorScoops();
-        stack.Push(this);
+        this.index = index;
     }
 
-    private int DetermineConsecutiveFlavorScoops() {
-        if(stack.Count == 0 || stack.Peek().flavor != this.flavor) {
-            return 1; // Only one of this flavor consecutively
+    private BAT CalculateBAT() {
+        BAT bat = new BAT();
+        if(index != 0 && stack[index - 1].flavor == this.flavor)) {
+            bat.Below = stack[index - 1].bat.Below + 1;
+            
         }
         return stack.Peek().ConsecutiveFlavorScoops + 1;
     }
 
     public void MeltScoop() {
         this.scoop.Destroy();
+    }
+
+
+
+
+    struct BAT {
+        public int Below;
+        public int Above;
+        public int Total;
+
+        public BAT() {
+            this.Below = 0;
+            this.Above = 0;
+            this.Total = 0;
+        }
     }
 }
