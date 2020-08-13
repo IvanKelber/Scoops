@@ -14,13 +14,17 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private Grid grid;
 
+    [SerializeField]
+    private RenderQuad renderQuad;
+
     private List<Scoop> scoopStack = new List<Scoop>();
 
     private void Start() {
         horizontalLerp = GetComponent<Lerp>();
         currentIndex = new Vector2Int(1,0); // Start in middle lane
 
-        // renderQuad.Render(transform.position);
+        renderQuad = GetComponent<RenderQuad>();
+        renderQuad.Render(transform.position);
         transform.position = grid.GetPosition(currentIndex);
 
         // Add gesture listeners

@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ffb3de585df954ab18b603d1f6ed88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grid: {fileID: 0}
+  renderQuad: {fileID: 0}
 --- !u!114 &7067049061320989391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0.8679245, g: 0.58462083, b: 0.82106596, a: 1}
   grid: {fileID: 0}
-  material: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
+  material: {fileID: 2100000, guid: 138ea698d0e1c524caca46097e525eb3, type: 2}
 --- !u!114 &8019099914496727671
 MonoBehaviour:
   m_ObjectHideFlags: 0

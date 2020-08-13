@@ -16,6 +16,7 @@ public class Scoop : MonoBehaviour
 
     public Grid grid;
     
+    public RenderQuad renderQuad;
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
         verticalLerp.ReachedPoint += CheckCollisions;
@@ -27,6 +28,11 @@ public class Scoop : MonoBehaviour
         this.cone = cone;
         horizontalLerp = gameObject.AddComponent<Lerp>();
         horizontalLerp.speed = cone.GetHorizontalLerpSpeed();
+
+        renderQuad = GetComponent<RenderQuad>();
+        renderQuad.grid = grid;
+        renderQuad.SetColor(this.flavor);
+        renderQuad.Render(transform.position);
 
         transform.position = grid.GetPosition(currentIndex);
 
@@ -52,6 +58,7 @@ public class Scoop : MonoBehaviour
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
             Debug.Log("Landed on top of stack");
+            horizontalLerp.speed -= cone.StackHeight();
         } else if(HitMiddleStack()) {
             Debug.Log("Hit Middle Stack");
             Destroy(this.gameObject);  

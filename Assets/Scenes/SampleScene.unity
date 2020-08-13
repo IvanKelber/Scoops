@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoopPrefab: {fileID: 7067049061320989233, guid: 78adefec70d902c4a9053d409a3fb613, type: 3}
   grid: {fileID: 624344844}
+  cone: {fileID: 786270578}
+  speed: 6
   flavors:
   - {r: 0.8490566, g: 0.123353474, b: 0.8067993, a: 1}
   - {r: 0.42077252, g: 0.7264151, b: 0.4428607, a: 1}
@@ -208,9 +210,6 @@ MonoBehaviour:
   cam: {fileID: 1604922325}
   laneWidth: 0
   rowHeight: 0
-  LeftLane: 0
-  MiddleLane: 1
-  RightLane: 2
 --- !u!4 &624344845
 Transform:
   m_ObjectHideFlags: 0
@@ -271,6 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 624344844}
+  renderQuad: {fileID: 0}
 --- !u!4 &786270579
 Transform:
   m_ObjectHideFlags: 0
@@ -306,13 +306,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786270577}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cec7d196f702254459a219afce75da0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 0.754717, g: 0.6900556, b: 0.4015664, a: 1}
-  grid: {fileID: 0}
+  color: {r: 0.6698113, g: 0.5417886, b: 0.3121573, a: 1}
+  grid: {fileID: 624344844}
   material: {fileID: 2100000, guid: 138ea698d0e1c524caca46097e525eb3, type: 2}
 --- !u!1 &1604922323
 GameObject:

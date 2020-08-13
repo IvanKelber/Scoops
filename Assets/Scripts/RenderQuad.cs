@@ -11,21 +11,22 @@ public class RenderQuad : MonoBehaviour
     
     public Grid grid;
     public Material material;
-    private void Start()
+    private void Awake()
     {
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
-
-        meshRenderer.sharedMaterial = material;
-        meshRenderer.material.color = color;
-        meshFilter.mesh = new Mesh();
     }
+    
     public void SetColor(Color color) {
         this.color = color;
     }
 
     public void Render(Vector3 position)
     {
+        meshRenderer.sharedMaterial = material;
+        meshRenderer.material.color = color;
+        meshFilter.mesh = new Mesh();
+
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
 
