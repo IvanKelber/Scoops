@@ -12,7 +12,7 @@ public class Scoop : MonoBehaviour
     private bool handlingSwipe = false;
     private Vector2Int currentIndex;
 
-    private Color flavor;
+    public Color flavor;
 
     public Grid grid;
     
@@ -61,9 +61,9 @@ public class Scoop : MonoBehaviour
             horizontalLerp.speed -= cone.StackHeight();
         } else if(HitMiddleStack()) {
             Debug.Log("Hit Middle Stack");
-            Destroy(this.gameObject);  
+            this.Destroy();  
         } else if(HitFloor()) {
-            Destroy(this.gameObject);
+            this.Destroy();
         } else {
             Fall();
         }
@@ -86,6 +86,10 @@ public class Scoop : MonoBehaviour
     }
     private void EndSwipe() {
         handlingSwipe = false;
+    }
+
+    public void Destroy() {
+        Destroy(this.gameObject);
     }
 
     public void SetSpeed(float speed) {

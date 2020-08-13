@@ -17,7 +17,7 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private RenderQuad renderQuad;
 
-    private List<Scoop> scoopStack = new List<Scoop>();
+    private Stack<StackableScoop> scoopStack = new Stack<StackableScoop>();
 
     private void Start() {
         horizontalLerp = GetComponent<Lerp>();
@@ -58,11 +58,27 @@ public class Cone : MonoBehaviour
     }
 
     public void AddScoop(Scoop scoop) {
-        scoopStack.Add(scoop);
+        new StackableScoop(scoop, scoopStack);
         if(StackHeight() == grid.numberOfRows) {
             Debug.Log("GAME OVER");
             // Emit game over event
+        } else { 
+            if(CheckMatch()) {
+                HandleMatch();
+            }
         }
+    }
+
+    private void HandleMatch() {
+        int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
+        Debug.Log("Handling match of " + matchingScoops);
+        for(int i = 0; i < matchingScoops; i++) {
+            scoopStack.Pop().MeltScoop();
+        }
+    }
+
+    private bool CheckMatch() {
+        return scoopStack.Count >= 3 && scoopStack.Peek().ConsecutiveFlavorScoops >= 3;
     }
 
     public int StackHeight() {
