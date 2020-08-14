@@ -57,10 +57,8 @@ public class Scoop : MonoBehaviour
             cone.AddScoop(this);
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
-            Debug.Log("Landed on top of stack");
             horizontalLerp.speed -= cone.StackHeight();
         } else if(HitMiddleStack()) {
-            Debug.Log("Hit Middle Stack");
             this.Destroy();  
         } else if(HitFloor()) {
             this.Destroy();

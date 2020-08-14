@@ -17,7 +17,7 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private RenderQuad renderQuad;
 
-    private Stack<StackableScoop> scoopStack = new Stack<StackableScoop>();
+    private ScoopStack scoopStack = new ScoopStack();
 
     private void Start() {
         horizontalLerp = GetComponent<Lerp>();
@@ -32,6 +32,7 @@ public class Cone : MonoBehaviour
         Gestures.SwipeEnded += EndSwipe;
 
         // Other event listeners
+        scoopStack.ScoopMatchFound += HandleMatch;
     }
 
     public float GetHorizontalLerpSpeed() {
@@ -58,27 +59,19 @@ public class Cone : MonoBehaviour
     }
 
     public void AddScoop(Scoop scoop) {
-        new StackableScoop(scoop, scoopStack);
+        scoopStack.Push(scoop);
+        // new StackableScoop(scoop, scoopStack);
         if(StackHeight() == grid.numberOfRows) {
             Debug.Log("GAME OVER");
             // Emit game over event
-        } else { 
-            if(CheckMatch()) {
-                HandleMatch();
-            }
-        }
+        } 
+        Debug.Log(scoopStack.StackInfo_Debug());
     }
 
-    private void HandleMatch() {
-        int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
-        Debug.Log("Handling match of " + matchingScoops);
-        for(int i = 0; i < matchingScoops; i++) {
-            scoopStack.Pop().MeltScoop();
+    private void HandleMatch(List<Scoop> scoops) {
+        foreach(Scoop scoop in scoops) {
+            scoop.Destroy();
         }
-    }
-
-    private bool CheckMatch() {
-        return scoopStack.Count >= 3 && scoopStack.Peek().ConsecutiveFlavorScoops >= 3;
     }
 
     public int StackHeight() {

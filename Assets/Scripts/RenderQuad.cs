@@ -16,7 +16,7 @@ public class RenderQuad : MonoBehaviour
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
     }
-    
+
     public void SetColor(Color color) {
         this.color = color;
     }
@@ -53,7 +53,6 @@ public class RenderQuad : MonoBehaviour
 
     private Vector3[] GetVertices(Vector3 position)
     {
-        Debug.Log(position);
         float laneWidth = grid.laneWidth;
         float rowHeight = grid.rowHeight;
         Vector3[] vertices = new Vector3[4]
@@ -63,9 +62,6 @@ public class RenderQuad : MonoBehaviour
                 transform.InverseTransformPoint(new Vector3(position.x - laneWidth/2, position.y + rowHeight/2, 0)),
                 transform.InverseTransformPoint(new Vector3(position.x + laneWidth/2, position.y + rowHeight/2, 0))
         };
-        foreach(Vector3 v in vertices) {
-            Debug.Log(v);
-        }
         return vertices;
     }
 
