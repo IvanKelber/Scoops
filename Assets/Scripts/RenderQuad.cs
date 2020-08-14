@@ -52,10 +52,6 @@ public class RenderQuad : MonoBehaviour
     }
 
     public bool Contains(Vector3 position) {
-        if(meshRenderer == null) {
-            Debug.Log("Mesh renderer is null");
-            return false;
-        }
         Bounds bounds = meshRenderer.bounds;
         return position.x >= bounds.min.x && position.x <= bounds.max.x && position.y >= bounds.min.y && position.y <= bounds.max.y;
     }

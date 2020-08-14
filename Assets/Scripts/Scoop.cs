@@ -89,11 +89,7 @@ public class Scoop : MonoBehaviour
     }
 
     public void HandleScoopTap(Vector3 touchPosition) {
-        if(renderQuad == null) {
-            Debug.LogWarning("RENDER QUAD OF SCOOP IS NULL.");
-            Debug.LogWarning("Trying to destroy scoop");
-            Destroy();
-        } else if(renderQuad.Contains(touchPosition)) {
+      if(renderQuad.Contains(touchPosition)) {
             Debug.Log("Scoop tapped");
         }
     }
