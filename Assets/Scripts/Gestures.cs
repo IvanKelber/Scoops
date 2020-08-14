@@ -12,15 +12,25 @@ public class Gestures : MonoBehaviour
     [SerializeField]
     private float minSwipeDistance = 20f;
 
+    [SerializeField]
+    private float tapThreshold = 10;
+
 
     private Vector3 fingerUpPosition;
     private Vector3 fingerDownPosition;
 
+    [SerializeField]
+    private Camera camera;
+
+    public static event Action<Vector3> OnTap = delegate {};
     public static event Action<SwipeInfo> OnSwipe = delegate { };
     public static event Action SwipeEnded = delegate { };
 
+
+
     private void Update() {
-        foreach(Touch touch in Input.touches) {
+        if(Input.touchCount > 0) {
+            Touch touch = Input.GetTouch(0);
             if(touch.phase == TouchPhase.Began) {
                 fingerUpPosition = touch.position;
                 fingerDownPosition = touch.position;
@@ -32,9 +42,14 @@ public class Gestures : MonoBehaviour
             }
 
             if(touch.phase == TouchPhase.Ended) {
+
                 fingerDownPosition = touch.position;
-                DetectSwipe();
-                SwipeEnded();
+                if(DetectTap()) {
+                    OnTap(camera.ScreenToWorldPoint(fingerDownPosition));
+                } else {
+                    DetectSwipe();
+                    SwipeEnded();
+                }
             }
         }   
     }
@@ -45,6 +60,11 @@ public class Gestures : MonoBehaviour
             // We have detected a valid swipe
             OnSwipe(swipeInfo);
         }
+    }
+
+    private bool DetectTap() {
+        float distance =  Vector3.Distance(fingerUpPosition, fingerDownPosition);
+        return distance <= tapThreshold;
     }
 
 

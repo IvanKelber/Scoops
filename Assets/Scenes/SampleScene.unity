@@ -238,6 +238,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectBeforeRelase: 1
   minSwipeDistance: 20
+  tapThreshold: 10
+  camera: {fileID: 1604922325}
 --- !u!1 &786270577
 GameObject:
   m_ObjectHideFlags: 0

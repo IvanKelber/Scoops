@@ -51,6 +51,15 @@ public class RenderQuad : MonoBehaviour
         mesh.uv = uv;
     }
 
+    public bool Contains(Vector3 position) {
+        if(meshRenderer == null) {
+            Debug.Log("Mesh renderer is null");
+            return false;
+        }
+        Bounds bounds = meshRenderer.bounds;
+        return position.x >= bounds.min.x && position.x <= bounds.max.x && position.y >= bounds.min.y && position.y <= bounds.max.y;
+    }
+
     private Vector3[] GetVertices(Vector3 position)
     {
         float laneWidth = grid.laneWidth;

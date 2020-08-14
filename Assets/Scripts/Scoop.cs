@@ -17,6 +17,9 @@ public class Scoop : MonoBehaviour
     public Grid grid;
     
     public RenderQuad renderQuad;
+
+    public FlavorNodeIndex flavorNodeIndex;
+
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
         verticalLerp.ReachedPoint += CheckCollisions;
@@ -58,6 +61,8 @@ public class Scoop : MonoBehaviour
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed -= cone.StackHeight();
+
+            Gestures.OnTap += HandleScoopTap;
         } else if(HitMiddleStack()) {
             this.Destroy();  
         } else if(HitFloor()) {
@@ -82,12 +87,30 @@ public class Scoop : MonoBehaviour
             currentIndex = nextIndex;
         }
     }
+
+    public void HandleScoopTap(Vector3 touchPosition) {
+        if(renderQuad == null) {
+            Debug.LogWarning("RENDER QUAD OF SCOOP IS NULL.");
+            Debug.LogWarning("Trying to destroy scoop");
+            Destroy();
+        } else if(renderQuad.Contains(touchPosition)) {
+            Debug.Log("Scoop tapped");
+        }
+    }
+
     private void EndSwipe() {
         handlingSwipe = false;
     }
 
     public void Destroy() {
         Destroy(this.gameObject);
+    }
+
+    private void OnDestroy() {
+        // Remove listeners
+        Gestures.OnTap -= HandleScoopTap;
+        Gestures.OnSwipe -= HandleSwipe;
+        Gestures.SwipeEnded -= EndSwipe;
     }
 
     public void SetSpeed(float speed) {

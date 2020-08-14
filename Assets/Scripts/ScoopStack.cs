@@ -38,6 +38,7 @@ public class ScoopStack
 
     public void Push(Scoop scoop) {
         FlavorNode node = new FlavorNode(scoop);
+        scoop.flavorNodeIndex = new FlavorNodeIndex(node, 0);
         Push(node);
     }
 
@@ -54,7 +55,10 @@ public class ScoopStack
             
         } else if(top.flavor == node.flavor) {
             // Merge nodes
-            top.scoops.AddRange(node.scoops);
+            foreach(Scoop scoop in node.scoops) {
+                top.scoops.Add(scoop);
+                scoop.flavorNodeIndex = new FlavorNodeIndex(top, top.scoops.Count - 1);
+            }
             if(top.scoops.Count >= 3) {
                 Count -= top.Count;
 

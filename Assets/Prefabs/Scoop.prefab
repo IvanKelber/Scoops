@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ffb3de585df954ab18b603d1f6ed88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flavor: {r: 0, g: 0, b: 0, a: 0}
   grid: {fileID: 0}
   renderQuad: {fileID: 0}
 --- !u!114 &7067049061320989391
