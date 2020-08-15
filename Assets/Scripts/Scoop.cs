@@ -19,12 +19,15 @@ public class Scoop : MonoBehaviour
     
     public RenderQuad renderQuad;
 
+    public ScoopIndicator scoopIndicator;
+
     public static event Action<int> ScoopTapped = delegate {};
 
 
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
         verticalLerp.ReachedPoint += CheckCollisions;
+
     }
 
     public void Initialize(Grid grid, Vector2Int currentIndex, Cone cone) {
@@ -40,6 +43,10 @@ public class Scoop : MonoBehaviour
         renderQuad.Render(transform.position);
 
         transform.position = grid.GetPosition(currentIndex);
+
+        scoopIndicator = (ScoopIndicator) GetComponentsInChildren<ScoopIndicator>()[0];
+        scoopIndicator.SetIncomingFlavor(flavor);
+        scoopIndicator.SetPosition(grid.GetPosition(new Vector2Int(currentIndex.x, grid.numberOfRows - 1)));
 
         CheckCollisions();
     }
@@ -72,7 +79,7 @@ public class Scoop : MonoBehaviour
             cone.AddScoop(this);
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
-            horizontalLerp.speed = cone.GetHorizontalLerpSpeed() - cone.StackHeight();
+            horizontalLerp.speed = cone.GetHorizontalLerpSpeed() - (.1f * cone.StackHeight());
             Gestures.OnTap += HandleScoopTap;
 
         } else if(HitMiddleStack()) {
@@ -80,6 +87,13 @@ public class Scoop : MonoBehaviour
         } else if(HitFloor()) {
             this.Destroy();
         } else {
+            if(currentIndex.y <= grid.numberOfRows) {
+                // Destroy scoop indicator
+                scoopIndicator.gameObject.SetActive(false);
+            } else {
+                scoopIndicator.SetPosition(grid.GetPosition(new Vector2Int(currentIndex.x, grid.numberOfRows - 1)));
+                scoopIndicator.gameObject.SetActive(true);
+            }
             Fall();
         }
     }

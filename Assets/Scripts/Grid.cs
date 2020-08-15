@@ -6,9 +6,9 @@ public class Grid : MonoBehaviour
 {
     // Grid dimensions
     public int numberOfLanes = 3;
-    public int numberOfRows = 10;
+    public int numberOfRows = 12;
 
-    private int numberOfOffscreenRows = 10;
+    private int numberOfOffscreenRows = 8;
 
 
     public int TotalRows {

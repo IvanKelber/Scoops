@@ -155,14 +155,14 @@ MonoBehaviour:
   scoopPrefab: {fileID: 7067049061320989233, guid: 78adefec70d902c4a9053d409a3fb613, type: 3}
   grid: {fileID: 624344844}
   cone: {fileID: 786270578}
-  speed: 6
+  speed: 5
   flavors:
   - {r: 0.8962264, g: 0.51067996, b: 0.8734253, a: 1}
   - {r: 0.42077252, g: 0.7264151, b: 0.4428607, a: 1}
   - {r: 0.8679245, g: 0.8220719, b: 0.8220719, a: 1}
   - {r: 0.33962262, g: 0.24306256, b: 0.19672479, a: 1}
   spawning: 0
-  timeBetweenSpawn: 3
+  timeBetweenSpawn: 4
 --- !u!4 &272042614
 Transform:
   m_ObjectHideFlags: 0
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfLanes: 3
-  numberOfRows: 10
+  numberOfRows: 13
   cam: {fileID: 1604922325}
   laneWidth: 0
   rowHeight: 0

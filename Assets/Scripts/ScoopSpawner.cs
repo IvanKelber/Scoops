@@ -48,7 +48,7 @@ public class ScoopSpawner : MonoBehaviour
         Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
         scoop.SetFlavor(RandomFlavor());
         scoop.SetSpeed(speed);
-        Vector2Int startIndex = new Vector2Int(Random.Range(0,3), grid.TotalRows - 1);
+        Vector2Int startIndex = new Vector2Int(Random.Range(0,grid.numberOfLanes), grid.TotalRows - 1);
         scoop.Initialize(grid, startIndex, cone);
     }
 
