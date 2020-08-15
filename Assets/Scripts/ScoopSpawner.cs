@@ -12,12 +12,35 @@ public class ScoopSpawner : MonoBehaviour
 
     public Color[] flavors;
     // Update is called once per frame
+
+    public bool spawning = false;
+
+    public float timeBetweenSpawn;
+    private float timeUntilNextSpawn;
+
+    private void Start() {
+        Gestures.OnSwipe += ControlSpawner;
+    }
+
+    private void ControlSpawner(SwipeInfo swipe) {
+        switch(swipe.Direction) {
+            case SwipeInfo.SwipeDirection.UP:
+                spawning = false;
+                break;
+            case SwipeInfo.SwipeDirection.DOWN:
+                spawning = true;
+                break;
+        }
+    }
+
     void Update()
     {
-        if(Input.touchCount > 1) {
-            if (Input.GetTouch(1).phase == TouchPhase.Began) {
+        if(spawning) {
+            if (timeUntilNextSpawn <= 0) {
+                timeUntilNextSpawn = timeBetweenSpawn;
                 ChooseScoop();
             }
+            timeUntilNextSpawn -= Time.deltaTime;
         }
     }
 

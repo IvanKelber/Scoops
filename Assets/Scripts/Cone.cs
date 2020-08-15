@@ -30,6 +30,7 @@ public class Cone : MonoBehaviour
         // Add gesture listeners
         Gestures.OnSwipe += HandleSwipe;
         Gestures.SwipeEnded += EndSwipe;
+        Gestures.ThreeTap += ClearStack;
 
         // Other event listeners
     }
@@ -87,6 +88,12 @@ public class Cone : MonoBehaviour
 
     public int Lane() {
         return currentIndex.x;
+    }
+
+    public void ClearStack() {
+        for(int i = 0; i < scoopStack.Count; i++) {
+            scoopStack.Pop().MeltScoop();
+        }
     }
 
 }

@@ -26,9 +26,15 @@ public class Gestures : MonoBehaviour
     public static event Action<SwipeInfo> OnSwipe = delegate { };
     public static event Action SwipeEnded = delegate { };
 
+    public static event Action ThreeTap = delegate {};
 
     private void Update() {
-        if(Input.touchCount > 0) {
+
+
+        if(Input.touchCount == 3) {
+            ThreeTap();
+            
+        } else if(Input.touchCount > 0) {
             Touch touch = Input.GetTouch(0);
             if(touch.phase == TouchPhase.Began) {
                 fingerUpPosition = touch.position;

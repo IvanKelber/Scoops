@@ -91,6 +91,11 @@ public class Scoop : MonoBehaviour
     public void Destroy() {
         Destroy(this.gameObject);
     }
+    
+    private void OnDestroy() {
+        Gestures.OnSwipe -= HandleSwipe;
+        Gestures.SwipeEnded -= EndSwipe;
+    }
 
     public void SetSpeed(float speed) {
         verticalLerp.speed = speed;
