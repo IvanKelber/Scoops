@@ -49,11 +49,21 @@ public class Scoop : MonoBehaviour
     }
 
     private bool HitStack() {
-        return currentIndex.x == cone.Lane() && currentIndex.y == cone.StackHeight();
+        if(currentIndex.x == cone.Lane()) {
+            if(currentIndex.y == cone.StackHeight()) {
+                return true;
+            }
+            if(currentIndex.y == cone.StackHeight() - 1) {
+                currentIndex = new Vector2Int(currentIndex.x, currentIndex.y + 1);
+                transform.position = grid.GetPosition(currentIndex);
+                return true;
+            }
+        }
+        return false;
     }
 
     private bool HitMiddleStack() {
-        return currentIndex.x == cone.Lane() && currentIndex.y < cone.StackHeight();
+        return currentIndex.x == cone.Lane() && currentIndex.y < cone.StackHeight() - 1;
     }
 
     // Checks collisions when a scoop has reached a new index

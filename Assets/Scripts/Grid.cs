@@ -7,6 +7,16 @@ public class Grid : MonoBehaviour
     // Grid dimensions
     public int numberOfLanes = 3;
     public int numberOfRows = 10;
+
+    private int numberOfOffscreenRows = 10;
+
+
+    public int TotalRows {
+        get {
+            return numberOfRows + numberOfOffscreenRows;
+        }
+    }
+
     private GridLocation[][] grid;
 
 
@@ -38,8 +48,8 @@ public class Grid : MonoBehaviour
     private GridLocation[][] InitializeGrid() {
         GridLocation [][] grid = new GridLocation[numberOfLanes][];
         for(int i = 0; i < numberOfLanes; i++) {
-            grid[i] = new GridLocation[numberOfRows];
-            for(int j = 0; j < numberOfRows; j++) {
+            grid[i] = new GridLocation[TotalRows];
+            for(int j = 0; j < TotalRows; j++) {
                 grid[i][j] = new GridLocation(i, j, CalculateGamePosition(i, j));
             }
         }
@@ -76,9 +86,9 @@ public class Grid : MonoBehaviour
         }
 
         if(direction == SwipeInfo.SwipeDirection.DOWN) {
-            nextIndex.y = Mathf.Clamp(index.y - 1, 0, numberOfRows-1);
+            nextIndex.y = Mathf.Clamp(index.y - 1, 0, TotalRows - 1);
         } else if(direction == SwipeInfo.SwipeDirection.UP) {
-            nextIndex.y = Mathf.Clamp(index.y + 1, 0, numberOfRows-1);
+            nextIndex.y = Mathf.Clamp(index.y + 1, 0, TotalRows - 1);
         }
 
         return nextIndex;
@@ -99,12 +109,12 @@ public class Grid : MonoBehaviour
     private void OnDrawGizmos() {
         if(grid != null) {
             for(int i = 0; i < numberOfLanes; i++) {
-                Gizmos.DrawRay(new Vector3(cameraBounds.min.x + laneWidth * i, cameraBounds.min.y, 0), Vector3.up * screenHeight);
-                for(int j = 0; j < numberOfRows; j++) {
+                Gizmos.DrawRay(new Vector3(cameraBounds.min.x + laneWidth * i, cameraBounds.min.y, 0), Vector3.up * screenHeight*2);
+                for(int j = 0; j < TotalRows; j++) {
                     Gizmos.DrawWireSphere(GetPosition(i,j),.01f);
                 }
             }
-            for(int j = 0; j < numberOfRows; j++) {
+            for(int j = 0; j < TotalRows + numberOfOffscreenRows; j++) {
                 Gizmos.DrawRay(new Vector3(cameraBounds.min.x, cameraBounds.min.y + rowHeight * j, 0), Vector3.right * screenWidth);
             }
         }

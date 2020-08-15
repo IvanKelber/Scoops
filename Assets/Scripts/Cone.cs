@@ -101,14 +101,16 @@ public class Cone : MonoBehaviour
     }
 
     private void HandleScoopTap(int index) {
-        StartCoroutine(PopScoops(index, .2f));
+        StartCoroutine(PopScoops(index, .001f));
     }
     
     private IEnumerator PopScoops(int index, float delay) {
-        for(int i = scoopStack.Count - 1; i >= index; i--) {
+        int popCount = scoopStack.Count - index;
+        for(int i = 0; i < popCount; i++) {
+            int popHeight = grid.TotalRows - (popCount - i);
             StackableScoop scoop = scoopStack.Pop();
             scoop.RemoveInputHandlers();
-            scoop.MoveToIndex(new Vector2Int(Lane(), grid.numberOfRows - 1));
+            scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
             yield return new WaitForSeconds(delay);
         }
     }
