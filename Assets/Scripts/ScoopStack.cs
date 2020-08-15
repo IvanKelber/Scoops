@@ -14,26 +14,10 @@ public class ScoopStack
     public event Action<List<Scoop>> ScoopMatchFound = delegate {};
 
     public ScoopStack() {
+        Scoop.ScoopTapped += HandleScoopTap;
         this.Count = 0;
         this.bottom = null;
         this.top = null;
-    }
-
-    public ScoopStack(FlavorNode node) {
-        // if(node == null) {
-        //     ScoopStack();
-        // }
-
-        FlavorNode cur = node;
-        while(cur.above != null) {
-            this.Count += cur.Count;
-            cur = cur.above;
-        }
-        this.top = cur;
-        this.bottom = node;
-
-        this.top.above = this.bottom;
-        this.bottom.below = this.top;
     }
 
     public void Push(Scoop scoop) {
@@ -42,8 +26,7 @@ public class ScoopStack
         Push(node);
     }
 
-    // For adding a single node only.
-    // For adding multiple nodes use MergeScoopStack
+    // For adding a single node to the top of the stack
     public void Push(FlavorNode node) {
         this.Count += node.scoops.Count;
         if(top == null) {
@@ -53,26 +36,6 @@ public class ScoopStack
             bottom.above = top;
             bottom.below = top;
             
-        } else if(top.flavor == node.flavor) {
-            // Merge nodes
-            foreach(Scoop scoop in node.scoops) {
-                top.scoops.Add(scoop);
-                scoop.flavorNodeIndex = new FlavorNodeIndex(top, top.scoops.Count - 1);
-            }
-            if(top.scoops.Count >= 3) {
-                Count -= top.Count;
-
-                ScoopMatchFound(top.scoops);
-                if(top == bottom) {
-                    top = null;
-                    bottom = null;
-                } else {
-                    top.below.above = bottom;
-                    bottom.below = top.below;
-
-                    top = top.below;
-                }
-            }
         } else {
             // Node has a different flavor
             node.above = bottom;
@@ -84,12 +47,92 @@ public class ScoopStack
             top = node;
         }
 
+        if(node != node.below && node.below.flavor == node.flavor) {
+            MergeFlavorNodes(node.below, node);
+        }
+
+    }
+
+    public void HandleScoopTap(FlavorNodeIndex flavorNodeIndex) {
+        // FlavorNode node = flavorNodeIndex.flavorNode;
+        // int index = flavorNodeIndex.index;
+        // if(index == 1) {
+        //     // If we tap a scoop that is not the base of a flavor node then
+        //     // we must expand the scoop into it's own FlavorNode
+        //     Scoop scoop = node.scoops[index];
+        //     FlavorNode newNode = new FlavorNode(scoop);
+        //     node.scoops.RemoveAt(index);
+        //     scoop.flavorNodeIndex = new FlavorNodeIndex(newNode, 0);
+        
+        //     newNode.above = node.above;
+        //     newNode.below = node;
+
+        //     node.above = newNode;
+        //     newNode.above.below = newNode;
+            
+        //     // Set node = newNode so we can proceed as if newNode was tapped
+        //     node = newNode;
+        // } 
+
+        // //if index == 0 then we don't need to create a new node.
+        // FlavorNode breakNode = node.below;
+        // FlavorNode cur = node;
+        // FlavorNode prev = null;
+
+
+        // top.below = breakNode;
+        // breakNode.above = top;
+
+        // while(cur != breakNode) {
+        //     FlavorNode next = cur.above;
+        //     cur.above = prev;
+        //     cur.below = next;
+        //     prev = cur;
+        //     cur = next;
+        // }
+        // top = node;
+        // top.above = bottom;
+        // bottom.below = top;
+
+        // if(breakNode.flavor == breakNode.above.flavor) {
+        //     MergeFlavorNodes(breakNode, breakNode.above);
+        // }
+
+    }
+
+    private void MergeFlavorNodes(FlavorNode bottomNode, FlavorNode topNode) {
+        if(bottomNode == topNode) {
+            return;
+        }
+        foreach(Scoop scoop in topNode.scoops) {
+                bottomNode.scoops.Add(scoop);
+                scoop.flavorNodeIndex = new FlavorNodeIndex(bottomNode, bottomNode.scoops.Count - 1);
+        }
+        bottomNode.above = topNode.above;
+        topNode.above.below = bottomNode;
+
+        if(topNode == top) {
+            top = bottomNode;
+            bottom.below = top;
+        } 
+        if(bottomNode.scoops.Count >= 3) {
+            Count -= bottomNode.Count;
+            ScoopMatchFound(bottomNode.scoops);
+
+            if(bottom == top) {
+                bottom = null;
+                top = null;
+            } else {
+                bottomNode.below.above = bottomNode.above;
+                bottomNode.above.below = bottomNode.below;
+                if(bottomNode.above.flavor == bottomNode.below.flavor) {
+                    MergeFlavorNodes(bottomNode.above, bottomNode.below);
+                }
+            }
+        }
     }
 
     public string StackInfo_Debug() {
-        // Debug.Log("ScoopStack.Count: " + Count);
-        // Debug.Log("Top flavor: " + top.flavor);
-        // Debug.Log("Bottom flavor: " + bottom.flavor);
         if(Count == 0) {
             return "Stack empty";
         }
@@ -102,24 +145,7 @@ public class ScoopStack
             }
             cur = cur.below;
         }
-       return "ScoopStack flavor nodes: " + flavorNodes + "]";
+       return "Top: " + top.Debug() + " Bottom: " +  bottom.Debug() + "\nScoopStack flavor nodes: " + flavorNodes + "]";
     }
-
-    // public void Merge(ScoopStack stack2) {
-    //     if(stack2.bottom.flavor == this.top.flavor) {
-    //         // Merge nodes
-    //         this.top.scoops.AddRange(stack2.bottom.scoops);
-    //     } else {
-
-    //     }
-    //     stack2.bottom.below = this.top;
-    //     this.top.above = stack2.bottom;
-    //     stack2.top.above = this.bottom;
-    //     this.bottom.below = stack2.top;
-
-    //     this.top = stack2.top;
-
-    //     this.Count += stack2.Count;
-    // }
 
 }

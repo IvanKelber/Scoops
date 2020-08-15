@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Lerp))]
 public class Scoop : MonoBehaviour
@@ -19,6 +20,9 @@ public class Scoop : MonoBehaviour
     public RenderQuad renderQuad;
 
     public FlavorNodeIndex flavorNodeIndex;
+
+    public static event Action<FlavorNodeIndex> ScoopTapped = delegate {};
+
 
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
@@ -90,7 +94,7 @@ public class Scoop : MonoBehaviour
 
     public void HandleScoopTap(Vector3 touchPosition) {
       if(renderQuad.Contains(touchPosition)) {
-            Debug.Log("Scoop tapped");
+            ScoopTapped(flavorNodeIndex);
         }
     }
 

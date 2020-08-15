@@ -27,7 +27,6 @@ public class Gestures : MonoBehaviour
     public static event Action SwipeEnded = delegate { };
 
 
-
     private void Update() {
         if(Input.touchCount > 0) {
             Touch touch = Input.GetTouch(0);

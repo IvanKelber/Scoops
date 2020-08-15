@@ -22,6 +22,8 @@ public class FlavorNode
         scoops.Add(scoop);
     }
 
-
+    public string Debug() {
+        return flavor + ", " + Count + ", " + (below != null).ToString() + ", " + (above != null).ToString();
+    }
 
 }

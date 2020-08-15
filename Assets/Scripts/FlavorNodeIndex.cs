@@ -6,10 +6,10 @@ public class FlavorNodeIndex
 {
 
     //Reference to flavorNode
-    FlavorNode flavorNode;
+    public FlavorNode flavorNode;
 
     //Reference to index within that flavorNode 
-    int index;
+    public int index;
 
     public FlavorNodeIndex(FlavorNode flavorNode, int index) {
         this.flavorNode = flavorNode;
