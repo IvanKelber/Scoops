@@ -62,7 +62,7 @@ public class Scoop : MonoBehaviour
             cone.AddScoop(this);
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
-            // horizontalLerp.speed -= cone.StackHeight();
+            horizontalLerp.speed = cone.GetHorizontalLerpSpeed() - cone.StackHeight();
             Gestures.OnTap += HandleScoopTap;
 
         } else if(HitMiddleStack()) {
