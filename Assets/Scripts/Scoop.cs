@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Lerp))]
 public class Scoop : MonoBehaviour
@@ -17,6 +18,10 @@ public class Scoop : MonoBehaviour
     public Grid grid;
     
     public RenderQuad renderQuad;
+
+    public static event Action<int> ScoopTapped = delegate {};
+
+
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
         verticalLerp.ReachedPoint += CheckCollisions;
@@ -57,10 +62,10 @@ public class Scoop : MonoBehaviour
             cone.AddScoop(this);
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
-            Debug.Log("Landed on top of stack");
-            horizontalLerp.speed -= cone.StackHeight();
+            // horizontalLerp.speed -= cone.StackHeight();
+            Gestures.OnTap += HandleScoopTap;
+
         } else if(HitMiddleStack()) {
-            Debug.Log("Hit Middle Stack");
             this.Destroy();  
         } else if(HitFloor()) {
             this.Destroy();
@@ -84,6 +89,20 @@ public class Scoop : MonoBehaviour
             currentIndex = nextIndex;
         }
     }
+
+    public void HandleScoopTap(Vector3 touchPosition) {
+      if(renderQuad.Contains(touchPosition)) {
+            ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
+        }
+    }
+
+    public void RemoveInputHandlers() {
+        Gestures.OnSwipe -= HandleSwipe;
+        Gestures.SwipeEnded -= EndSwipe; 
+        Gestures.OnTap -= HandleScoopTap;
+
+    }
+
     private void EndSwipe() {
         handlingSwipe = false;
     }
@@ -91,15 +110,25 @@ public class Scoop : MonoBehaviour
     public void Destroy() {
         Destroy(this.gameObject);
     }
-    
+
     private void OnDestroy() {
-        Gestures.OnSwipe -= HandleSwipe;
-        Gestures.SwipeEnded -= EndSwipe;
+        RemoveInputHandlers();
+
     }
 
     public void SetSpeed(float speed) {
         verticalLerp.speed = speed;
     }
+    
+    public void MoveToIndex(Vector2Int index) {
+        Debug.Log("Current index: " + currentIndex);
+        Debug.Log("Next index: " + index);
+        
+        if(verticalLerp.DoLerp(grid.GetPosition(currentIndex), grid.GetPosition(index))) {
+            currentIndex = index;
+        };
+    }
+
 
     private void Fall() {
         Vector2Int nextIndex = grid.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
