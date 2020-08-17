@@ -7,7 +7,6 @@ public class StackableScoop
     Scoop scoop;
     Stack<StackableScoop> stack;
     Color flavor;
-
     public int ConsecutiveFlavorScoops;
 
     public StackableScoop(Scoop scoop, Stack<StackableScoop> stack) {
@@ -38,7 +37,9 @@ public class StackableScoop
         scoop.RemoveInputHandlers();
     }
 
-    public void MeltScoop() {
-        this.scoop.Destroy();
+    public void MeltScoop(AudioSource source, AudioEvent meltEvent) {
+        scoop.MeltScoop(source, meltEvent);
     }
+    
+
 }

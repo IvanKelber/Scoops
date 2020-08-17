@@ -15,12 +15,20 @@ public class Lerp : MonoBehaviour
     private Vector3 currentPosition;
     private Vector3 nextPosition;
     
+    private float moveDelay;
+    private float startMoveTime;
+
     public event Action ReachedPoint = delegate {};
 
     private void Update() {
         Vector3 velocity = CalculateMovement();
         transform.Translate(velocity);
     }
+
+    public void SetMoveDelay(float delay) {
+        moveDelay = delay;
+    }
+    
     public bool DoLerp(Vector3 currentPosition, Vector3 nextPosition) {
         if(lerping) {
             return false;
@@ -29,6 +37,7 @@ public class Lerp : MonoBehaviour
         this.nextPosition = nextPosition;
         if(currentPosition != nextPosition) {
             lerping = true;
+            startMoveTime = Time.time + moveDelay;
             return true;
         }
         return false;
@@ -36,7 +45,7 @@ public class Lerp : MonoBehaviour
 
     private Vector3 CalculateMovement() {
 
-        if(!lerping) {
+        if(!lerping || Time.time < startMoveTime) {
             return Vector3.zero;
         }
 

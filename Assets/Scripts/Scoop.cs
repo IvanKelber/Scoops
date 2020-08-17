@@ -23,6 +23,7 @@ public class Scoop : MonoBehaviour
 
     public static event Action<int> ScoopTapped = delegate {};
 
+    private float scoopMeltDelay = .1f;
 
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
@@ -35,7 +36,6 @@ public class Scoop : MonoBehaviour
         this.currentIndex = currentIndex;
         this.cone = cone;
         horizontalLerp = gameObject.AddComponent<Lerp>();
-        horizontalLerp.speed = cone.GetHorizontalLerpSpeed();
 
         renderQuad = GetComponent<RenderQuad>();
         renderQuad.grid = grid;
@@ -80,12 +80,15 @@ public class Scoop : MonoBehaviour
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = cone.GetHorizontalLerpSpeed() - (.1f * cone.StackHeight());
+            verticalLerp.speed = 10;
+            // horizontalLerp.SetMoveDelay(0);
+
             Gestures.OnTap += HandleScoopTap;
 
         } else if(HitMiddleStack()) {
-            this.Destroy();  
+            Destroy(this.gameObject);  
         } else if(HitFloor()) {
-            this.Destroy();
+            Destroy(this.gameObject);
         } else {
             if(currentIndex.y <= grid.numberOfRows) {
                 // Destroy scoop indicator
@@ -131,9 +134,16 @@ public class Scoop : MonoBehaviour
         handlingSwipe = false;
     }
 
-    public void Destroy() {
+    public void MeltScoop(AudioSource audioSource, AudioEvent meltEvent) {
+        StartCoroutine(Melt(audioSource, meltEvent));
+    }
+
+    IEnumerator Melt(AudioSource audioSource, AudioEvent meltEvent) {
+        meltEvent.Play(audioSource);
+        yield return new WaitForSeconds(scoopMeltDelay);
         Destroy(this.gameObject);
     }
+
 
     private void OnDestroy() {
         RemoveInputHandlers();

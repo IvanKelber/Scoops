@@ -17,12 +17,22 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private RenderQuad renderQuad;
 
+    [SerializeField]
+    private AudioEvent popScoopAudio;
+
+    [SerializeField]
+    private AudioEvent meltScoopAudio;
+
+
+    private AudioSource audioSource;
+
     private Stack<StackableScoop> scoopStack = new Stack<StackableScoop>();
    
 
     private void Start()
     {
         horizontalLerp = GetComponent<Lerp>();
+        audioSource = GetComponent<AudioSource>();
         currentIndex = new Vector2Int(1, 0); // Start in middle lane
 
         renderQuad = GetComponent<RenderQuad>();
@@ -96,7 +106,7 @@ public class Cone : MonoBehaviour
         Debug.Log("Handling match of " + matchingScoops);
         for (int i = 0; i < matchingScoops; i++)
         {
-            scoopStack.Pop().MeltScoop();
+            scoopStack.Pop().MeltScoop(audioSource, meltScoopAudio);
         }
     }
 
@@ -107,6 +117,7 @@ public class Cone : MonoBehaviour
     private IEnumerator PopScoops(int index, float delay) {
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
+            popScoopAudio.Play(audioSource);
             int popHeight = popCount + i + 1;
             StackableScoop scoop = scoopStack.Pop();
             scoop.RemoveInputHandlers();
@@ -134,7 +145,7 @@ public class Cone : MonoBehaviour
     {
         for (int i = 0; i < scoopStack.Count; i++)
         {
-            scoopStack.Pop().MeltScoop();
+            scoopStack.Pop().MeltScoop(audioSource, meltScoopAudio);
         }
     }
 
