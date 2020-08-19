@@ -13,7 +13,7 @@ public class ScoopIndicator : MonoBehaviour
     }
 
     private void Update() {
-        renderer.sharedMaterial.color = incomingFlavor;
+        renderer.material.SetColor("_MainColor", incomingFlavor);
         transform.position = staticPosition;
     }
 

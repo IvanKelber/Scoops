@@ -24,7 +24,7 @@ public class RenderQuad : MonoBehaviour
     public void Render(Vector3 position)
     {
         meshRenderer.sharedMaterial = material;
-        meshRenderer.material.color = color;
+        meshRenderer.material.SetColor("_MainColor", color);
         meshFilter.mesh = new Mesh();
 
         Mesh mesh = GetComponent<MeshFilter>().mesh;
@@ -82,8 +82,5 @@ public class RenderQuad : MonoBehaviour
         return tris;
     }
 
-    // public void MoveQuad(int lane) {
-        
-    // }
 
 }

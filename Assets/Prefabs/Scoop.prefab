@@ -64,7 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0.8679245, g: 0.58462083, b: 0.82106596, a: 1}
   grid: {fileID: 0}
-  material: {fileID: 2100000, guid: 138ea698d0e1c524caca46097e525eb3, type: 2}
+  material: {fileID: 2100000, guid: 7da9b856e8d58a24f83b1906ce42ecd8, type: 2}
 --- !u!114 &8019099914496727671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,6 +86,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7067049061320989232}
     m_Modifications:
+    - target: {fileID: 6369201228997614668, guid: 74c7b40368c8ce443910ad28de4ca72a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7da9b856e8d58a24f83b1906ce42ecd8, type: 2}
     - target: {fileID: 6369201228997614670, guid: 74c7b40368c8ce443910ad28de4ca72a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1407
@@ -134,7 +138,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScoopIndicator
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6369201228997614669, guid: 74c7b40368c8ce443910ad28de4ca72a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 74c7b40368c8ce443910ad28de4ca72a, type: 3}
 --- !u!4 &6222532989688005487 stripped
 Transform:
