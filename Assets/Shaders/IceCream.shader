@@ -52,8 +52,10 @@
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-
-                return col * _MainColor;
+                fixed4 iceCreamTex = tex2D(_IceCreamTex, i.uv);
+                float gray = dot(iceCreamTex.rgb, fixed3(.3, .59, .11));
+                fixed4 grayCol = fixed4(gray, gray, gray, iceCreamTex.a);
+                return grayCol * _MainColor;
             }
             ENDCG
         }
