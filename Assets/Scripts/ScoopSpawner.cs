@@ -2,70 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScoopSpawner : MonoBehaviour
+public class ScoopSpawner 
 {
 
-    public Scoop scoopPrefab;
-    public Grid grid;
-    public Cone cone;
-    public float startingSpeed;
-    private float speed;
+    private BoardManager board;
+    private Flavor[] flavors;
 
-    public Color[] flavors;
-    // Update is called once per frame
+    private float scoopSpeed;
 
-    public bool spawning = false;
-
-    public float timeBetweenSpawn;
-    private float timeUntilNextSpawn;
-
-
-    private void Start() {
-        speed = startingSpeed;
-        Gestures.OnSwipe += ControlSpawner;
+    public ScoopSpawner(BoardManager board, Flavor[] flavors, float scoopSpeed) {
+        this.board = board;
+        this.flavors = flavors;
+        this.scoopSpeed = scoopSpeed;
     }
 
-    private void ControlSpawner(SwipeInfo swipe) {
-        switch(swipe.Direction) {
-            case SwipeInfo.SwipeDirection.UP:
-                spawning = false;
-                break;
-            case SwipeInfo.SwipeDirection.DOWN:
-                if(spawning) {
-                    speed = startingSpeed + 1;
-                } else {
-                    speed = startingSpeed;
-                }
-                spawning = true;
-                break;
-        }
-    }
-
-    private void StopSpawning() {
-        spawning = false;
-    }
-
-    void Update()
-    {
-        if(spawning) {
-            if (timeUntilNextSpawn <= 0) {
-                timeUntilNextSpawn = timeBetweenSpawn;
-                ChooseScoop();
-            }
-            timeUntilNextSpawn -= Time.deltaTime;
-        }
-    }
-
-    private Scoop ChooseScoop() {
-        Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
+    public Scoop SpawnScoop(Scoop scoop) {
         scoop.SetFlavor(RandomFlavor());
-        scoop.SetSpeed(speed);
-        Vector2Int startIndex = new Vector2Int(Random.Range(0,grid.numberOfLanes), grid.TotalRows - 1);
-        scoop.Initialize(grid, startIndex, cone);
+        scoop.SetSpeed(scoopSpeed);
+        Vector2Int startIndex = new Vector2Int(board.RandomLane(), board.grid.TotalRows - 1);
+        scoop.Initialize(board, startIndex);
         return scoop;
     }
 
     private Color RandomFlavor() {
-        return flavors[Random.Range(0,flavors.Length)];
+        return flavors[Random.Range(0,flavors.Length)].color;
     }
 }

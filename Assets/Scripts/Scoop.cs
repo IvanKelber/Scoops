@@ -15,7 +15,7 @@ public class Scoop : MonoBehaviour
 
     public Color flavor;
 
-    public Grid grid;
+    private Grid grid;
     
     public RenderQuad renderQuad;
 
@@ -31,10 +31,10 @@ public class Scoop : MonoBehaviour
 
     }
 
-    public void Initialize(Grid grid, Vector2Int currentIndex, Cone cone) {
-        this.grid = grid;
+    public void Initialize(BoardManager board, Vector2Int currentIndex) {
+        this.grid = board.grid;
         this.currentIndex = currentIndex;
-        this.cone = cone;
+        this.cone = board.cone;
         horizontalLerp = gameObject.AddComponent<Lerp>();
 
         renderQuad = GetComponent<RenderQuad>();
