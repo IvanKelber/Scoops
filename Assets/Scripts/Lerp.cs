@@ -10,6 +10,9 @@ public class Lerp : MonoBehaviour
     public float speed;
     public LerpDescriptor descriptor;
 
+    [Range(0,10)]
+    public float easeAmount;
+
     private float percentageBetweenPoints = 0;
     private bool lerping = false;
     private Vector3 currentPosition;
@@ -69,7 +72,8 @@ public class Lerp : MonoBehaviour
     }
 
     private float Ease(float x) {
-        return x;
+        float a = easeAmount + 1;
+        return x == 0?x: Mathf.Pow(x*x,a)/x;
     }
 
     public enum LerpDescriptor

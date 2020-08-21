@@ -56,17 +56,25 @@ public class Scoop : MonoBehaviour
     }
 
     private bool HitStack() {
-        if(currentIndex.x == cone.Lane()) {
-            if(currentIndex.y == cone.StackHeight()) {
-                return true;
-            }
-            if(currentIndex.y == cone.StackHeight() - 1) {
-                currentIndex = new Vector2Int(currentIndex.x, currentIndex.y + 1);
-                transform.position = grid.GetPosition(currentIndex);
-                return true;
-            }
+        if(cone.ScoopValid(currentIndex)) {
+            currentIndex.y = cone.StackHeight();
+            transform.position = grid.GetPosition(currentIndex);
+            Debug.Log("Newest Scoop Hit Stack.  position: " + transform.position);
+            return true;
         }
         return false;
+        
+        // if(currentIndex.x == cone.Lane()) {
+        //     if(currentIndex.y == cone.StackHeight()) {
+        //         return true;
+        //     }
+        //     if(currentIndex.y == cone.StackHeight() - 1) {
+        //         currentIndex = new Vector2Int(currentIndex.x, currentIndex.y + 1);
+        //         transform.position = grid.GetPosition(currentIndex);
+        //         return true;
+        //     }
+        // }
+        // return false;
     }
 
     private bool HitMiddleStack() {
@@ -79,14 +87,11 @@ public class Scoop : MonoBehaviour
             cone.AddScoop(this);
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
-            horizontalLerp.speed = cone.GetHorizontalLerpSpeed() - (.1f * cone.StackHeight());
+            horizontalLerp.speed = cone.GetHorizontalLerpSpeed();
             verticalLerp.speed = 10;
-            // horizontalLerp.SetMoveDelay(0);
 
             Gestures.OnTap += HandleScoopTap;
 
-        } else if(HitMiddleStack()) {
-            Destroy(this.gameObject);  
         } else if(HitFloor()) {
             Destroy(this.gameObject);
         } else {

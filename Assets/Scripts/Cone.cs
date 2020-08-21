@@ -8,6 +8,7 @@ public class Cone : MonoBehaviour
     private bool handlingSwipe = false;
 
     private Vector2Int currentIndex;
+    private Vector2Int lastIndex;
 
     private Lerp horizontalLerp;
 
@@ -22,6 +23,11 @@ public class Cone : MonoBehaviour
 
     [SerializeField]
     private AudioEvent meltScoopAudio;
+
+    [SerializeField]
+    private AudioEvent gameOverJingle;
+    [SerializeField]
+    private AudioEvent losePopScoopAudio;
 
 
     private AudioSource audioSource;
@@ -48,6 +54,12 @@ public class Cone : MonoBehaviour
         Scoop.ScoopTapped += HandleScoopTap;
     }
 
+    private void Update() {
+        if(!handlingSwipe) {
+            lastIndex = currentIndex;
+        }
+    }
+
     public float GetHorizontalLerpSpeed()
     {
         return horizontalLerp.speed;
@@ -67,6 +79,7 @@ public class Cone : MonoBehaviour
         Vector3 nextPosition = grid.GetPosition(nextIndex);
         if (horizontalLerp.DoLerp(currentPosition, nextPosition))
         {
+            lastIndex = currentIndex;
             currentIndex = nextIndex;
         }
     }
@@ -85,19 +98,28 @@ public class Cone : MonoBehaviour
         scoop.CalculateConsecutiveFlavors(scoopStack);
         scoopStack.Push(scoop);
 
-        if (StackHeight() == grid.numberOfRows)
+        if(CheckMatch()) {
+            HandleMatch();
+        }
+
+        else if (StackHeight() == grid.numberOfRows)
         {
             Debug.Log("GAME OVER");
-            // Emit game over event
-        }
-        else
-        {
-            if (CheckMatch())
-            {
-                HandleMatch();
-            }
+            StartCoroutine(GameOver());
         }
         return StackHeight();
+    }
+
+    IEnumerator GameOver() {
+        gameOverJingle.Play(audioSource);
+        yield return gameOverJingle.PlayAndWait(audioSource);
+        int pops = StackHeight() - 1;
+        for(int i = 0; i < pops; i++) {
+            scoopStack.Pop().MeltScoop(audioSource, losePopScoopAudio);
+            yield return new WaitForSeconds(.1f);
+        }
+        yield return CrumbleCone();
+        SceneState.LoadScene(1); // Reload game scene for debug purposes
     }
 
     private void HandleMatch()
@@ -108,6 +130,18 @@ public class Cone : MonoBehaviour
         {
             scoopStack.Pop().MeltScoop(audioSource, meltScoopAudio);
         }
+    }
+
+    private WaitForSeconds CrumbleCone() {
+        // Add gesture listeners
+        Gestures.OnSwipe -= HandleSwipe;
+        Gestures.SwipeEnded -= EndSwipe;
+        Gestures.ThreeTap -= ClearStack;
+
+        // Other event listeners
+        Scoop.ScoopTapped -= HandleScoopTap;    
+
+        return new WaitForSeconds(1);    
     }
 
     private void HandleScoopTap(int index) {
@@ -141,6 +175,13 @@ public class Cone : MonoBehaviour
         return currentIndex.x;
     }
 
+    public bool ScoopValid(Vector2Int scoop) {
+        if(scoop.x == currentIndex.x || scoop.x == lastIndex.x) {
+            return scoop.y == StackHeight() || scoop.y == StackHeight() - 2;
+        }
+        return false;
+    }
+
     public void ClearStack()
     {
         for (int i = 0; i < scoopStack.Count; i++)
@@ -153,7 +194,6 @@ public class Cone : MonoBehaviour
         Queue<StackableScoop> scoopQueue = new Queue<StackableScoop>();
         for(int i = 0; i < scoopStack.Count - index; i++) {
             StackableScoop stackableScoop = scoopStack.Pop();
-            // stackableScoop.scoop.AnimateFlip();
             scoopQueue.Enqueue(stackableScoop);
         }
         Debug.Log("ScoopQueue Count: " + scoopQueue.Count);

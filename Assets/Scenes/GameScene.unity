@@ -162,7 +162,7 @@ MonoBehaviour:
   - {r: 0.8679245, g: 0.8220719, b: 0.8220719, a: 1}
   - {r: 0.33962262, g: 0.24306256, b: 0.19672479, a: 1}
   spawning: 1
-  timeBetweenSpawn: 3
+  timeBetweenSpawn: 1
 --- !u!4 &272042614
 Transform:
   m_ObjectHideFlags: 0
@@ -306,6 +306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 13
   descriptor: 0
+  easeAmount: 0
 --- !u!114 &786270581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,7 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0.6698113, g: 0.5417886, b: 0.3121573, a: 1}
   grid: {fileID: 624344844}
-  material: {fileID: 2100000, guid: 138ea698d0e1c524caca46097e525eb3, type: 2}
+  material: {fileID: 2100000, guid: f66297fdcaf400247960b570460339d8, type: 2}
 --- !u!82 &786270582
 AudioSource:
   m_ObjectHideFlags: 0
