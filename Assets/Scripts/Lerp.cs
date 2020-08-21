@@ -23,11 +23,6 @@ public class Lerp : MonoBehaviour
 
     public event Action ReachedPoint = delegate {};
 
-    private void Update() {
-        Vector3 velocity = CalculateMovement();
-        transform.Translate(velocity);
-    }
-
     public void SetMoveDelay(float delay) {
         moveDelay = delay;
     }
@@ -46,7 +41,7 @@ public class Lerp : MonoBehaviour
         return false;
     }
 
-    private Vector3 CalculateMovement() {
+    public Vector3 CalculateMovement() {
 
         if(!lerping || Time.time < startMoveTime) {
             return Vector3.zero;

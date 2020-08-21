@@ -60,6 +60,8 @@ public class Cone : MonoBehaviour
         if(!handlingSwipe) {
             lastIndex = currentIndex;
         }
+        Vector3 velocity = horizontalLerp.CalculateMovement();
+        transform.Translate(velocity);
     }
 
     public float GetHorizontalLerpSpeed()

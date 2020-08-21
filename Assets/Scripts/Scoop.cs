@@ -31,6 +31,11 @@ public class Scoop : MonoBehaviour
 
     }
 
+    private void Update() {
+        Vector3 velocity = horizontalLerp.CalculateMovement() + verticalLerp.CalculateMovement();
+        transform.Translate(velocity);
+    }
+
     public void Initialize(BoardManager board, Vector2Int currentIndex) {
         this.board = board;
         this.currentIndex = currentIndex;
