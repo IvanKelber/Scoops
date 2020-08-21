@@ -8,7 +8,8 @@ public class ScoopSpawner : MonoBehaviour
     public Scoop scoopPrefab;
     public Grid grid;
     public Cone cone;
-    public float speed;
+    public float startingSpeed;
+    private float speed;
 
     public Color[] flavors;
     // Update is called once per frame
@@ -18,7 +19,9 @@ public class ScoopSpawner : MonoBehaviour
     public float timeBetweenSpawn;
     private float timeUntilNextSpawn;
 
+
     private void Start() {
+        speed = startingSpeed;
         Gestures.OnSwipe += ControlSpawner;
     }
 
@@ -28,9 +31,18 @@ public class ScoopSpawner : MonoBehaviour
                 spawning = false;
                 break;
             case SwipeInfo.SwipeDirection.DOWN:
+                if(spawning) {
+                    speed = startingSpeed + 1;
+                } else {
+                    speed = startingSpeed;
+                }
                 spawning = true;
                 break;
         }
+    }
+
+    private void StopSpawning() {
+        spawning = false;
     }
 
     void Update()
@@ -44,12 +56,13 @@ public class ScoopSpawner : MonoBehaviour
         }
     }
 
-    private void ChooseScoop() {
+    private Scoop ChooseScoop() {
         Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
         scoop.SetFlavor(RandomFlavor());
         scoop.SetSpeed(speed);
         Vector2Int startIndex = new Vector2Int(Random.Range(0,grid.numberOfLanes), grid.TotalRows - 1);
         scoop.Initialize(grid, startIndex, cone);
+        return scoop;
     }
 
     private Color RandomFlavor() {

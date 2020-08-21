@@ -155,14 +155,14 @@ MonoBehaviour:
   scoopPrefab: {fileID: 7067049061320989233, guid: 78adefec70d902c4a9053d409a3fb613, type: 3}
   grid: {fileID: 624344844}
   cone: {fileID: 786270578}
-  speed: 5
+  startingSpeed: 5
   flavors:
   - {r: 0.8962264, g: 0.51067996, b: 0.8734253, a: 1}
   - {r: 0.42077252, g: 0.7264151, b: 0.4428607, a: 1}
   - {r: 0.8679245, g: 0.8220719, b: 0.8220719, a: 1}
   - {r: 0.33962262, g: 0.24306256, b: 0.19672479, a: 1}
   spawning: 1
-  timeBetweenSpawn: 1
+  timeBetweenSpawn: 3
 --- !u!4 &272042614
 Transform:
   m_ObjectHideFlags: 0
@@ -278,6 +278,8 @@ MonoBehaviour:
   renderQuad: {fileID: 0}
   popScoopAudio: {fileID: 11400000, guid: 77ebba404d3fc62499a07844c604d329, type: 2}
   meltScoopAudio: {fileID: 11400000, guid: 89d7a78936050744c961e3e0299c4463, type: 2}
+  gameOverJingle: {fileID: 11400000, guid: 277878f750b2349abb7f204bcf0db180, type: 2}
+  losePopScoopAudio: {fileID: 11400000, guid: c7adf05af16f7484cb342e6295b19696, type: 2}
 --- !u!4 &786270579
 Transform:
   m_ObjectHideFlags: 0

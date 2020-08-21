@@ -59,22 +59,10 @@ public class Scoop : MonoBehaviour
         if(cone.ScoopValid(currentIndex)) {
             currentIndex.y = cone.StackHeight();
             transform.position = grid.GetPosition(currentIndex);
-            Debug.Log("Newest Scoop Hit Stack.  position: " + transform.position);
             return true;
         }
         return false;
         
-        // if(currentIndex.x == cone.Lane()) {
-        //     if(currentIndex.y == cone.StackHeight()) {
-        //         return true;
-        //     }
-        //     if(currentIndex.y == cone.StackHeight() - 1) {
-        //         currentIndex = new Vector2Int(currentIndex.x, currentIndex.y + 1);
-        //         transform.position = grid.GetPosition(currentIndex);
-        //         return true;
-        //     }
-        // }
-        // return false;
     }
 
     private bool HitMiddleStack() {
@@ -89,9 +77,7 @@ public class Scoop : MonoBehaviour
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = cone.GetHorizontalLerpSpeed();
             verticalLerp.speed = 10;
-
             Gestures.OnTap += HandleScoopTap;
-
         } else if(HitFloor()) {
             Destroy(this.gameObject);
         } else {
@@ -141,6 +127,10 @@ public class Scoop : MonoBehaviour
 
     public void MeltScoop(AudioSource audioSource, AudioEvent meltEvent) {
         StartCoroutine(Melt(audioSource, meltEvent));
+    }
+
+    public void MeltScoop() {
+        Destroy(this.gameObject);
     }
 
     IEnumerator Melt(AudioSource audioSource, AudioEvent meltEvent) {

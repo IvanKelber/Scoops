@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Lerp))]
 public class Cone : MonoBehaviour
@@ -34,6 +35,7 @@ public class Cone : MonoBehaviour
 
     private Stack<StackableScoop> scoopStack = new Stack<StackableScoop>();
    
+    public static event Action OnGameEnded = delegate {};
 
     private void Start()
     {
@@ -111,7 +113,7 @@ public class Cone : MonoBehaviour
     }
 
     IEnumerator GameOver() {
-        gameOverJingle.Play(audioSource);
+        OnGameEnded();
         yield return gameOverJingle.PlayAndWait(audioSource);
         int pops = StackHeight() - 1;
         for(int i = 0; i < pops; i++) {
@@ -119,7 +121,8 @@ public class Cone : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
         yield return CrumbleCone();
-        SceneState.LoadScene(1); // Reload game scene for debug purposes
+
+        SceneState.LoadScene(0); // Reload game scene for debug purposes
     }
 
     private void HandleMatch()
@@ -133,14 +136,13 @@ public class Cone : MonoBehaviour
     }
 
     private WaitForSeconds CrumbleCone() {
-        // Add gesture listeners
+        // remove gesture listeners
         Gestures.OnSwipe -= HandleSwipe;
         Gestures.SwipeEnded -= EndSwipe;
         Gestures.ThreeTap -= ClearStack;
 
         // Other event listeners
         Scoop.ScoopTapped -= HandleScoopTap;    
-
         return new WaitForSeconds(1);    
     }
 
