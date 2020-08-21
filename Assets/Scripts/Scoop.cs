@@ -15,7 +15,7 @@ public class Scoop : MonoBehaviour
 
     public Color flavor;
 
-    private Grid grid;
+    private BoardManager board;
     
     public RenderQuad renderQuad;
 
@@ -32,21 +32,21 @@ public class Scoop : MonoBehaviour
     }
 
     public void Initialize(BoardManager board, Vector2Int currentIndex) {
-        this.grid = board.grid;
+        this.board = board;
         this.currentIndex = currentIndex;
         this.cone = board.cone;
         horizontalLerp = gameObject.AddComponent<Lerp>();
 
         renderQuad = GetComponent<RenderQuad>();
-        renderQuad.grid = grid;
+        renderQuad.board = board;
         renderQuad.SetColor(this.flavor);
         renderQuad.Render(transform.position);
 
-        transform.position = grid.GetPosition(currentIndex);
+        transform.position = board.GetPosition(currentIndex);
 
         scoopIndicator = (ScoopIndicator) GetComponentsInChildren<ScoopIndicator>()[0];
         scoopIndicator.SetIncomingFlavor(flavor);
-        scoopIndicator.SetPosition(grid.GetPosition(new Vector2Int(currentIndex.x, grid.numberOfRows - 1)));
+        scoopIndicator.SetPosition(board.GetPosition(new Vector2Int(currentIndex.x, board.numberOfRows - 1)));
 
         CheckCollisions();
     }
@@ -58,7 +58,7 @@ public class Scoop : MonoBehaviour
     private bool HitStack() {
         if(cone.ScoopValid(currentIndex)) {
             currentIndex.y = cone.StackHeight();
-            transform.position = grid.GetPosition(currentIndex);
+            transform.position = board.GetPosition(currentIndex);
             return true;
         }
         return false;
@@ -81,11 +81,11 @@ public class Scoop : MonoBehaviour
         } else if(HitFloor()) {
             Destroy(this.gameObject);
         } else {
-            if(currentIndex.y <= grid.numberOfRows) {
+            if(currentIndex.y <= board.numberOfRows) {
                 // Destroy scoop indicator
                 scoopIndicator.gameObject.SetActive(false);
             } else {
-                scoopIndicator.SetPosition(grid.GetPosition(new Vector2Int(currentIndex.x, grid.numberOfRows - 1)));
+                scoopIndicator.SetPosition(board.GetPosition(new Vector2Int(currentIndex.x, board.numberOfRows - 1)));
                 scoopIndicator.gameObject.SetActive(true);
             }
             Fall();
@@ -100,9 +100,9 @@ public class Scoop : MonoBehaviour
         }
 
         handlingSwipe = true;
-        Vector3 currentPosition = grid.GetPosition(currentIndex);
-        Vector2Int nextIndex = grid.GetNextIndex(currentIndex, swipe.Direction);
-        Vector3 nextPosition = grid.GetPosition(nextIndex);
+        Vector3 currentPosition = board.GetPosition(currentIndex);
+        Vector2Int nextIndex = board.GetNextIndex(currentIndex, swipe.Direction);
+        Vector3 nextPosition = board.GetPosition(nextIndex);
         if(horizontalLerp.DoLerp(currentPosition, nextPosition)) {
             currentIndex = nextIndex;
         }
@@ -153,19 +153,19 @@ public class Scoop : MonoBehaviour
         Debug.Log("Current index: " + currentIndex);
         Debug.Log("Next index: " + index);
         
-        if(verticalLerp.DoLerp(grid.GetPosition(currentIndex), grid.GetPosition(index))) {
+        if(verticalLerp.DoLerp(board.GetPosition(currentIndex), board.GetPosition(index))) {
             currentIndex = index;
         };
     }
 
 
     private void Fall() {
-        Vector2Int nextIndex = grid.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
+        Vector2Int nextIndex = board.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
         if(verticalLerp == null) {
             Debug.Log("Lerp is null");
             return;
         } 
-        if(verticalLerp.DoLerp(grid.GetPosition(currentIndex), grid.GetPosition(nextIndex))) {
+        if(verticalLerp.DoLerp(board.GetPosition(currentIndex), board.GetPosition(nextIndex))) {
             currentIndex = nextIndex;
         }
     }

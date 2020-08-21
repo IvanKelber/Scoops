@@ -19,7 +19,7 @@ public class ScoopSpawner
     public Scoop SpawnScoop(Scoop scoop) {
         scoop.SetFlavor(RandomFlavor());
         scoop.SetSpeed(scoopSpeed);
-        Vector2Int startIndex = new Vector2Int(board.RandomLane(), board.grid.TotalRows - 1);
+        Vector2Int startIndex = new Vector2Int(board.RandomLane(), board.TotalRows - 1);
         scoop.Initialize(board, startIndex);
         return scoop;
     }

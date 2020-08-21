@@ -22,7 +22,6 @@ public class ScoopManager : MonoBehaviour
 
     public Scoop scoopPrefab;
 
-
     private void ControlSpawner(SwipeInfo swipe) {
         switch(swipe.Direction) {
             case SwipeInfo.SwipeDirection.UP:
@@ -50,7 +49,5 @@ public class ScoopManager : MonoBehaviour
             timeUntilNextSpawn -= Time.deltaTime;
         }    
     }
-
-
 
 }

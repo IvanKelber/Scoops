@@ -14,7 +14,7 @@ public class Cone : MonoBehaviour
     private Lerp horizontalLerp;
 
     [SerializeField]
-    private Grid grid;
+    private BoardManager board;
 
     [SerializeField]
     private RenderQuad renderQuad;
@@ -45,7 +45,7 @@ public class Cone : MonoBehaviour
 
         renderQuad = GetComponent<RenderQuad>();
         renderQuad.Render(transform.position);
-        transform.position = grid.GetPosition(currentIndex);
+        transform.position = board.GetPosition(currentIndex);
 
         // Add gesture listeners
         Gestures.OnSwipe += HandleSwipe;
@@ -76,9 +76,9 @@ public class Cone : MonoBehaviour
             return;
         }
         handlingSwipe = true;
-        Vector3 currentPosition = grid.GetPosition(currentIndex);
-        Vector2Int nextIndex = grid.GetNextIndex(currentIndex, swipe.Direction);
-        Vector3 nextPosition = grid.GetPosition(nextIndex);
+        Vector3 currentPosition = board.GetPosition(currentIndex);
+        Vector2Int nextIndex = board.GetNextIndex(currentIndex, swipe.Direction);
+        Vector3 nextPosition = board.GetPosition(nextIndex);
         if (horizontalLerp.DoLerp(currentPosition, nextPosition))
         {
             lastIndex = currentIndex;
@@ -104,7 +104,7 @@ public class Cone : MonoBehaviour
             HandleMatch();
         }
 
-        else if (StackHeight() == grid.numberOfRows)
+        else if (StackHeight() == board.numberOfRows)
         {
             Debug.Log("GAME OVER");
             StartCoroutine(GameOver());

@@ -9,7 +9,7 @@ public class RenderQuad : MonoBehaviour
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
     
-    public Grid grid;
+    public BoardManager board;
     public Material material;
     private void Awake()
     {
@@ -58,8 +58,8 @@ public class RenderQuad : MonoBehaviour
 
     private Vector3[] GetVertices(Vector3 position)
     {
-        float laneWidth = grid.laneWidth;
-        float rowHeight = grid.rowHeight;
+        float laneWidth = board.laneWidth;
+        float rowHeight = board.rowHeight;
         Vector3[] vertices = new Vector3[4]
         {
                 transform.InverseTransformPoint(new Vector3(position.x - laneWidth/2, position.y - rowHeight/2, 0)),
