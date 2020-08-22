@@ -225,8 +225,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectBeforeRelase: 1
-  minSwipeDistance: 15
-  tapThreshold: 5
+  minSwipeDistance: 20
+  tapThreshold: 10
   camera: {fileID: 1604922325}
 --- !u!114 &624344847
 MonoBehaviour:
@@ -245,6 +245,7 @@ MonoBehaviour:
   cam: {fileID: 1604922325}
   numberOfOffscreenRows: 7
   cone: {fileID: 786270578}
+  scoopManager: {fileID: 272042613}
   laneWidth: 0
   rowHeight: 0
 --- !u!1 &786270577

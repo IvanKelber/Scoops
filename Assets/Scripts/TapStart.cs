@@ -11,7 +11,6 @@ public class TapStart : MonoBehaviour
     }
 
     private void StartGame(Vector3 position) {
-        Debug.Log(position);
         if(position.y <= yThreshold) {
             Gestures.OnTap -= StartGame;
             SceneState.LoadScene(1);

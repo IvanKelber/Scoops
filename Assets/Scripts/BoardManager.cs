@@ -19,6 +19,8 @@ public class BoardManager : MonoBehaviour
 
     public Cone cone;
 
+    public ScoopManager scoopManager;
+
     public float laneWidth;
     public float rowHeight;
     private void Awake()
@@ -33,7 +35,17 @@ public class BoardManager : MonoBehaviour
         rowHeight = screenHeight/numberOfRows;
         Bounds cameraBounds = new Bounds(cam.transform.position, new Vector3(screenWidth, screenHeight, 0));
         grid = new Grid(TotalRows, numberOfRows, numberOfLanes, rowHeight, laneWidth, cameraBounds).grid;
+
+        if(scoopManager != null) {
+            scoopManager.board = this;
+        } else {
+            Debug.LogError("ScoopManager is null for BoardManager");
+        }
     }
+
+    // public void SetFlyingStack(List<Scoop> scoops) {
+    //     scoopManager.FlyingStack = scoops;
+    // }
 
     public int RandomLane() {
         return Random.Range(0, numberOfLanes);

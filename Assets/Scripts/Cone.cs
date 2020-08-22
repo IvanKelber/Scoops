@@ -33,9 +33,10 @@ public class Cone : MonoBehaviour
 
     private AudioSource audioSource;
 
-    private Stack<StackableScoop> scoopStack = new Stack<StackableScoop>();
+    private Stack<Scoop> scoopStack = new Stack<Scoop>();
    
     public static event Action OnGameEnded = delegate {};
+    Dictionary<Color, int> colorMap = new Dictionary<Color, int>();
 
     private void Start()
     {
@@ -88,25 +89,50 @@ public class Cone : MonoBehaviour
         handlingSwipe = false;
     }
 
-    public int AddScoop(Scoop scoop)
-    {
-        return AddScoop(new StackableScoop(scoop, scoopStack));
-    }
-
-    private int AddScoop(StackableScoop scoop) {
-        scoop.CalculateConsecutiveFlavors(scoopStack);
-        scoopStack.Push(scoop);
-
+    public void AddScoop(Scoop scoop) {
+        if(scoop.scoopStack == scoopStack) {
+            // Scoop already added to stack from previous AddFlyingStack
+            return;
+        }
+        if(scoop.FlyingScoops.Count > 0 && scoop == scoop.FlyingScoops[0]) {
+            // Add any scoops that are the same flavor as the current top flavor
+            if(!AddFlyingStack(scoop.FlyingScoops)) {
+                // Must add the original scoop
+                scoop.CalculateConsecutiveFlavors(scoopStack);
+                scoopStack.Push(scoop);
+            }
+        } else {
+            // Add a scoop that is not part of a flying stack
+            scoop.CalculateConsecutiveFlavors(scoopStack);
+            scoopStack.Push(scoop);
+        }
+        
         if(CheckMatch()) {
             HandleMatch();
-        }
-
-        else if (StackHeight() == board.numberOfRows)
+        } else if (StackHeight() == board.numberOfRows)
         {
             Debug.Log("GAME OVER");
             StartCoroutine(GameOver());
         }
-        return StackHeight();
+        // Debug_ScoopList("ScoopStack after merging flying stack: ", scoopStack);
+    }
+
+    private bool AddFlyingStack(List<Scoop> flyingScoops) {
+        // Debug_ScoopList("FlyingScoops: ", flyingScoops);
+        // Debug_ScoopList("ScoopStack: ", scoopStack);
+        int scoopsAdded = 0;
+        if(scoopStack.Count == 0) {
+            return false;
+        }
+
+        Color currentTopFlavor = scoopStack.Peek().flavor;
+
+        while(flyingScoops[scoopsAdded].flavor == currentTopFlavor) {
+            flyingScoops[scoopsAdded].CalculateConsecutiveFlavors(scoopStack);
+            scoopStack.Push(flyingScoops[scoopsAdded]);
+            scoopsAdded++;
+        }
+        return scoopsAdded > 0;
     }
 
     IEnumerator GameOver() {
@@ -148,13 +174,17 @@ public class Cone : MonoBehaviour
     }
     
     private IEnumerator PopScoops(int index, float delay) {
+        List<Scoop> scoops = new List<Scoop>();
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
             popScoopAudio.Play(audioSource);
             int popHeight = popCount + i + 1;
-            StackableScoop scoop = scoopStack.Pop();
+            Scoop scoop = scoopStack.Pop();
             scoop.RemoveInputHandlers();
+            scoop.scoopStack = null;
             scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
+            scoops.Add(scoop);
+            scoop.FlyingScoops = scoops;
             yield return new WaitForSeconds(delay);
         }
     }
@@ -189,14 +219,18 @@ public class Cone : MonoBehaviour
         }
     }
 
-    public Queue<StackableScoop> GetAirboundScoops(int index) {
-        Queue<StackableScoop> scoopQueue = new Queue<StackableScoop>();
-        for(int i = 0; i < scoopStack.Count - index; i++) {
-            StackableScoop stackableScoop = scoopStack.Pop();
-            scoopQueue.Enqueue(stackableScoop);
+    public void Debug_ScoopList(string intro, System.Collections.Generic.IEnumerable<Scoop> list) {
+        string debugstring = "scoop stack: [";
+
+        foreach(Scoop scoop in list) {
+            if(!colorMap.ContainsKey(scoop.flavor))
+                colorMap.Add(scoop.flavor, colorMap.Count);
+            debugstring += "C#" + colorMap[scoop.flavor] + ", ";
         }
-        Debug.Log("ScoopQueue Count: " + scoopQueue.Count);
-        return scoopQueue;
+        debugstring += "]";
+        Debug.Log(intro + debugstring);
+        
+
     }
 
 }

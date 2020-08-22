@@ -24,6 +24,10 @@ public class ScoopSpawner
         return scoop;
     }
 
+    public void SetSpeed(float speed) {
+        scoopSpeed = speed;
+    }
+
     private Color RandomFlavor() {
         return flavors[Random.Range(0,flavors.Length)].color;
     }

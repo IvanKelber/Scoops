@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[System.Serializable]
 [RequireComponent(typeof(Lerp))]
 public class Scoop : MonoBehaviour
 {
@@ -24,6 +25,25 @@ public class Scoop : MonoBehaviour
 
     private float scoopMeltDelay = .1f;
 
+    [HideInInspector]
+    public int ConsecutiveFlavorScoops;
+
+    public Stack<Scoop> scoopStack;
+    public List<Scoop> FlyingScoops;
+
+    //Should be called before scoop is part of stack
+    private int DetermineConsecutiveFlavorScoops() {
+        if(scoopStack.Count == 0 || scoopStack.Peek().flavor != this.flavor) {
+            return 1; // Only one of this flavor consecutively
+        }
+        return scoopStack.Peek().ConsecutiveFlavorScoops + 1;
+    }
+
+    public int CalculateConsecutiveFlavors(Stack<Scoop> stack) {
+        this.scoopStack = stack;
+        this.ConsecutiveFlavorScoops = DetermineConsecutiveFlavorScoops();
+        return ConsecutiveFlavorScoops;
+    }
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
         verticalLerp.ReachedPoint += CheckCollisions;
@@ -151,9 +171,6 @@ public class Scoop : MonoBehaviour
     }
     
     public void MoveToIndex(Vector2Int index) {
-        Debug.Log("Current index: " + currentIndex);
-        Debug.Log("Next index: " + index);
-        
         if(verticalLerp.DoLerp(board.GetPosition(currentIndex), board.GetPosition(index))) {
             currentIndex = index;
         };
@@ -163,7 +180,6 @@ public class Scoop : MonoBehaviour
     private void Fall() {
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
         if(verticalLerp == null) {
-            Debug.Log("Lerp is null");
             return;
         } 
         if(verticalLerp.DoLerp(board.GetPosition(currentIndex), board.GetPosition(nextIndex))) {
