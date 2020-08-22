@@ -9,7 +9,6 @@ public class Scoop : MonoBehaviour
 
     private Lerp verticalLerp;
     private Lerp horizontalLerp;
-    private Cone cone;
     private bool handlingSwipe = false;
     private Vector2Int currentIndex;
 
@@ -39,7 +38,6 @@ public class Scoop : MonoBehaviour
     public void Initialize(BoardManager board, Vector2Int currentIndex) {
         this.board = board;
         this.currentIndex = currentIndex;
-        this.cone = board.cone;
         horizontalLerp = gameObject.AddComponent<Lerp>();
 
         renderQuad = GetComponent<RenderQuad>();
@@ -61,9 +59,7 @@ public class Scoop : MonoBehaviour
     }
 
     private bool HitStack() {
-        if(cone.ScoopValid(currentIndex)) {
-            currentIndex.y = cone.StackHeight();
-            transform.position = board.GetPosition(currentIndex);
+        if(board.HitStack(currentIndex)) {
             return true;
         }
         return false;
@@ -71,16 +67,16 @@ public class Scoop : MonoBehaviour
     }
 
     private bool HitMiddleStack() {
-        return currentIndex.x == cone.Lane() && currentIndex.y < cone.StackHeight() - 1;
+        return currentIndex.x == board.ConeLane() && currentIndex.y < board.ConeStackHeight() - 1;
     }
 
     // Checks collisions when a scoop has reached a new index
     private void CheckCollisions() {
         if(HitStack()) {
-            cone.AddScoop(this);
+            board.AddScoopToCone(this);
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
-            horizontalLerp.speed = cone.GetHorizontalLerpSpeed();
+            horizontalLerp.speed = board.GetHorizontalLerpSpeed();
             verticalLerp.speed = 10;
             Gestures.OnTap += HandleScoopTap;
         } else if(HitFloor()) {

@@ -162,8 +162,10 @@ MonoBehaviour:
     description: Vanilla
   - color: {r: 0.34117648, g: 0.24313726, b: 0.19607843, a: 1}
     description: Chocolate
-  startScoopSpeed: 5
-  spawnDelay: 3
+  startScoopSpeed: 6
+  spawnDelay: 2
+  spawning: 1
+  scoopPrefab: {fileID: 7067049061320989233, guid: 78adefec70d902c4a9053d409a3fb613, type: 3}
 --- !u!4 &272042614
 Transform:
   m_ObjectHideFlags: 0
@@ -188,7 +190,6 @@ GameObject:
   m_Component:
   - component: {fileID: 624344845}
   - component: {fileID: 624344846}
-  - component: {fileID: 624344844}
   - component: {fileID: 624344847}
   m_Layer: 0
   m_Name: Board
@@ -197,23 +198,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &624344844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 624344843}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3adae30e5fc2e8844badd9d4cc92897a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfLanes: 3
-  numberOfRows: 13
-  cam: {fileID: 1604922325}
-  laneWidth: 0
-  rowHeight: 0
 --- !u!4 &624344845
 Transform:
   m_ObjectHideFlags: 0
@@ -241,8 +225,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectBeforeRelase: 1
-  minSwipeDistance: 20
-  tapThreshold: 10
+  minSwipeDistance: 15
+  tapThreshold: 5
   camera: {fileID: 1604922325}
 --- !u!114 &624344847
 MonoBehaviour:
@@ -256,8 +240,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f72140e7ac844d67a8359a0b326124d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 624344844}
+  numberOfLanes: 3
+  numberOfRows: 12
+  cam: {fileID: 1604922325}
+  numberOfOffscreenRows: 7
   cone: {fileID: 786270578}
+  laneWidth: 0
+  rowHeight: 0
 --- !u!1 &786270577
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,7 +279,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6cfe666839e3a4088881fe81c3a8e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 624344844}
+  horizontalLerp: {fileID: 0}
+  board: {fileID: 624344847}
   renderQuad: {fileID: 0}
   popScoopAudio: {fileID: 11400000, guid: 77ebba404d3fc62499a07844c604d329, type: 2}
   meltScoopAudio: {fileID: 11400000, guid: 89d7a78936050744c961e3e0299c4463, type: 2}
@@ -338,7 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0.6698113, g: 0.5417886, b: 0.3121573, a: 1}
-  grid: {fileID: 624344844}
+  board: {fileID: 624344847}
   material: {fileID: 2100000, guid: f66297fdcaf400247960b570460339d8, type: 2}
 --- !u!82 &786270582
 AudioSource:
@@ -490,7 +480,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2.8855863
+  orthographic size: 2.885586
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

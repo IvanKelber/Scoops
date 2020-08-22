@@ -64,6 +64,27 @@ public class BoardManager : MonoBehaviour
 
         return nextIndex;
     }
+    public float GetHorizontalLerpSpeed()
+    {
+        return cone.horizontalLerp.speed;
+    }
+
+    public bool HitStack(Vector2Int index) {
+        return cone.ScoopValid(index);
+    }
+
+    public void AddScoopToCone(Scoop scoop) {
+        cone.AddScoop(scoop);
+    }
+
+    public int ConeLane() {
+        return cone.Lane();
+    }
+
+    public int ConeStackHeight() {
+        return cone.StackHeight();
+    }
+
     private void OnDrawGizmos() {
         if(grid != null) {
             for(int i = 0; i < numberOfLanes; i++) {

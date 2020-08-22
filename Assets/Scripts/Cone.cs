@@ -11,7 +11,7 @@ public class Cone : MonoBehaviour
     private Vector2Int currentIndex;
     private Vector2Int lastIndex;
 
-    private Lerp horizontalLerp;
+    public Lerp horizontalLerp;
 
     [SerializeField]
     private BoardManager board;
@@ -62,11 +62,6 @@ public class Cone : MonoBehaviour
         }
         Vector3 velocity = horizontalLerp.CalculateMovement();
         transform.Translate(velocity);
-    }
-
-    public float GetHorizontalLerpSpeed()
-    {
-        return horizontalLerp.speed;
     }
 
     private void HandleSwipe(SwipeInfo swipe)
