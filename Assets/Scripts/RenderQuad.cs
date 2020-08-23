@@ -8,13 +8,17 @@ public class RenderQuad : MonoBehaviour
     public Color color;
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
+    private BoxCollider2D collider;
     
-    public BoardManager board;
+    public float laneWidth;
+    public float rowHeight;
     public Material material;
     private void Awake()
     {
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
+        // collider = gameObject.AddComponent<BoxCollider2D>();
+        Render(transform.position);
     }
 
     public void SetColor(Color color) {
@@ -49,6 +53,9 @@ public class RenderQuad : MonoBehaviour
                 new Vector2(1, 1)
         };
         mesh.uv = uv;
+
+        // collider.offset = position;
+        // collider.size = new Vector3(laneWidth, rowHeight, 0);
     }
 
     public bool Contains(Vector3 position) {
@@ -58,8 +65,6 @@ public class RenderQuad : MonoBehaviour
 
     private Vector3[] GetVertices(Vector3 position)
     {
-        float laneWidth = board.laneWidth;
-        float rowHeight = board.rowHeight;
         Vector3[] vertices = new Vector3[4]
         {
                 transform.InverseTransformPoint(new Vector3(position.x - laneWidth/2, position.y - rowHeight/2, 0)),
@@ -81,6 +86,12 @@ public class RenderQuad : MonoBehaviour
         };
         return tris;
     }
+
+    // public void OnMouseDown() {
+    //     Debug.Log("Quad clicked");
+    //     // ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
+
+    // }
 
 
 }

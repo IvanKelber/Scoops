@@ -45,6 +45,8 @@ public class Cone : MonoBehaviour
         currentIndex = new Vector2Int(1, 0); // Start in middle lane
 
         renderQuad = GetComponent<RenderQuad>();
+        renderQuad.laneWidth = board.laneWidth;
+        renderQuad.rowHeight = board.rowHeight;
         renderQuad.Render(transform.position);
         transform.position = board.GetPosition(currentIndex);
 
@@ -90,23 +92,12 @@ public class Cone : MonoBehaviour
     }
 
     public void AddScoop(Scoop scoop) {
-        if(scoop.scoopStack == scoopStack) {
-            // Scoop already added to stack from previous AddFlyingStack
+        if(scoop.scoopStack != null) {
             return;
         }
-        if(scoop.FlyingScoops.Count > 0 && scoop == scoop.FlyingScoops[0]) {
-            // Add any scoops that are the same flavor as the current top flavor
-            if(!AddFlyingStack(scoop.FlyingScoops)) {
-                // Must add the original scoop
-                scoop.CalculateConsecutiveFlavors(scoopStack);
-                scoopStack.Push(scoop);
-            }
-        } else {
-            // Add a scoop that is not part of a flying stack
-            scoop.CalculateConsecutiveFlavors(scoopStack);
-            scoopStack.Push(scoop);
-        }
-        
+        scoop.CalculateConsecutiveFlavors(scoopStack);
+        scoopStack.Push(scoop);
+    
         if(CheckMatch()) {
             HandleMatch();
         } else if (StackHeight() == board.numberOfRows)
@@ -118,8 +109,7 @@ public class Cone : MonoBehaviour
     }
 
     private bool AddFlyingStack(List<Scoop> flyingScoops) {
-        // Debug_ScoopList("FlyingScoops: ", flyingScoops);
-        // Debug_ScoopList("ScoopStack: ", scoopStack);
+
         int scoopsAdded = 0;
         if(scoopStack.Count == 0) {
             return false;
@@ -178,15 +168,19 @@ public class Cone : MonoBehaviour
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
             popScoopAudio.Play(audioSource);
-            int popHeight = popCount + i + 1;
+            int popHeight = i + index + 1;
             Scoop scoop = scoopStack.Pop();
-            scoop.RemoveInputHandlers();
-            scoop.scoopStack = null;
-            scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
             scoops.Add(scoop);
-            scoop.FlyingScoops = scoops;
-            yield return new WaitForSeconds(delay);
+            scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
         }
+        // Debug_ScoopList("ScoopStack after popping: ", scoopStack);
+        // Debug_ScoopList("Scoops List: ", scoops);
+        foreach(Scoop scoop in scoops) {
+            scoop.scoopStack = null;
+            AddScoop(scoop);
+        }
+        // Debug_ScoopList("ScoopStack after adding: ", scoopStack);
+        yield return null;
     }
 
     private bool CheckMatch()
@@ -206,7 +200,7 @@ public class Cone : MonoBehaviour
 
     public bool ScoopValid(Vector2Int scoop) {
         if(scoop.x == currentIndex.x || scoop.x == lastIndex.x) {
-            return scoop.y == StackHeight() || scoop.y == StackHeight() - 2;
+            return scoop.y <= StackHeight() && scoop.y >= StackHeight() - 2;
         }
         return false;
     }

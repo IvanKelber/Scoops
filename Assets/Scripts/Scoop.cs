@@ -31,6 +31,8 @@ public class Scoop : MonoBehaviour
     public Stack<Scoop> scoopStack;
     public List<Scoop> FlyingScoops;
 
+    private BoxCollider2D collider;
+
     //Should be called before scoop is part of stack
     private int DetermineConsecutiveFlavorScoops() {
         if(scoopStack.Count == 0 || scoopStack.Peek().flavor != this.flavor) {
@@ -61,11 +63,15 @@ public class Scoop : MonoBehaviour
         horizontalLerp = gameObject.AddComponent<Lerp>();
 
         renderQuad = GetComponent<RenderQuad>();
-        renderQuad.board = board;
+        renderQuad.laneWidth = board.laneWidth;
+        renderQuad.rowHeight = board.rowHeight;
         renderQuad.SetColor(this.flavor);
         renderQuad.Render(transform.position);
 
         transform.position = board.GetPosition(currentIndex);
+
+        collider = gameObject.AddComponent<BoxCollider2D>();
+        collider.size = new Vector3(renderQuad.laneWidth/2.5f, renderQuad.rowHeight/2.5f, 0);
 
         scoopIndicator = (ScoopIndicator) GetComponentsInChildren<ScoopIndicator>()[0];
         scoopIndicator.SetIncomingFlavor(flavor);
@@ -98,9 +104,10 @@ public class Scoop : MonoBehaviour
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
             verticalLerp.speed = 10;
-            Gestures.OnTap += HandleScoopTap;
         } else if(HitFloor()) {
             Destroy(this.gameObject);
+        } else if(scoopStack != null) { 
+            // Do nothing
         } else {
             if(currentIndex.y <= board.numberOfRows) {
                 // Destroy scoop indicator
@@ -129,17 +136,9 @@ public class Scoop : MonoBehaviour
         }
     }
 
-    public void HandleScoopTap(Vector3 touchPosition) {
-      if(renderQuad.Contains(touchPosition)) {
-            ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
-        }
-    }
-
     public void RemoveInputHandlers() {
         Gestures.OnSwipe -= HandleSwipe;
         Gestures.SwipeEnded -= EndSwipe; 
-        Gestures.OnTap -= HandleScoopTap;
-
     }
 
     private void EndSwipe() {
@@ -150,9 +149,6 @@ public class Scoop : MonoBehaviour
         StartCoroutine(Melt(audioSource, meltEvent));
     }
 
-    public void MeltScoop() {
-        Destroy(this.gameObject);
-    }
 
     IEnumerator Melt(AudioSource audioSource, AudioEvent meltEvent) {
         meltEvent.Play(audioSource);
@@ -162,8 +158,9 @@ public class Scoop : MonoBehaviour
 
 
     private void OnDestroy() {
+        scoopStack = null;
+        FlyingScoops.Remove(this);
         RemoveInputHandlers();
-
     }
 
     public void SetSpeed(float speed) {
@@ -189,6 +186,21 @@ public class Scoop : MonoBehaviour
 
     public void SetFlavor(Color flavor) {
         this.flavor = flavor;
+    }
+
+
+    public void OnMouseDown() {
+        Debug.Log("scoop tapped");
+        ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
+
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = new Color(0,1,0,.5f);
+        if(collider != null) {
+            Gizmos.DrawCube(collider.offset, collider.size);
+        }
+        
     }
 
     

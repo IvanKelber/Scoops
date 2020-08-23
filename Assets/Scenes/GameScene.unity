@@ -164,7 +164,7 @@ MonoBehaviour:
     description: Chocolate
   startScoopSpeed: 6
   spawnDelay: 2
-  spawning: 1
+  spawning: 0
   scoopPrefab: {fileID: 7067049061320989233, guid: 78adefec70d902c4a9053d409a3fb613, type: 3}
 --- !u!4 &272042614
 Transform:
@@ -329,7 +329,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0.6698113, g: 0.5417886, b: 0.3121573, a: 1}
-  board: {fileID: 624344847}
+  laneWidth: 0
+  rowHeight: 0
   material: {fileID: 2100000, guid: f66297fdcaf400247960b570460339d8, type: 2}
 --- !u!82 &786270582
 AudioSource:

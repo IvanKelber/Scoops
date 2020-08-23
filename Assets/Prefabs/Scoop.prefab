@@ -47,9 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flavor: {r: 0, g: 0, b: 0, a: 0}
-  grid: {fileID: 0}
   renderQuad: {fileID: 0}
   scoopIndicator: {fileID: 0}
+  ConsecutiveFlavorScoops: 0
+  FlyingScoops: []
 --- !u!114 &7067049061320989391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +64,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0.8679245, g: 0.58462083, b: 0.82106596, a: 1}
-  grid: {fileID: 0}
+  laneWidth: 0
+  rowHeight: 0
   material: {fileID: 2100000, guid: 7da9b856e8d58a24f83b1906ce42ecd8, type: 2}
 --- !u!114 &8019099914496727671
 MonoBehaviour:
@@ -79,6 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   descriptor: 1
+  easeAmount: 0
 --- !u!1001 &1024870235383176993
 PrefabInstance:
   m_ObjectHideFlags: 0

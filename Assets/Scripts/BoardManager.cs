@@ -43,9 +43,6 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    // public void SetFlyingStack(List<Scoop> scoops) {
-    //     scoopManager.FlyingStack = scoops;
-    // }
 
     public int RandomLane() {
         return Random.Range(0, numberOfLanes);
