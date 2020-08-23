@@ -213,11 +213,8 @@ public class Cone : MonoBehaviour
         return currentIndex.x;
     }
 
-    public bool ScoopValid(Vector2Int scoop) {
-        if(scoop.x == currentIndex.x || scoop.x == lastIndex.x) {
-            return scoop.y <= StackHeight() && scoop.y >= StackHeight() - 2;
-        }
-        return false;
+    public bool ValidLane(int lane) {
+        return lane == currentIndex.x || lane == lastIndex.x;
     }
 
     public void ClearStack()

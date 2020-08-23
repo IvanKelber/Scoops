@@ -84,12 +84,8 @@ public class Scoop : MonoBehaviour
         return currentIndex.y == 0;
     }
 
-    private bool HitStack() {
-        if(board.HitStack(currentIndex)) {
-            return true;
-        }
-        return false;
-        
+    private int HitStack() {
+        return board.HitStack(currentIndex);
     }
 
     private bool HitMiddleStack() {
@@ -98,17 +94,26 @@ public class Scoop : MonoBehaviour
 
     // Checks collisions when a scoop has reached a new index
     private void CheckCollisions() {
-        if(HitStack()) {
+        if(scoopStack != null) {
+            return;
+        }
+        int index = HitStack();
+        if(index != -1) {
+            // We've hit the stack
+
+          
             board.AddScoopToCone(this);
+            if(index != board.ConeStackHeight()) {
+                MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
+            }
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
-            verticalLerp.speed = 6;
+            
         } else if(HitFloor()) {
             Destroy(this.gameObject);
-        } else if(scoopStack != null) { 
-            // Do nothing
-        } else {
+        }else { 
+            // Fall
             if(currentIndex.y <= board.numberOfRows) {
                 // Destroy scoop indicator
                 scoopIndicator.gameObject.SetActive(false);
@@ -189,7 +194,7 @@ public class Scoop : MonoBehaviour
     }
 
 
-    public void OnMouseDown() {
+    public void OnMouseUpAsButton() {
         if(scoopStack != null)
             ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
     }

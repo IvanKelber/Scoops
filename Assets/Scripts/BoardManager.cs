@@ -78,8 +78,13 @@ public class BoardManager : MonoBehaviour
         return cone.horizontalLerp.speed;
     }
 
-    public bool HitStack(Vector2Int index) {
-        return cone.ScoopValid(index);
+    public int HitStack(Vector2Int scoop) {
+        if(cone.ValidLane(scoop.x)) {
+            if(scoop.y <= ConeStackHeight() && scoop.y >= ConeStackHeight() - 2) {
+                return scoop.y;
+            }
+        }
+        return -1;
     }
 
     public void AddScoopToCone(Scoop scoop) {
