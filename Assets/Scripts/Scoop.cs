@@ -110,9 +110,9 @@ public class Scoop : MonoBehaviour
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
             
-        } else if(HitFloor()) {
+        } else if(HitFloor() || HitMiddleStack()) {
             Destroy(this.gameObject);
-        }else { 
+        } else { 
             // Fall
             if(currentIndex.y <= board.numberOfRows) {
                 // Destroy scoop indicator
