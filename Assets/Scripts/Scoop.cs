@@ -190,9 +190,7 @@ public class Scoop : MonoBehaviour
 
 
     public void OnMouseDown() {
-        Debug.Log("scoop tapped");
         ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
-
     }
 
     private void OnDrawGizmos() {

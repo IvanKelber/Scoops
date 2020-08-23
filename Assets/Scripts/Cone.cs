@@ -108,21 +108,11 @@ public class Cone : MonoBehaviour
         // Debug_ScoopList("ScoopStack after merging flying stack: ", scoopStack);
     }
 
-    private bool AddFlyingStack(List<Scoop> flyingScoops) {
-
-        int scoopsAdded = 0;
-        if(scoopStack.Count == 0) {
-            return false;
-        }
-
-        Color currentTopFlavor = scoopStack.Peek().flavor;
-
-        while(flyingScoops[scoopsAdded].flavor == currentTopFlavor) {
-            flyingScoops[scoopsAdded].CalculateConsecutiveFlavors(scoopStack);
-            scoopStack.Push(flyingScoops[scoopsAdded]);
-            scoopsAdded++;
-        }
-        return scoopsAdded > 0;
+    private void PutScoopOnStack(Scoop scoop) {
+        scoop.CalculateConsecutiveFlavors(scoopStack);
+        Debug.Log("Newly added scoop consecutive flavors: " + scoop.ConsecutiveFlavorScoops);
+        scoopStack.Push(scoop);
+        scoop.MoveToIndex(new Vector2Int(Lane(), StackHeight() - 1));
     }
 
     IEnumerator GameOver() {
@@ -164,23 +154,49 @@ public class Cone : MonoBehaviour
     }
     
     private IEnumerator PopScoops(int index, float delay) {
-        List<Scoop> scoops = new List<Scoop>();
+        Queue<Scoop> scoops = new Queue<Scoop>();
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
             popScoopAudio.Play(audioSource);
             int popHeight = i + index + 1;
             Scoop scoop = scoopStack.Pop();
-            scoops.Add(scoop);
-            scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
+            scoops.Enqueue(scoop);
+            // scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
         }
         // Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         // Debug_ScoopList("Scoops List: ", scoops);
-        foreach(Scoop scoop in scoops) {
-            scoop.scoopStack = null;
-            AddScoop(scoop);
-        }
+        AddScoopsToStack(scoops);
         // Debug_ScoopList("ScoopStack after adding: ", scoopStack);
+        if(CheckMatch()) {
+            Debug.Log("Found Additional Match");
+            HandleMatch();
+        }
         yield return null;
+    }
+
+    private void AddScoopsToStack(Queue<Scoop> scoops) {
+        while(scoops.Count > 0) {
+            Color currentFlavor = GetTopFlavor();
+            if(scoops.Peek().flavor == currentFlavor) {
+                Debug.Log("Scoop is the same flavor");
+                PutScoopOnStack(scoops.Dequeue());
+            } else {
+                if(CheckMatch()) {
+                    Debug.Log("Found Match");
+                    HandleMatch();
+                } else {
+                    Debug.Log("Did not find match. putting scoop on stack");
+                    PutScoopOnStack(scoops.Dequeue());
+                }
+            }
+        }
+    }
+
+    private Color GetTopFlavor() {
+        if(scoopStack.Count == 0) {
+            return Color.white;
+        }
+        return scoopStack.Peek().flavor;
     }
 
     private bool CheckMatch()
