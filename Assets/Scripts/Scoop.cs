@@ -103,7 +103,7 @@ public class Scoop : MonoBehaviour
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
-            verticalLerp.speed = 10;
+            verticalLerp.speed = 6;
         } else if(HitFloor()) {
             Destroy(this.gameObject);
         } else if(scoopStack != null) { 
@@ -190,7 +190,8 @@ public class Scoop : MonoBehaviour
 
 
     public void OnMouseDown() {
-        ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
+        if(scoopStack != null)
+            ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
     }
 
     private void OnDrawGizmos() {

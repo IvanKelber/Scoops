@@ -99,7 +99,7 @@ public class Cone : MonoBehaviour
         scoopStack.Push(scoop);
     
         if(CheckMatch()) {
-            HandleMatch();
+            StartCoroutine(HandleMatch());
         } else if (StackHeight() == board.numberOfRows)
         {
             Debug.Log("GAME OVER");
@@ -110,7 +110,6 @@ public class Cone : MonoBehaviour
 
     private void PutScoopOnStack(Scoop scoop) {
         scoop.CalculateConsecutiveFlavors(scoopStack);
-        Debug.Log("Newly added scoop consecutive flavors: " + scoop.ConsecutiveFlavorScoops);
         scoopStack.Push(scoop);
         scoop.MoveToIndex(new Vector2Int(Lane(), StackHeight() - 1));
     }
@@ -128,8 +127,9 @@ public class Cone : MonoBehaviour
         SceneState.LoadScene(0); // Reload game scene for debug purposes
     }
 
-    private void HandleMatch()
+    private IEnumerator HandleMatch()
     {
+        yield return new WaitForSeconds(.3f);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
         Debug.Log("Handling match of " + matchingScoops);
         for (int i = 0; i < matchingScoops; i++)
@@ -161,20 +161,19 @@ public class Cone : MonoBehaviour
             int popHeight = i + index + 1;
             Scoop scoop = scoopStack.Pop();
             scoops.Enqueue(scoop);
-            // scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
+            scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
         }
         // Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         // Debug_ScoopList("Scoops List: ", scoops);
-        AddScoopsToStack(scoops);
+        yield return StartCoroutine(AddScoopsToStack(scoops));
         // Debug_ScoopList("ScoopStack after adding: ", scoopStack);
         if(CheckMatch()) {
             Debug.Log("Found Additional Match");
-            HandleMatch();
+            yield return StartCoroutine(HandleMatch());
         }
-        yield return null;
     }
 
-    private void AddScoopsToStack(Queue<Scoop> scoops) {
+    private IEnumerator AddScoopsToStack(Queue<Scoop> scoops) {
         while(scoops.Count > 0) {
             Color currentFlavor = GetTopFlavor();
             if(scoops.Peek().flavor == currentFlavor) {
@@ -183,7 +182,7 @@ public class Cone : MonoBehaviour
             } else {
                 if(CheckMatch()) {
                     Debug.Log("Found Match");
-                    HandleMatch();
+                    yield return StartCoroutine(HandleMatch());
                 } else {
                     Debug.Log("Did not find match. putting scoop on stack");
                     PutScoopOnStack(scoops.Dequeue());
