@@ -43,6 +43,10 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void Update() {
+        if(Input.GetKeyDown(KeyCode.Space))
+            Debug.Log("Points: " + PointsManager.Points);
+    }
 
     public int RandomLane() {
         return Random.Range(0, numberOfLanes);

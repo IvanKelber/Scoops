@@ -34,8 +34,10 @@ public class Cone : MonoBehaviour
     private AudioSource audioSource;
 
     private Stack<Scoop> scoopStack = new Stack<Scoop>();
+
+    private int comboMultiplier = 0;
+    private float points = 0;
    
-    public static event Action OnGameEnded = delegate {};
     Dictionary<Color, int> colorMap = new Dictionary<Color, int>();
 
     private void Start()
@@ -105,6 +107,9 @@ public class Cone : MonoBehaviour
             Debug.Log("GAME OVER");
             StartCoroutine(GameOver());
         }
+        PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
+        comboMultiplier = 0;
+        points = 0;
         // Debug_ScoopList("ScoopStack after merging flying stack: ", scoopStack);
     }
 
@@ -115,7 +120,6 @@ public class Cone : MonoBehaviour
     }
 
     IEnumerator GameOver() {
-        OnGameEnded();
         yield return gameOverJingle.PlayAndWait(audioSource);
         int pops = StackHeight() - 1;
         for(int i = 0; i < pops; i++) {
@@ -129,9 +133,10 @@ public class Cone : MonoBehaviour
 
     private IEnumerator HandleMatch()
     {
+        comboMultiplier++;
         yield return new WaitForSeconds(.3f);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
-        Debug.Log("Handling match of " + matchingScoops);
+        points += PointsManager.GetPointsFromMatch(matchingScoops);
         for (int i = 0; i < matchingScoops; i++)
         {
             scoopStack.Pop().MeltScoop(audioSource, meltScoopAudio);
@@ -150,10 +155,10 @@ public class Cone : MonoBehaviour
     }
 
     private void HandleScoopTap(int index) {
-        StartCoroutine(PopScoops(index, .1f));
+        StartCoroutine(PopScoops(index));
     }
     
-    private IEnumerator PopScoops(int index, float delay) {
+    private IEnumerator PopScoops(int index) {
         Queue<Scoop> scoops = new Queue<Scoop>();
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
@@ -168,23 +173,25 @@ public class Cone : MonoBehaviour
         yield return StartCoroutine(AddScoopsToStack(scoops));
         // Debug_ScoopList("ScoopStack after adding: ", scoopStack);
         if(CheckMatch()) {
-            Debug.Log("Found Additional Match");
             yield return StartCoroutine(HandleMatch());
         }
+        if(points == 0) {
+            points = 1;
+        }
+        PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
+        comboMultiplier = 0;
+        points = 0;
     }
 
     private IEnumerator AddScoopsToStack(Queue<Scoop> scoops) {
         while(scoops.Count > 0) {
             Color currentFlavor = GetTopFlavor();
             if(scoops.Peek().flavor == currentFlavor) {
-                Debug.Log("Scoop is the same flavor");
                 PutScoopOnStack(scoops.Dequeue());
             } else {
                 if(CheckMatch()) {
-                    Debug.Log("Found Match");
                     yield return StartCoroutine(HandleMatch());
                 } else {
-                    Debug.Log("Did not find match. putting scoop on stack");
                     PutScoopOnStack(scoops.Dequeue());
                 }
             }
