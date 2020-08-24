@@ -53,8 +53,10 @@ public class Scoop : MonoBehaviour
     }
 
     private void Update() {
-        Vector3 velocity = horizontalLerp.CalculateMovement() + verticalLerp.CalculateMovement();
-        transform.Translate(velocity);
+        if(!board.gameEnded) {
+            Vector3 velocity = horizontalLerp.CalculateMovement() + verticalLerp.CalculateMovement();
+            transform.Translate(velocity);
+        }
     }
 
     public void Initialize(BoardManager board, Vector2Int currentIndex) {
@@ -111,6 +113,10 @@ public class Scoop : MonoBehaviour
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
             
         } else if(HitFloor() || HitMiddleStack()) {
+            board.lives--;
+            if(board.lives == 0) {
+                board.GameOver();
+            }
             Destroy(this.gameObject);
         } else { 
             // Fall

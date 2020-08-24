@@ -13,7 +13,7 @@ public class ScoopManager : MonoBehaviour
     [SerializeField]
     private float startScoopSpeed;
 
-    private float speed;
+    public float speed;
     [SerializeField]
     private float spawnDelay;
 
@@ -62,7 +62,7 @@ public class ScoopManager : MonoBehaviour
 
     void Update()
     {
-        if(spawning) {
+        if(spawning && !board.gameEnded) {
             if (timeUntilNextSpawn <= 0) {
                 timeUntilNextSpawn = spawnDelay;
                 Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;

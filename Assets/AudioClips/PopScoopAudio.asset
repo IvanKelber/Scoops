@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: PopScoopAudio
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 78be296af618dcb4b8f698eb37163c2f, type: 3}
-  - {fileID: 8300000, guid: 6beab582639ff2745a61ea489948f3fe, type: 3}
-  - {fileID: 8300000, guid: fd26633a22fe2394e8c78b713439e3f5, type: 3}
-  minVolume: 0.18
-  maxVolume: 0.54
-  minPitch: 0.42
-  maxPitch: 0.55
+  - {fileID: 8300000, guid: a01ed2ed89f0a401ea780d6bbf585252, type: 3}
+  minVolume: 0.52
+  maxVolume: 0.76
+  minPitch: 1.63
+  maxPitch: 3.03

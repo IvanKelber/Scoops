@@ -23,8 +23,15 @@ public class BoardManager : MonoBehaviour
 
     public float laneWidth;
     public float rowHeight;
+
+    public float lives = 3;
+    public bool gameEnded = false;
+
+    private float timeUntilScoreUpdate;
+    private float scoreUpdateDelay = 1f;
     private void Awake()
     {
+        PointsManager.Points = 0;
         if(cam == null) {
             Debug.LogError("Cannot calculate grid bounds because camera is missing.");
             return;
@@ -44,8 +51,16 @@ public class BoardManager : MonoBehaviour
     }
 
     public void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            Debug.Log("Points: " + PointsManager.Points);
+        if(!gameEnded && scoopManager.spawning && timeUntilScoreUpdate <= 0) {
+            PointsManager.AddPoints(1);
+            timeUntilScoreUpdate = scoreUpdateDelay;
+        }
+        timeUntilScoreUpdate -= Time.deltaTime;
+    }
+
+    public void GameOver() {
+        gameEnded = true;
+        cone.GameOver();
     }
 
     public int RandomLane() {

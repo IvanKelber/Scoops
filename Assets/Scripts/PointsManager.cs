@@ -32,7 +32,7 @@ public class PointsManager
         Points += points;
     }
 
-    public int RoundedPoints() {
+    public static int RoundedPoints() {
         return (int) Points;
     }
 
