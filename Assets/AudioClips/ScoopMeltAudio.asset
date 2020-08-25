@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43433c26b56ce194f97c8b3f2c77149c, type: 3}
   m_Name: ScoopMeltAudio
   m_EditorClassIdentifier: 
+  Name: ScoopsMatchAudio
+  loop: 0
   clips:
   - {fileID: 8300000, guid: 5ac6242608b593342802f2c42954d298, type: 3}
   minVolume: 1

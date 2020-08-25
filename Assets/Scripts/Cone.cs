@@ -15,23 +15,13 @@ public class Cone : MonoBehaviour
 
     [SerializeField]
     private BoardManager board;
+    [SerializeField]
+    private AudioManager audioManager;
+
+    private AudioSource audioSource;
 
     [SerializeField]
     private RenderQuad renderQuad;
-
-    [SerializeField]
-    private AudioEvent popScoopAudio;
-
-    [SerializeField]
-    private AudioEvent meltScoopAudio;
-
-    [SerializeField]
-    private AudioEvent gameOverJingle;
-    [SerializeField]
-    private AudioEvent losePopScoopAudio;
-
-
-    private AudioSource audioSource;
 
     private Stack<Scoop> scoopStack = new Stack<Scoop>();
 
@@ -43,7 +33,6 @@ public class Cone : MonoBehaviour
     private void Start()
     {
         horizontalLerp = GetComponent<Lerp>();
-        audioSource = GetComponent<AudioSource>();
         currentIndex = new Vector2Int(1, 0); // Start in middle lane
 
         renderQuad = GetComponent<RenderQuad>();
@@ -51,6 +40,8 @@ public class Cone : MonoBehaviour
         renderQuad.rowHeight = board.rowHeight;
         renderQuad.Render(transform.position);
         transform.position = board.GetPosition(currentIndex);
+
+        audioSource = gameObject.AddComponent<AudioSource>();
 
         // Add gesture listeners
         Gestures.OnSwipe += HandleSwipe;
@@ -124,10 +115,11 @@ public class Cone : MonoBehaviour
         StartCoroutine(IGameOver());
     }
     IEnumerator IGameOver() {
-        yield return gameOverJingle.PlayAndWait(audioSource);
+        yield return audioManager.PlayAndWait(audioSource, audioManager.GameOverAudio);
         int pops = StackHeight() - 1;
         for(int i = 0; i < pops; i++) {
-            scoopStack.Pop().MeltScoop(audioSource, losePopScoopAudio);
+            audioManager.Play(audioSource, audioManager.DropScoopAudio);
+            scoopStack.Pop().MeltScoop();
             yield return new WaitForSeconds(.1f);
         }
         yield return CrumbleCone();
@@ -139,11 +131,12 @@ public class Cone : MonoBehaviour
     {
         comboMultiplier++;
         yield return new WaitForSeconds(.3f);
+        audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
         for (int i = 0; i < matchingScoops; i++)
         {
-            scoopStack.Pop().MeltScoop(audioSource, meltScoopAudio);
+            scoopStack.Pop().MeltScoop();
         }
         if(offTheTop) {
             PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
@@ -172,12 +165,12 @@ public class Cone : MonoBehaviour
         Queue<Scoop> scoops = new Queue<Scoop>();
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
-            popScoopAudio.Play(audioSource);
             int popHeight = i + index + 1;
             Scoop scoop = scoopStack.Pop();
             scoops.Enqueue(scoop);
             scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
         }
+        audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
         // Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         // Debug_ScoopList("Scoops List: ", scoops);
         yield return StartCoroutine(AddScoopsToStack(scoops));
@@ -238,7 +231,7 @@ public class Cone : MonoBehaviour
     {
         for (int i = 0; i < scoopStack.Count; i++)
         {
-            scoopStack.Pop().MeltScoop(audioSource, meltScoopAudio);
+            scoopStack.Pop().MeltScoop();
         }
     }
 

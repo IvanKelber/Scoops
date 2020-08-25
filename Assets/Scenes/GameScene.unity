@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfLanes: 3
-  numberOfRows: 12
+  numberOfRows: 13
   cam: {fileID: 1604922325}
   numberOfOffscreenRows: 7
   cone: {fileID: 786270578}
@@ -285,11 +285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalLerp: {fileID: 0}
   board: {fileID: 624344847}
+  audioManager: {fileID: 11400000, guid: e16f988e7e9514b8d9f21bc9f6a5394c, type: 2}
   renderQuad: {fileID: 0}
-  popScoopAudio: {fileID: 11400000, guid: 77ebba404d3fc62499a07844c604d329, type: 2}
-  meltScoopAudio: {fileID: 11400000, guid: 89d7a78936050744c961e3e0299c4463, type: 2}
-  gameOverJingle: {fileID: 11400000, guid: 277878f750b2349abb7f204bcf0db180, type: 2}
-  losePopScoopAudio: {fileID: 11400000, guid: c7adf05af16f7484cb342e6295b19696, type: 2}
 --- !u!4 &786270579
 Transform:
   m_ObjectHideFlags: 0
@@ -720,10 +717,10 @@ RectTransform:
   m_Father: {fileID: 1764513261}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.023666669, y: 0.8946563}
-  m_AnchorMax: {x: 0.44283336, y: 0.98600006}
-  m_AnchoredPosition: {x: -2, y: 0}
-  m_SizeDelta: {x: 5.522888, y: 2.121704}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 15, y: -18}
+  m_SizeDelta: {x: -412.4771, y: -1160.8783}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1664329698
 MonoBehaviour:
@@ -852,7 +849,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1672916915
 RectTransform:
   m_ObjectHideFlags: 0

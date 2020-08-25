@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43433c26b56ce194f97c8b3f2c77149c, type: 3}
   m_Name: PopScoopAudio
   m_EditorClassIdentifier: 
+  Name: SwitchScoopAudio
+  loop: 0
   clips:
   - {fileID: 8300000, guid: a01ed2ed89f0a401ea780d6bbf585252, type: 3}
   minVolume: 0.52
   maxVolume: 0.76
-  minPitch: 1.63
-  maxPitch: 3.03
+  minPitch: 1
+  maxPitch: 2

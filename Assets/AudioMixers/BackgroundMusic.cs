@@ -5,13 +5,22 @@ using UnityEngine;
 public class BackgroundMusic : MonoBehaviour
 {
     private AudioSource _audioSource;
+    private static BackgroundMusic instance;
     private void Awake()
     {
+        if(instance == null) {
+            instance = this;
+        } else {
+            Destroy(this.gameObject);
+            return;
+        }
+
         DontDestroyOnLoad(transform.gameObject);
         _audioSource = GetComponent<AudioSource>();
     }
 
-    private void Update() {
+
+    private void Start() {
         PlayMusic();
     }
 

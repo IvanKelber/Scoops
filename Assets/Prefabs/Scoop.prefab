@@ -47,10 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flavor: {r: 0, g: 0, b: 0, a: 0}
+  audioManager: {fileID: 11400000, guid: e16f988e7e9514b8d9f21bc9f6a5394c, type: 2}
   renderQuad: {fileID: 0}
   scoopIndicator: {fileID: 0}
   ConsecutiveFlavorScoops: 0
-  FlyingScoops: []
 --- !u!114 &7067049061320989391
 MonoBehaviour:
   m_ObjectHideFlags: 0

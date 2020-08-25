@@ -16,6 +16,8 @@ public class Scoop : MonoBehaviour
     public Color flavor;
 
     private BoardManager board;
+    [SerializeField]
+    private AudioManager audioManager;
     
     public RenderQuad renderQuad;
 
@@ -29,7 +31,6 @@ public class Scoop : MonoBehaviour
     public int ConsecutiveFlavorScoops;
 
     public Stack<Scoop> scoopStack;
-    public List<Scoop> FlyingScoops;
 
     private BoxCollider2D collider;
 
@@ -49,7 +50,6 @@ public class Scoop : MonoBehaviour
     private void Awake() {
         verticalLerp = GetComponent<Lerp>();
         verticalLerp.ReachedPoint += CheckCollisions;
-
     }
 
     private void Update() {
@@ -113,6 +113,7 @@ public class Scoop : MonoBehaviour
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
             
         } else if(HitFloor() || HitMiddleStack()) {
+            audioManager.Play(board.AudioSource, audioManager.DropScoopAudio);
             board.lives--;
             if(board.lives == 0) {
                 board.GameOver();
@@ -156,13 +157,12 @@ public class Scoop : MonoBehaviour
         handlingSwipe = false;
     }
 
-    public void MeltScoop(AudioSource audioSource, AudioEvent meltEvent) {
-        StartCoroutine(Melt(audioSource, meltEvent));
+    public void MeltScoop() {
+        StartCoroutine(Melt());
     }
 
 
-    IEnumerator Melt(AudioSource audioSource, AudioEvent meltEvent) {
-        meltEvent.Play(audioSource);
+    IEnumerator Melt() {
         yield return new WaitForSeconds(scoopMeltDelay);
         Destroy(this.gameObject);
     }
@@ -170,7 +170,6 @@ public class Scoop : MonoBehaviour
 
     private void OnDestroy() {
         scoopStack = null;
-        FlyingScoops.Remove(this);
         RemoveInputHandlers();
     }
 

@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public abstract class AudioEvent : ScriptableObject
 {
+
+    public string Name;
+    public bool loop;
 
     public abstract void Play(AudioSource source);
 

@@ -29,6 +29,8 @@ public class BoardManager : MonoBehaviour
 
     private float timeUntilScoreUpdate;
     private float scoreUpdateDelay = 1f;
+
+    public AudioSource AudioSource;
     private void Awake()
     {
         PointsManager.Points = 0;
@@ -48,6 +50,8 @@ public class BoardManager : MonoBehaviour
         } else {
             Debug.LogError("ScoopManager is null for BoardManager");
         }
+
+        AudioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public void Update() {
