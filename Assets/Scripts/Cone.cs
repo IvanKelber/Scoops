@@ -231,7 +231,7 @@ public class Cone : MonoBehaviour
     }
 
     public bool ValidLane(int lane) {
-        return lane == currentIndex.x || lane == lastIndex.x;
+        return lane == lastIndex.x;
     }
 
     public void ClearStack()

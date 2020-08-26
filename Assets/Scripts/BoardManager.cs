@@ -31,6 +31,9 @@ public class BoardManager : MonoBehaviour
     private float scoreUpdateDelay = 1f;
 
     public AudioSource AudioSource;
+
+    public bool devControls = false;
+
     private void Awake()
     {
         PointsManager.Points = 0;
