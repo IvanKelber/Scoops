@@ -165,7 +165,7 @@ MonoBehaviour:
   startScoopSpeed: 6
   speed: 0
   spawnDelay: 2
-  spawning: 0
+  spawning: 1
   scoopPrefab: {fileID: 7067049061320989233, guid: 78adefec70d902c4a9053d409a3fb613, type: 3}
 --- !u!4 &272042614
 Transform:
@@ -251,6 +251,7 @@ MonoBehaviour:
   rowHeight: 0
   lives: 3
   gameEnded: 0
+  AudioSource: {fileID: 0}
 --- !u!1 &786270577
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,7 +28,7 @@ public class Cone : MonoBehaviour
     private int comboMultiplier = 0;
     private float points = 0;
    
-    Dictionary<Color, int> colorMap = new Dictionary<Color, int>();
+    private bool poppingScoops = false;
 
     private void Start()
     {
@@ -157,11 +157,16 @@ public class Cone : MonoBehaviour
     }
 
     private void HandleScoopTap(int index) {
-        if(!board.gameEnded) 
+        Debug.Log("Handling scoop tap. Already popping scoops: " + poppingScoops);
+        if(!board.gameEnded && !poppingScoops) {
+            poppingScoops = true;
             StartCoroutine(PopScoops(index));
+        }
     }
     
     private IEnumerator PopScoops(int index) {
+        Debug.Log("Popping scoops starting from index: " + index);
+        Debug_ScoopList("Before popping: ",scoopStack);
         Queue<Scoop> scoops = new Queue<Scoop>();
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
@@ -171,10 +176,10 @@ public class Cone : MonoBehaviour
             scoop.MoveToIndex(new Vector2Int(Lane(), popHeight));
         }
         audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
-        // Debug_ScoopList("ScoopStack after popping: ", scoopStack);
-        // Debug_ScoopList("Scoops List: ", scoops);
+        Debug_ScoopList("ScoopStack after popping: ", scoopStack);
+        Debug_ScoopList("Scoops List: ", scoops);
         yield return StartCoroutine(AddScoopsToStack(scoops));
-        // Debug_ScoopList("ScoopStack after adding: ", scoopStack);
+        Debug_ScoopList("ScoopStack after adding: ", scoopStack);
         if(CheckMatch()) {
             yield return StartCoroutine(HandleMatch(false));
         }
@@ -184,11 +189,13 @@ public class Cone : MonoBehaviour
         PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
         comboMultiplier = 0;
         points = 0;
+        Debug.Log("popped scooops.  Setting poppingScoops to false");
+        poppingScoops = false;
     }
 
     private IEnumerator AddScoopsToStack(Queue<Scoop> scoops) {
         while(scoops.Count > 0) {
-            Color currentFlavor = GetTopFlavor();
+            Flavor currentFlavor = GetTopFlavor();
             if(scoops.Peek().flavor == currentFlavor) {
                 PutScoopOnStack(scoops.Dequeue());
             } else {
@@ -201,9 +208,9 @@ public class Cone : MonoBehaviour
         }
     }
 
-    private Color GetTopFlavor() {
+    private Flavor GetTopFlavor() {
         if(scoopStack.Count == 0) {
-            return Color.white;
+            return new Flavor(Color.white, "null flavor");
         }
         return scoopStack.Peek().flavor;
     }
@@ -236,16 +243,13 @@ public class Cone : MonoBehaviour
     }
 
     public void Debug_ScoopList(string intro, System.Collections.Generic.IEnumerable<Scoop> list) {
-        string debugstring = "scoop stack: [";
+        string debugstring = "[";
 
         foreach(Scoop scoop in list) {
-            if(!colorMap.ContainsKey(scoop.flavor))
-                colorMap.Add(scoop.flavor, colorMap.Count);
-            debugstring += "C#" + colorMap[scoop.flavor] + ", ";
+            debugstring += "("+ scoop.flavor.name + ", " + scoop.ConsecutiveFlavorScoops +"), ";
         }
         debugstring += "]";
         Debug.Log(intro + debugstring);
-        
 
     }
 

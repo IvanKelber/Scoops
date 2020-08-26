@@ -13,7 +13,7 @@ public class Scoop : MonoBehaviour
     private bool handlingSwipe = false;
     private Vector2Int currentIndex;
 
-    public Color flavor;
+    public Flavor flavor;
 
     private BoardManager board;
     [SerializeField]
@@ -34,9 +34,11 @@ public class Scoop : MonoBehaviour
 
     private BoxCollider2D collider;
 
+    private Vector3 tapDown;
+
     //Should be called before scoop is part of stack
     private int DetermineConsecutiveFlavorScoops() {
-        if(scoopStack.Count == 0 || scoopStack.Peek().flavor != this.flavor) {
+        if(scoopStack.Count == 0 || (scoopStack.Peek().flavor != this.flavor)) {
             return 1; // Only one of this flavor consecutively
         }
         return scoopStack.Peek().ConsecutiveFlavorScoops + 1;
@@ -67,7 +69,7 @@ public class Scoop : MonoBehaviour
         renderQuad = GetComponent<RenderQuad>();
         renderQuad.laneWidth = board.laneWidth;
         renderQuad.rowHeight = board.rowHeight;
-        renderQuad.SetColor(this.flavor);
+        renderQuad.SetColor(this.flavor.color);
         renderQuad.Render(transform.position);
 
         transform.position = board.GetPosition(currentIndex);
@@ -111,6 +113,7 @@ public class Scoop : MonoBehaviour
             Gestures.OnSwipe += HandleSwipe;
             Gestures.SwipeEnded += EndSwipe;
             horizontalLerp.speed = board.GetHorizontalLerpSpeed();
+            verticalLerp.speed = 15;
             
         } else if(HitFloor() || HitMiddleStack()) {
             audioManager.Play(board.AudioSource, audioManager.DropScoopAudio);
@@ -194,13 +197,16 @@ public class Scoop : MonoBehaviour
         }
     }
 
-    public void SetFlavor(Color flavor) {
+    public void SetFlavor(Flavor flavor) {
         this.flavor = flavor;
     }
 
+    private void OnMouseDown() {
+        tapDown = Input.mousePosition;
+    }
 
-    public void OnMouseUpAsButton() {
-        if(scoopStack != null)
+    private void OnMouseUpAsButton() {
+        if(scoopStack != null && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
             ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
     }
 

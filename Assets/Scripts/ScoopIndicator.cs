@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ScoopIndicator : MonoBehaviour
 {
-    private Color incomingFlavor;
+    private Flavor incomingFlavor;
     private Renderer renderer;
     private Vector3 staticPosition;
 
@@ -13,11 +13,11 @@ public class ScoopIndicator : MonoBehaviour
     }
 
     private void Update() {
-        renderer.material.SetColor("_MainColor", incomingFlavor);
+        renderer.material.SetColor("_MainColor", incomingFlavor.color);
         transform.position = staticPosition;
     }
 
-    public void SetIncomingFlavor(Color flavor) {
+    public void SetIncomingFlavor(Flavor flavor) {
         incomingFlavor = flavor;
     }
 

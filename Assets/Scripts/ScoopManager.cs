@@ -55,7 +55,8 @@ public class ScoopManager : MonoBehaviour
         if(board != null) {
             board.scoopManager = this;
         }
-        spawner = new ScoopSpawner(board, flavors, startScoopSpeed);
+        speed = startScoopSpeed;
+        spawner = new ScoopSpawner(board, flavors, speed);
         Gestures.OnSwipe += ControlSpawner;
         Gestures.SwipeEnded += OnSwipeEnd;
     }
