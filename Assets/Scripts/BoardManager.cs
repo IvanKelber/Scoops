@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BoardManager : MonoBehaviour
 {
@@ -30,9 +31,15 @@ public class BoardManager : MonoBehaviour
     private float timeUntilScoreUpdate;
     private float scoreUpdateDelay = 1f;
 
-    public AudioSource AudioSource;
+    public AudioSource audioSource;
 
     public bool devControls = false;
+
+    [SerializeField]
+    private TMP_Text livesCounter;
+
+    [SerializeField]
+    private AudioManager audioManager;
 
     private void Awake()
     {
@@ -54,7 +61,9 @@ public class BoardManager : MonoBehaviour
             Debug.LogError("ScoopManager is null for BoardManager");
         }
 
-        AudioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = gameObject.AddComponent<AudioSource>();
+        livesCounter.text = "" + lives;
+
     }
 
     public void Update() {
@@ -68,6 +77,15 @@ public class BoardManager : MonoBehaviour
     public void GameOver() {
         gameEnded = true;
         cone.GameOver();
+    }
+
+    public void DropScoop() {
+        audioManager.Play(audioSource, audioManager.DropScoopAudio);
+        lives--;
+        livesCounter.text = "" + lives;
+        if(lives == 0) {
+            GameOver();
+        }
     }
 
     public int RandomLane() {

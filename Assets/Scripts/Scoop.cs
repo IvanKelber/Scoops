@@ -16,8 +16,6 @@ public class Scoop : MonoBehaviour
     public Flavor flavor;
 
     private BoardManager board;
-    [SerializeField]
-    private AudioManager audioManager;
     
     public RenderQuad renderQuad;
 
@@ -116,11 +114,7 @@ public class Scoop : MonoBehaviour
             verticalLerp.speed = 15;
             
         } else if(HitFloor() || HitMiddleStack()) {
-            audioManager.Play(board.AudioSource, audioManager.DropScoopAudio);
-            board.lives--;
-            if(board.lives == 0) {
-                board.GameOver();
-            }
+            board.DropScoop();
             Destroy(this.gameObject);
         } else { 
             // Fall
