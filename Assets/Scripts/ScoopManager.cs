@@ -9,13 +9,23 @@ public class ScoopManager : MonoBehaviour
 
     public BoardManager board;
     public Flavor[] flavors;
+
+    [SerializeField]
+    private int numberOfFlavors;
     
     [SerializeField]
     private float startScoopSpeed;
 
     public float speed;
     [SerializeField]
+    private float startSpawnDelay;
+    [SerializeField]
     private float spawnDelay;
+
+    [SerializeField]
+    private float startScoreUpdateDelay = 1;
+
+    private float timeUntilScoreUpdate;
 
     private float timeUntilNextSpawn;
 
@@ -23,6 +33,8 @@ public class ScoopManager : MonoBehaviour
 
     public Scoop scoopPrefab;
     private bool handlingSwipe;
+
+    private int scoopsSpawned = 0;
 
     private void ControlSpawner(SwipeInfo swipe) {
         if(handlingSwipe) {
@@ -49,25 +61,39 @@ public class ScoopManager : MonoBehaviour
             board.scoopManager = this;
         }
         speed = startScoopSpeed;
+        spawnDelay = startSpawnDelay;
+        timeUntilScoreUpdate = startScoreUpdateDelay;
 
         if(board.devControls) {
             Gestures.OnSwipe += ControlSpawner;
             Gestures.SwipeEnded += OnSwipeEnd;
         }
-        
-
-        
     }
 
     void Update()
     {
+        float scoreUpdateDelay = .5f/(startScoreUpdateDelay + speed - startScoopSpeed);
         if(spawning && !board.gameFrozen) {
             if (timeUntilNextSpawn <= 0) {
                 timeUntilNextSpawn = spawnDelay;
+                scoopsSpawned++;
+                if(scoopsSpawned % 15 == 0) {
+                    speed += .33f;
+                    speed = Mathf.Clamp(speed, startScoopSpeed, startScoopSpeed*2f);
+                }
+                if(scoopsSpawned % 20 == 0) {
+                    spawnDelay -= .33f;
+                    spawnDelay = Mathf.Clamp(spawnDelay, 1.5f, startSpawnDelay);
+                }
                 SpawnRandomScoop(InstantiateScoop());
             }
             timeUntilNextSpawn -= Time.deltaTime;
-        }    
+            if(timeUntilScoreUpdate <= 0) {
+                PointsManager.AddPoints(1);
+                timeUntilScoreUpdate = scoreUpdateDelay;
+            }
+            timeUntilScoreUpdate -= Time.deltaTime;
+        }
     }
 
     public Scoop InstantiateScoop() {
@@ -76,7 +102,7 @@ public class ScoopManager : MonoBehaviour
     }
 
     private Flavor RandomFlavor() {
-        return flavors[Random.Range(0,flavors.Length)];
+        return flavors[Random.Range(0,Mathf.Clamp(numberOfFlavors, 0, flavors.Length))];
     }
 
     public Scoop SpawnRandomScoop(Scoop scoop) {

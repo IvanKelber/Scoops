@@ -70,15 +70,7 @@ public class BoardManager : MonoBehaviour
         livesCounter.text = "" + lives;
 
     }
-
-    public void Update() {
-        if(!gameFrozen && scoopManager.spawning && timeUntilScoreUpdate <= 0) {
-            PointsManager.AddPoints(1);
-            timeUntilScoreUpdate = scoreUpdateDelay;
-        }
-        timeUntilScoreUpdate -= Time.deltaTime;
-    }
-
+    
     public void GameOver() {
         FreezeGame();
         cone.GameOver();

@@ -31,7 +31,6 @@ public class TutorialFinger : MonoBehaviour
         }
 
         if(tapping && !LeanTween.isTweening(gameObject)) {
-            Debug.Log("Tapping");
             Tap();
         }
     }
@@ -63,7 +62,6 @@ public class TutorialFinger : MonoBehaviour
     }
 
     public void SetupTap(Vector3 tapPosition) {
-        Debug.Log("TapPosition: " + tapPosition);
         LeanTween.move(gameObject, tapPosition, 0);
         LeanTween.rotate(gameObject, new Vector3(0,0,45), 0);
         Fade(1,.3f).setDelay(swipeDelay);
