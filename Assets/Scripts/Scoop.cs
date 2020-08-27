@@ -11,7 +11,7 @@ public class Scoop : MonoBehaviour
     private Lerp verticalLerp;
     private Lerp horizontalLerp;
     private bool handlingSwipe = false;
-    private Vector2Int currentIndex;
+    public Vector2Int currentIndex;
 
     public Flavor flavor;
 
@@ -53,9 +53,18 @@ public class Scoop : MonoBehaviour
     }
 
     private void Update() {
-        if(!board.gameEnded) {
+        if(!board.gameFrozen) {
             Vector3 velocity = horizontalLerp.CalculateMovement() + verticalLerp.CalculateMovement();
             transform.Translate(velocity);
+        }
+        if(scoopIndicator != null) {
+            if(currentIndex.y <= board.numberOfRows) {
+                // Destroy scoop indicator
+                Destroy(scoopIndicator.gameObject);
+            } else {
+                scoopIndicator.SetPosition(board.GetPosition(new Vector2Int(currentIndex.x, board.numberOfRows - 1)));
+                scoopIndicator.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -118,13 +127,6 @@ public class Scoop : MonoBehaviour
             Destroy(this.gameObject);
         } else { 
             // Fall
-            if(currentIndex.y <= board.numberOfRows) {
-                // Destroy scoop indicator
-                scoopIndicator.gameObject.SetActive(false);
-            } else {
-                scoopIndicator.SetPosition(board.GetPosition(new Vector2Int(currentIndex.x, board.numberOfRows - 1)));
-                scoopIndicator.gameObject.SetActive(true);
-            }
             Fall();
         }
     }
@@ -135,7 +137,11 @@ public class Scoop : MonoBehaviour
            swipe.Direction == SwipeInfo.SwipeDirection.DOWN) {
             return;
         }
-
+        if(board.TutorialActive()) {
+            if(swipe.Direction != SwipeInfo.SwipeDirection.RIGHT) {
+                return;
+            }
+        }
         handlingSwipe = true;
         Vector3 currentPosition = board.GetPosition(currentIndex);
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, swipe.Direction);

@@ -18,7 +18,6 @@ public class ScoopManager : MonoBehaviour
     private float spawnDelay;
 
     private float timeUntilNextSpawn;
-    private ScoopSpawner spawner;
 
     public bool spawning;
 
@@ -35,12 +34,6 @@ public class ScoopManager : MonoBehaviour
                 spawning = false;
                 break;
             case SwipeInfo.SwipeDirection.DOWN:
-                if(spawning) {
-                    speed++;
-                } else {
-                    speed = startScoopSpeed;
-                }
-                spawner.SetSpeed(speed);
                 spawning = true;
                 break;
         }
@@ -56,24 +49,45 @@ public class ScoopManager : MonoBehaviour
             board.scoopManager = this;
         }
         speed = startScoopSpeed;
-        spawner = new ScoopSpawner(board, flavors, speed);
 
         if(board.devControls) {
             Gestures.OnSwipe += ControlSpawner;
             Gestures.SwipeEnded += OnSwipeEnd;
         }
+        
+
+        
     }
 
     void Update()
     {
-        if(spawning && !board.gameEnded) {
+        if(spawning && !board.gameFrozen) {
             if (timeUntilNextSpawn <= 0) {
                 timeUntilNextSpawn = spawnDelay;
-                Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
-                spawner.SpawnScoop(scoop);
+                SpawnRandomScoop(InstantiateScoop());
             }
             timeUntilNextSpawn -= Time.deltaTime;
         }    
+    }
+
+    public Scoop InstantiateScoop() {
+        Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
+        return scoop;
+    }
+
+    private Flavor RandomFlavor() {
+        return flavors[Random.Range(0,flavors.Length)];
+    }
+
+    public Scoop SpawnRandomScoop(Scoop scoop) {
+        SetScoop(scoop, RandomFlavor(), speed, new Vector2Int(board.RandomLane(), board.TotalRows - 1));
+        return scoop;
+    }
+
+    public void SetScoop(Scoop scoop, Flavor flavor, float speed, Vector2Int startIndex) {
+        scoop.SetFlavor(flavor);
+        scoop.SetSpeed(speed);
+        scoop.Initialize(board, startIndex);
     }
 
 }

@@ -26,7 +26,7 @@ public class BoardManager : MonoBehaviour
     public float rowHeight;
 
     public float lives = 3;
-    public bool gameEnded = false;
+    public bool gameFrozen = false;
 
     private float timeUntilScoreUpdate;
     private float scoreUpdateDelay = 1f;
@@ -40,6 +40,11 @@ public class BoardManager : MonoBehaviour
 
     [SerializeField]
     private AudioManager audioManager;
+
+    [SerializeField]
+    private Tutorial tutorial;
+
+
 
     private void Awake()
     {
@@ -67,7 +72,7 @@ public class BoardManager : MonoBehaviour
     }
 
     public void Update() {
-        if(!gameEnded && scoopManager.spawning && timeUntilScoreUpdate <= 0) {
+        if(!gameFrozen && scoopManager.spawning && timeUntilScoreUpdate <= 0) {
             PointsManager.AddPoints(1);
             timeUntilScoreUpdate = scoreUpdateDelay;
         }
@@ -75,7 +80,7 @@ public class BoardManager : MonoBehaviour
     }
 
     public void GameOver() {
-        gameEnded = true;
+        FreezeGame();
         cone.GameOver();
     }
 
@@ -88,17 +93,49 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void AlertTutorial(Tutorial.TutorialStep newStep) {
+        tutorial.SetStep(newStep);
+        if(tutorial.GetStep() == Tutorial.TutorialStep.Done) {
+            scoopManager.spawning = true;
+            tutorial.Destroy();
+        }
+    }
+
+    public Tutorial.TutorialStep CurrentTutorialStep() {
+        return tutorial.GetStep();
+    }
+
+    public bool TutorialActive() {
+        return tutorial != null;
+    }
+
+    public void FreezeGame() {
+        gameFrozen = true;
+    }
+
+    public void UnFreezeGame() {
+        gameFrozen = false;
+    }
+
     public int RandomLane() {
         return Random.Range(0, numberOfLanes);
     }
 
 
     public Vector3 GetPosition(int lane, int row) {
-        return transform.TransformPoint(transform.TransformPoint(grid[lane,row]));
+        return grid[lane,row];
     }
 
     public Vector3 GetPosition(Vector2Int index) {
         return GetPosition(index.x, index.y);
+    }
+
+    public Vector3 GetScreenPosition(int lane, int row) {
+        return cam.WorldToScreenPoint(grid[lane,row]);
+    }
+
+    public Vector3 GetScreenPosition(Vector2Int index) {
+        return GetScreenPosition(index.x, index.y);
     }
 
     public Vector2Int GetNextIndex(Vector2Int index, SwipeInfo.SwipeDirection direction) {

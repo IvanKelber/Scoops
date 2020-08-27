@@ -56,19 +56,32 @@ public class Cone : MonoBehaviour
         if(!handlingSwipe) {
             lastIndex = currentIndex;
         }
-        if(!board.gameEnded) {
+        if(!board.gameFrozen) {
             Vector3 velocity = horizontalLerp.CalculateMovement();
             transform.Translate(velocity);
         }
     }
 
-    private void HandleSwipe(SwipeInfo swipe)
+    public void HandleSwipe(SwipeInfo swipe)
     {
         if (handlingSwipe ||
            swipe.Direction == SwipeInfo.SwipeDirection.UP ||
            swipe.Direction == SwipeInfo.SwipeDirection.DOWN)
         {
             return;
+        }
+        if(board.TutorialActive()) {
+            if(board.CurrentTutorialStep() == Tutorial.TutorialStep.Swipe) {
+                if(swipe.Direction == SwipeInfo.SwipeDirection.RIGHT) {
+                    board.UnFreezeGame();
+                    board.AlertTutorial(Tutorial.TutorialStep.Tap);
+                } else {
+                    return;
+                }
+            } else {
+                // Don't allow swiping unless the Tutorial Step is Swipe
+                return;
+            }
         }
         handlingSwipe = true;
         Vector3 currentPosition = board.GetPosition(currentIndex);
@@ -157,8 +170,19 @@ public class Cone : MonoBehaviour
     }
 
     private void HandleScoopTap(int index) {
-        Debug.Log("Handling scoop tap. Already popping scoops: " + poppingScoops);
-        if(!board.gameEnded && !poppingScoops) {
+        Debug.Log("Tapping index: " + index);
+        if(board.TutorialActive()) {
+            if(board.CurrentTutorialStep() == Tutorial.TutorialStep.Tap) {
+                if(index == 2) {
+                    board.UnFreezeGame();
+                    board.AlertTutorial(Tutorial.TutorialStep.Done);
+                }
+            } else {
+                // Don't allow tapping during the tutorial unless it's the right time to tap
+                return;
+            }
+        }
+        if(!board.gameFrozen && !poppingScoops) {
             poppingScoops = true;
             StartCoroutine(PopScoops(index));
         }

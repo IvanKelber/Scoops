@@ -17,7 +17,6 @@ public class RenderQuad : MonoBehaviour
     {
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
-        // collider = gameObject.AddComponent<BoxCollider2D>();
         Render(transform.position);
     }
 
@@ -53,9 +52,6 @@ public class RenderQuad : MonoBehaviour
                 new Vector2(1, 1)
         };
         mesh.uv = uv;
-
-        // collider.offset = position;
-        // collider.size = new Vector3(laneWidth, rowHeight, 0);
     }
 
     public bool Contains(Vector3 position) {
@@ -86,12 +82,5 @@ public class RenderQuad : MonoBehaviour
         };
         return tris;
     }
-
-    // public void OnMouseDown() {
-    //     Debug.Log("Quad clicked");
-    //     // ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
-
-    // }
-
 
 }
