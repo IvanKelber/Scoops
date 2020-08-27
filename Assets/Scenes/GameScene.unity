@@ -253,7 +253,7 @@ MonoBehaviour:
     name: Vanilla
   - color: {r: 0.34117648, g: 0.24313726, b: 0.19607843, a: 1}
     name: Chocolate
-  numberOfFlavors: 2
+  numberOfFlavors: 4
   startScoopSpeed: 4
   speed: 0
   startSpawnDelay: 3
