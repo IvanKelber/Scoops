@@ -21,6 +21,8 @@ public class UpdateScore : MonoBehaviour
 
 
     public void UpdatePoints(int pointsAdded) {
+        Debug.Log("plusScoreText: " + (plusScoreText == null));
+        Debug.Log("scoreText: " + (scoreText == null));
         if(pointsAdded >  1) {
             pointsLeftToAdd += pointsAdded;
             SetPlusScore();
@@ -62,6 +64,10 @@ public class UpdateScore : MonoBehaviour
     }
     private void SetScore() {
         scoreText.text = "" + pointsDisplayed;
+    }
+
+    private void OnDestroy() {
+        PointsManager.PointsAdded -= UpdatePoints;
     }
 
 }

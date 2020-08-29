@@ -477,7 +477,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectBeforeRelase: 1
-  minSwipeDistance: 20
   tapThreshold: 10
   camera: {fileID: 14220668}
 --- !u!114 &422589192
@@ -608,7 +607,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 08629d13143ac41978a389a3580c4ef8, type: 3}
+  m_audioClip: {fileID: 8300000, guid: a1fe8e0b27e334f56961657f29a1c541, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.36
   m_Pitch: 1
