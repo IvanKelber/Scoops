@@ -20,7 +20,7 @@ public class PointsManager
     }
 
     public static float CalculatePoints(float points, int multiplier) {
-        return points * Mathf.Pow(10, multiplier - 1);
+        return points * multiplier;
     }
 
     public static void AddPoints(float points) {
