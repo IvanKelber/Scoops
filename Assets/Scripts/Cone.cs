@@ -180,7 +180,7 @@ public class Cone : MonoBehaviour
     private void HandleScoopTap(int index) {
         if(board.TutorialActive()) {
             if(board.CurrentTutorialStep() == Tutorial.TutorialStep.Tap) {
-                if(index == 2) {
+                if(index == 1) {
                     board.UnFreezeGame();
                     board.AlertTutorial(Tutorial.TutorialStep.Done);
                 }

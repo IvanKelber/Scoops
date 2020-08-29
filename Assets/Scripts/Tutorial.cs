@@ -36,7 +36,7 @@ public class Tutorial : MonoBehaviour
             for(int i = 0; i < scoops.Length; i++) {
                 scoops[i] = scoopManager.InstantiateScoop();
                 Vector2Int coneIndex = new Vector2Int(board.ConeLane(), board.ConeStackHeight() + i);
-                scoopManager.SetScoop(scoops[i], i == 2 ? nonMatchFlavor: matchFlavor, scoopManager.speed, i == 3 ? new Vector2Int(coneIndex.x + 1, board.TotalRows - 1) :coneIndex);
+                scoopManager.SetScoop(scoops[i], i == 1 ? nonMatchFlavor: matchFlavor, scoopManager.speed, i == 3 ? new Vector2Int(coneIndex.x + 1, board.TotalRows - 1) :coneIndex);
             }; 
             step = TutorialStep.Swipe;
         }
@@ -50,7 +50,7 @@ public class Tutorial : MonoBehaviour
         }
 
         if(step == TutorialStep.Tap && board.ConeStackHeight() == scoops.Length + 1) {
-            tutorialFinger.StartTap(board.GetScreenPosition(scoops[3].currentIndex.x, scoops[3].currentIndex.y - 1));
+            tutorialFinger.StartTap(board.GetScreenPosition(scoops[1].currentIndex.x, scoops[1].currentIndex.y));
             board.FreezeGame();
         } else if (step != TutorialStep.Tap) {
             tutorialFinger.StopTap();
