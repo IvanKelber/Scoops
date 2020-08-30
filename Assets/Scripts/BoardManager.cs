@@ -18,8 +18,6 @@ public class BoardManager : MonoBehaviour
     }
     public Vector3[,] grid;
 
-    public Cone cone;
-
     public ScoopManager scoopManager;
 
     public float laneWidth;
@@ -44,6 +42,18 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private Tutorial tutorial;
 
+    [SerializeField]
+    private Cone conePrefab;
+
+    private List<Cone> cones = new List<Cone>();
+    
+    private int currentConeIndex;
+
+    private Cone CurrentCone { 
+        get {
+            return cones[currentConeIndex];
+        }
+    }
 
     private bool handlingSwipe = false;
 
@@ -67,6 +77,15 @@ public class BoardManager : MonoBehaviour
             Debug.LogError("ScoopManager is null for BoardManager");
         }
 
+        cones.Add(Instantiate(conePrefab, transform.position, transform.rotation) as Cone);
+        cones.Add(Instantiate(conePrefab, transform.position, transform.rotation) as Cone);
+        foreach(Cone cone in cones) {
+            cone.SetBoard(this);
+            cone.Hide();
+        }
+        currentConeIndex = 0;
+        CurrentCone.Show();
+
         audioSource = gameObject.AddComponent<AudioSource>();
         livesCounter.text = "" + lives;
 
@@ -74,15 +93,31 @@ public class BoardManager : MonoBehaviour
         Gestures.SwipeEnded += EndSwipe;
 
     }
+
+    private void IncrementCurrentConeIndex() {
+        currentConeIndex = (currentConeIndex + 1) % cones.Count;
+    }
     
+    private void SwapCones() {
+        CurrentCone.Hide();
+        IncrementCurrentConeIndex();
+        CurrentCone.Show();
+    }
+
     public void HandleSwipe(SwipeInfo swipe)
     {
         if (handlingSwipe ||
-           swipe.Direction == SwipeInfo.SwipeDirection.UP ||
-           swipe.Direction == SwipeInfo.SwipeDirection.DOWN)
+           swipe.Direction == SwipeInfo.SwipeDirection.UP)
         {
             return;
         }
+
+        if(swipe.Direction == SwipeInfo.SwipeDirection.DOWN) {
+            // SwapCones();
+            // handlingSwipe = true;
+            return;
+        }
+
         if(TutorialActive()) {
             if(CurrentTutorialStep() == Tutorial.TutorialStep.Swipe) {
                 if(swipe.Direction == SwipeInfo.SwipeDirection.RIGHT) {
@@ -97,7 +132,7 @@ public class BoardManager : MonoBehaviour
             }
         }
         handlingSwipe = true;
-        cone.MoveCone(swipe.Direction);
+        CurrentCone.MoveCone(swipe.Direction);
     }
     
     public void EndSwipe() {
@@ -105,12 +140,12 @@ public class BoardManager : MonoBehaviour
     }
 
     public void ScoopTapped(int index) {
-        cone.HandleScoopTap(index);
+        CurrentCone.HandleScoopTap(index);
     }
 
     public void GameOver() {
         FreezeGame();
-        cone.GameOver();
+        CurrentCone.GameOver();
     }
 
     public void DropScoop() {
@@ -185,11 +220,11 @@ public class BoardManager : MonoBehaviour
     }
     public float GetHorizontalLerpSpeed()
     {
-        return cone.horizontalLerp.speed;
+        return CurrentCone.horizontalLerp.speed;
     }
 
     public int HitStack(Vector2Int scoop) {
-        if(cone.ValidLane(scoop.x)) {
+        if(CurrentCone.ValidLane(scoop.x)) {
             if(scoop.y <= ConeStackHeight() && scoop.y >= ConeStackHeight() - 2) {
                 return scoop.y;
             }
@@ -198,15 +233,15 @@ public class BoardManager : MonoBehaviour
     }
 
     public void AddScoopToCone(Scoop scoop) {
-        cone.AddScoop(scoop);
+        CurrentCone.AddScoop(scoop);
     }
 
     public int ConeLane() {
-        return cone.Lane();
+        return CurrentCone.Lane();
     }
 
     public int ConeStackHeight() {
-        return cone.StackHeight();
+        return CurrentCone.StackHeight();
     }
 
     private void OnDrawGizmos() {

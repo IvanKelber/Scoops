@@ -66,6 +66,24 @@ public class Cone : MonoBehaviour
         }
     }
 
+    public void SetBoard(BoardManager board) {
+        this.board = board;
+    }
+
+    public void Hide() {
+        foreach(Scoop scoop in scoopStack) {
+            scoop.gameObject.SetActive(false);
+        }
+        gameObject.SetActive(false);
+    }
+
+    public void Show() {
+        foreach(Scoop scoop in scoopStack) {
+            scoop.gameObject.SetActive(true);
+        }
+        gameObject.SetActive(true);
+    }
+
     public void MoveCone(SwipeInfo.SwipeDirection direction) {
         Vector3 currentPosition = board.GetPosition(currentIndex);
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
