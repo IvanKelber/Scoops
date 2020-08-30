@@ -47,13 +47,6 @@ public class Cone : MonoBehaviour
 
         audioSource = gameObject.AddComponent<AudioSource>();
 
-        // Add gesture listeners
-        Gestures.OnSwipe += HandleSwipe;
-        Gestures.SwipeEnded += EndSwipe;
-        Gestures.ThreeTap += ClearStack;
-
-        // Other event listeners
-        Scoop.ScoopTapped += HandleScoopTap;
     }
 
     private void Update() {
@@ -62,45 +55,26 @@ public class Cone : MonoBehaviour
         }
         if(!board.gameFrozen) {
             Vector3 velocity = horizontalLerp.CalculateMovement();
+            UpdateScoopMovement(velocity);
             transform.Translate(velocity);
         }
     }
 
-    public void HandleSwipe(SwipeInfo swipe)
-    {
-        if (handlingSwipe ||
-           swipe.Direction == SwipeInfo.SwipeDirection.UP ||
-           swipe.Direction == SwipeInfo.SwipeDirection.DOWN)
-        {
-            return;
+    void UpdateScoopMovement(Vector3 velocity) {
+        foreach(Scoop scoop in scoopStack) {
+            scoop.MoveScoop(velocity, currentIndex.x);
         }
-        if(board.TutorialActive()) {
-            if(board.CurrentTutorialStep() == Tutorial.TutorialStep.Swipe) {
-                if(swipe.Direction == SwipeInfo.SwipeDirection.RIGHT) {
-                    board.UnFreezeGame();
-                    board.AlertTutorial(Tutorial.TutorialStep.Tap);
-                } else {
-                    return;
-                }
-            } else {
-                // Don't allow swiping unless the Tutorial Step is Swipe
-                return;
-            }
-        }
-        handlingSwipe = true;
+    }
+
+    public void MoveCone(SwipeInfo.SwipeDirection direction) {
         Vector3 currentPosition = board.GetPosition(currentIndex);
-        Vector2Int nextIndex = board.GetNextIndex(currentIndex, swipe.Direction);
+        Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
         Vector3 nextPosition = board.GetPosition(nextIndex);
         if (horizontalLerp.DoLerp(currentPosition, nextPosition))
         {
             lastIndex = currentIndex;
             currentIndex = nextIndex;
         }
-    }
-
-    private void EndSwipe()
-    {
-        handlingSwipe = false;
     }
 
     public void AddScoop(Scoop scoop) {
@@ -167,17 +141,10 @@ public class Cone : MonoBehaviour
     }
 
     private WaitForSeconds CrumbleCone() {
-        // remove gesture listeners
-        Gestures.OnSwipe -= HandleSwipe;
-        Gestures.SwipeEnded -= EndSwipe;
-        Gestures.ThreeTap -= ClearStack;
-
-        // Other event listeners
-        Scoop.ScoopTapped -= HandleScoopTap;    
         return new WaitForSeconds(1);    
     }
 
-    private void HandleScoopTap(int index) {
+    public void HandleScoopTap(int index) {
         if(board.TutorialActive()) {
             if(board.CurrentTutorialStep() == Tutorial.TutorialStep.Tap) {
                 if(index == 1) {

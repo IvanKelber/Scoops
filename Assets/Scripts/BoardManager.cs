@@ -45,6 +45,7 @@ public class BoardManager : MonoBehaviour
     private Tutorial tutorial;
 
 
+    private bool handlingSwipe = false;
 
     private void Awake()
     {
@@ -69,8 +70,44 @@ public class BoardManager : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
         livesCounter.text = "" + lives;
 
+        Gestures.OnSwipe += HandleSwipe;
+        Gestures.SwipeEnded += EndSwipe;
+
     }
     
+    public void HandleSwipe(SwipeInfo swipe)
+    {
+        if (handlingSwipe ||
+           swipe.Direction == SwipeInfo.SwipeDirection.UP ||
+           swipe.Direction == SwipeInfo.SwipeDirection.DOWN)
+        {
+            return;
+        }
+        if(TutorialActive()) {
+            if(CurrentTutorialStep() == Tutorial.TutorialStep.Swipe) {
+                if(swipe.Direction == SwipeInfo.SwipeDirection.RIGHT) {
+                    UnFreezeGame();
+                    AlertTutorial(Tutorial.TutorialStep.Tap);
+                } else {
+                    return;
+                }
+            } else {
+                // Don't allow swiping unless the Tutorial Step is Swipe
+                return;
+            }
+        }
+        handlingSwipe = true;
+        cone.MoveCone(swipe.Direction);
+    }
+    
+    public void EndSwipe() {
+        handlingSwipe = false;
+    }
+
+    public void ScoopTapped(int index) {
+        cone.HandleScoopTap(index);
+    }
+
     public void GameOver() {
         FreezeGame();
         cone.GameOver();

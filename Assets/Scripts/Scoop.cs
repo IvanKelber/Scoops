@@ -9,8 +9,6 @@ public class Scoop : MonoBehaviour
 {
 
     private Lerp verticalLerp;
-    private Lerp horizontalLerp;
-    private bool handlingSwipe = false;
     public Vector2Int currentIndex;
 
     public Flavor flavor;
@@ -20,8 +18,6 @@ public class Scoop : MonoBehaviour
     public RenderQuad renderQuad;
 
     public ScoopIndicator scoopIndicator;
-
-    public static event Action<int> ScoopTapped = delegate {};
 
     private float scoopMeltDelay = .1f;
 
@@ -33,6 +29,8 @@ public class Scoop : MonoBehaviour
     private BoxCollider2D collider;
 
     private Vector3 tapDown;
+
+    private Vector3 velocity;
 
     //Should be called before scoop is part of stack
     private int DetermineConsecutiveFlavorScoops() {
@@ -54,7 +52,7 @@ public class Scoop : MonoBehaviour
 
     private void Update() {
         if(!board.gameFrozen) {
-            Vector3 velocity = horizontalLerp.CalculateMovement() + verticalLerp.CalculateMovement();
+            velocity += verticalLerp.CalculateMovement();
             transform.Translate(velocity);
         }
         if(scoopIndicator != null) {
@@ -66,12 +64,12 @@ public class Scoop : MonoBehaviour
                 scoopIndicator.gameObject.SetActive(true);
             }
         }
+        velocity = Vector3.zero;
     }
 
     public void Initialize(BoardManager board, Vector2Int currentIndex) {
         this.board = board;
         this.currentIndex = currentIndex;
-        horizontalLerp = gameObject.AddComponent<Lerp>();
 
         renderQuad = GetComponent<RenderQuad>();
         renderQuad.laneWidth = board.laneWidth;
@@ -89,6 +87,14 @@ public class Scoop : MonoBehaviour
         scoopIndicator.SetPosition(board.GetPosition(new Vector2Int(currentIndex.x, board.numberOfRows - 1)));
 
         CheckCollisions();
+    }
+
+    public void MoveScoop(Vector3 movement, int newLane) {
+        if(movement == Vector3.zero) {
+            return;
+        }
+        velocity += movement;
+        currentIndex.x = newLane;
     }
 
     private bool HitFloor() {
@@ -117,9 +123,6 @@ public class Scoop : MonoBehaviour
             if(index != board.ConeStackHeight()) {
                 MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
             }
-            Gestures.OnSwipe += HandleSwipe;
-            Gestures.SwipeEnded += EndSwipe;
-            horizontalLerp.speed = board.GetHorizontalLerpSpeed();
             verticalLerp.speed = 15;
             
         } else if(HitFloor() || HitMiddleStack()) {
@@ -129,35 +132,6 @@ public class Scoop : MonoBehaviour
             // Fall
             Fall();
         }
-    }
-
-    private void HandleSwipe(SwipeInfo swipe) {
-        if(handlingSwipe || 
-           swipe.Direction == SwipeInfo.SwipeDirection.UP || 
-           swipe.Direction == SwipeInfo.SwipeDirection.DOWN) {
-            return;
-        }
-        if(board.TutorialActive()) {
-            if(swipe.Direction != SwipeInfo.SwipeDirection.RIGHT) {
-                return;
-            }
-        }
-        handlingSwipe = true;
-        Vector3 currentPosition = board.GetPosition(currentIndex);
-        Vector2Int nextIndex = board.GetNextIndex(currentIndex, swipe.Direction);
-        Vector3 nextPosition = board.GetPosition(nextIndex);
-        if(horizontalLerp.DoLerp(currentPosition, nextPosition)) {
-            currentIndex = nextIndex;
-        }
-    }
-
-    public void RemoveInputHandlers() {
-        Gestures.OnSwipe -= HandleSwipe;
-        Gestures.SwipeEnded -= EndSwipe; 
-    }
-
-    private void EndSwipe() {
-        handlingSwipe = false;
     }
 
     public void MeltScoop() {
@@ -173,7 +147,6 @@ public class Scoop : MonoBehaviour
 
     private void OnDestroy() {
         scoopStack = null;
-        RemoveInputHandlers();
     }
 
     public void SetSpeed(float speed) {
@@ -207,7 +180,7 @@ public class Scoop : MonoBehaviour
 
     private void OnMouseUpAsButton() {
         if(scoopStack != null && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
-            ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
+            board.ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
     }
 
     private void OnDrawGizmos() {
