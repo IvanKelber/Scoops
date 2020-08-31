@@ -69,6 +69,7 @@ public class Tutorial : MonoBehaviour
                 }
                 break;
             case TutorialStep.Done:
+                Debug.Log("Done");
                 Destroy();
                 break;
         }
@@ -85,6 +86,7 @@ public class Tutorial : MonoBehaviour
 
     public void Destroy() {
         tutorialFinger.Destroy();
+        BoardManager.UnfreezeGame -= IncrementStep;
         board.scoopManager.spawning = true;
         Destroy(gameObject);
     }

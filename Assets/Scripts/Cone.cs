@@ -4,14 +4,11 @@ using UnityEngine;
 using System;
 using DentedPixel;
 
-[RequireComponent(typeof(Lerp))]
 public class Cone : MonoBehaviour
 {
     private bool handlingSwipe = false;
 
     private Vector2Int currentIndex;
-
-    public Lerp horizontalLerp;
 
     [SerializeField]
     private BoardManager board;
@@ -121,7 +118,7 @@ public class Cone : MonoBehaviour
     private IEnumerator HandleMatch(bool offTheTop)
     {
         comboMultiplier++;
-        yield return new WaitForSeconds(.3f);
+        yield return new WaitForSeconds(1f);
         audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
@@ -200,6 +197,7 @@ public class Cone : MonoBehaviour
                 PutScoopOnStack(scoops.Dequeue());
             } else {
                 if(CheckMatch()) {
+                    Debug.Log("Found match while popping scoops");
                     yield return StartCoroutine(HandleMatch(false));
                 } else {
                     PutScoopOnStack(scoops.Dequeue());

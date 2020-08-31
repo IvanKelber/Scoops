@@ -4,11 +4,9 @@ using UnityEngine;
 using System;
 
 [System.Serializable]
-[RequireComponent(typeof(Lerp))]
 public class Scoop : MonoBehaviour
 {
 
-    private Lerp verticalLerp;
     public Vector2Int currentIndex;
 
     public Flavor flavor;
@@ -45,11 +43,6 @@ public class Scoop : MonoBehaviour
         this.scoopStack = stack;
         this.ConsecutiveFlavorScoops = DetermineConsecutiveFlavorScoops();
         return ConsecutiveFlavorScoops;
-    }
-    private void Awake() {
-        // verticalLerp = GetComponent<Lerp>();
-        // verticalLerp.ReachedPoint += CheckCollisions;
-
     }
 
     private void Update() {

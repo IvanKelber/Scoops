@@ -65,6 +65,7 @@ public class BoardManager : MonoBehaviour
 
     private void Awake()
     {
+        LeanTween.LISTENERS_MAX = 25;
         PointsManager.Points = 0;
         if(cam == null) {
             Debug.LogError("Cannot calculate grid bounds because camera is missing.");
@@ -184,6 +185,7 @@ public class BoardManager : MonoBehaviour
     }
 
     private void OnFreezeGame() {
+        Debug.Log("Freezing Game");
         gameFrozen = true;
         if(coneTween != null) {
             LeanTween.pause(coneTween.id);
@@ -191,6 +193,7 @@ public class BoardManager : MonoBehaviour
     }
 
     private void OnUnfreezeGame() {
+        Debug.Log("Unfreezing Game");
         gameFrozen = false;
         if(coneTween != null) {
             LeanTween.resume(coneTween.id);
@@ -233,10 +236,6 @@ public class BoardManager : MonoBehaviour
         }
 
         return nextIndex;
-    }
-    public float GetHorizontalLerpSpeed()
-    {
-        return CurrentCone.horizontalLerp.speed;
     }
 
     public int HitStack(Vector2Int scoop) {

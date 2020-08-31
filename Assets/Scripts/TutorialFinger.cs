@@ -42,8 +42,7 @@ public class TutorialFinger : MonoBehaviour
     public void StopSwipe() {
         if(swiping) {
             swiping = false;
-            LeanTween.pause(gameObject);
-            Fade(0,.3f);
+            LeanTween.cancel(gameObject);
         }
     }
     public void StartTap(Vector3 tapPosition) {
@@ -63,20 +62,21 @@ public class TutorialFinger : MonoBehaviour
     }
 
     public void StopTween() {
-        LeanTween.pause(gameObject);
+        LeanTween.cancel(gameObject);
+        swiping = false;
+        tapping = false;
         Fade(0,.3f);
     }
 
     public void SetupTap(Vector3 tapPosition) {
+        Fade(0,0);
         LeanTween.move(gameObject, tapPosition, 0);
         LeanTween.rotate(gameObject, new Vector3(0,0,45), 0);
         Fade(1,.3f).setDelay(swipeDelay);
     }
 
     public LTDescr Tap() {
-
-        // return Fade(.5f,1).setOnComplete()
-        return LeanTween.scale(gameObject, new Vector3(.8f,.8f,.8f), .3f).setLoopPingPong();
+        return LeanTween.scale(gameObject, new Vector3(.8f,.8f,.8f), .5f).setLoopPingPong();
     }
 
     public void Swipe() {
