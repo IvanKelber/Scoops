@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using DentedPixel;
 
 [RequireComponent(typeof(Lerp))]
 public class Cone : MonoBehaviour
@@ -9,7 +10,6 @@ public class Cone : MonoBehaviour
     private bool handlingSwipe = false;
 
     private Vector2Int currentIndex;
-    private Vector2Int lastIndex;
 
     public Lerp horizontalLerp;
 
@@ -36,7 +36,6 @@ public class Cone : MonoBehaviour
 
     private void Start()
     {
-        horizontalLerp = GetComponent<Lerp>();
         currentIndex = new Vector2Int(1, 0); // Start in middle lane
 
         renderQuad = GetComponent<RenderQuad>();
@@ -47,23 +46,6 @@ public class Cone : MonoBehaviour
 
         audioSource = gameObject.AddComponent<AudioSource>();
 
-    }
-
-    private void Update() {
-        if(!handlingSwipe) {
-            lastIndex = currentIndex;
-        }
-        if(!board.gameFrozen) {
-            Vector3 velocity = horizontalLerp.CalculateMovement();
-            UpdateScoopMovement(velocity);
-            transform.Translate(velocity);
-        }
-    }
-
-    void UpdateScoopMovement(Vector3 velocity) {
-        foreach(Scoop scoop in scoopStack) {
-            scoop.MoveScoop(velocity, currentIndex.x);
-        }
     }
 
     public void SetBoard(BoardManager board) {
@@ -84,15 +66,16 @@ public class Cone : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void MoveCone(SwipeInfo.SwipeDirection direction) {
-        Vector3 currentPosition = board.GetPosition(currentIndex);
+    public LTDescr MoveCone(SwipeInfo.SwipeDirection direction) {
+        if(board.gameFrozen) {
+            return null;
+        }
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
         Vector3 nextPosition = board.GetPosition(nextIndex);
-        if (horizontalLerp.DoLerp(currentPosition, nextPosition))
-        {
-            lastIndex = currentIndex;
+        LeanTween.dispatchEvent(0, direction);
+        return LeanTween.move(gameObject, nextPosition, .1f).setOnComplete(() => {
             currentIndex = nextIndex;
-        }
+        });
     }
 
     public void AddScoop(Scoop scoop) {
@@ -164,10 +147,9 @@ public class Cone : MonoBehaviour
 
     public void HandleScoopTap(int index) {
         if(board.TutorialActive()) {
-            if(board.CurrentTutorialStep() == Tutorial.TutorialStep.Tap) {
+            if(board.CurrentTutorialStep() == Tutorial.TutorialStep.WaitingForTap) {
                 if(index == 1) {
-                    board.UnFreezeGame();
-                    board.AlertTutorial(Tutorial.TutorialStep.Done);
+                    board.Unfreeze();
                 }
             } else {
                 // Don't allow tapping during the tutorial unless it's the right time to tap
@@ -207,7 +189,6 @@ public class Cone : MonoBehaviour
         poppingScoops = false;
         if(scoopStack.Count == 0) {
             // Apply emptyConeBonus;
-            Debug.Log("Applying emptyConeBonusActive");
             PointsManager.AddPoints(emptyConeBonus * board.scoopManager.speed);
         }
     }
@@ -250,7 +231,7 @@ public class Cone : MonoBehaviour
     }
 
     public bool ValidLane(int lane) {
-        return lane == lastIndex.x;
+        return lane == currentIndex.x;
     }
 
     public void ClearStack()

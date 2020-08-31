@@ -31,6 +31,7 @@ public class Scoop : MonoBehaviour
     private Vector3 tapDown;
 
     private Vector3 velocity;
+    private LTDescr verticalScoopTween;
 
     //Should be called before scoop is part of stack
     private int DetermineConsecutiveFlavorScoops() {
@@ -46,15 +47,12 @@ public class Scoop : MonoBehaviour
         return ConsecutiveFlavorScoops;
     }
     private void Awake() {
-        verticalLerp = GetComponent<Lerp>();
-        verticalLerp.ReachedPoint += CheckCollisions;
+        // verticalLerp = GetComponent<Lerp>();
+        // verticalLerp.ReachedPoint += CheckCollisions;
+
     }
 
     private void Update() {
-        if(!board.gameFrozen) {
-            velocity += verticalLerp.CalculateMovement();
-            transform.Translate(velocity);
-        }
         if(scoopIndicator != null) {
             if(currentIndex.y <= board.numberOfRows) {
                 // Destroy scoop indicator
@@ -64,7 +62,6 @@ public class Scoop : MonoBehaviour
                 scoopIndicator.gameObject.SetActive(true);
             }
         }
-        velocity = Vector3.zero;
     }
 
     public void Initialize(BoardManager board, Vector2Int currentIndex) {
@@ -86,15 +83,21 @@ public class Scoop : MonoBehaviour
         scoopIndicator.SetIncomingFlavor(flavor);
         scoopIndicator.SetPosition(board.GetPosition(new Vector2Int(currentIndex.x, board.numberOfRows - 1)));
 
+        BoardManager.FreezeGame += FreezeScoop;
+        BoardManager.UnfreezeGame += UnfreezeScoop;
+    }
+
+    public void Start() {
         CheckCollisions();
     }
 
-    public void MoveScoop(Vector3 movement, int newLane) {
-        if(movement == Vector3.zero) {
-            return;
-        }
-        velocity += movement;
-        currentIndex.x = newLane;
+    public void MoveScoopHorizontally(LTEvent e) {
+        SwipeInfo.SwipeDirection direction = (SwipeInfo.SwipeDirection) e.data;
+        Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
+        Vector3 nextPosition = board.GetPosition(nextIndex);
+        LeanTween.move(gameObject, nextPosition,.1f).setOnComplete(() => {
+            currentIndex = nextIndex;
+        });
     }
 
     private bool HitFloor() {
@@ -123,13 +126,12 @@ public class Scoop : MonoBehaviour
             if(index != board.ConeStackHeight()) {
                 MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
             }
-            verticalLerp.speed = 15;
+            LeanTween.addListener(gameObject, 0, MoveScoopHorizontally);
             
         } else if(HitFloor() || HitMiddleStack()) {
             board.DropScoop();
             Destroy(this.gameObject);
         } else { 
-            // Fall
             Fall();
         }
     }
@@ -144,30 +146,42 @@ public class Scoop : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    private void FreezeScoop() {
+        if(verticalScoopTween != null) {
+            LeanTween.pause(verticalScoopTween.id);
+        }
+    }
+
+    private void UnfreezeScoop() {
+        if(verticalScoopTween != null) {
+            LeanTween.resume(verticalScoopTween.id);
+        }
+    }
 
     private void OnDestroy() {
         scoopStack = null;
-    }
-
-    public void SetSpeed(float speed) {
-        verticalLerp.speed = speed;
+        LeanTween.removeListener(gameObject, 0, MoveScoopHorizontally);
+        BoardManager.FreezeGame -= FreezeScoop;
+        BoardManager.UnfreezeGame -= UnfreezeScoop;
     }
     
     public void MoveToIndex(Vector2Int index) {
-        if(verticalLerp.DoLerp(board.GetPosition(currentIndex), board.GetPosition(index))) {
+        MoveScoopVertically(board.GetPosition(index), .05f).setOnComplete( () => {
             currentIndex = index;
-        };
+        });
     }
 
 
     private void Fall() {
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
-        if(verticalLerp == null) {
-            return;
-        } 
-        if(verticalLerp.DoLerp(board.GetPosition(currentIndex), board.GetPosition(nextIndex))) {
+        verticalScoopTween = MoveScoopVertically(board.GetPosition(nextIndex), .2f).setOnComplete(() => {
             currentIndex = nextIndex;
-        }
+            CheckCollisions();
+        });
+    }
+
+    public LTDescr MoveScoopVertically(Vector3 finalPosition, float duration) {
+        return LeanTween.move(gameObject, finalPosition, duration);
     }
 
     public void SetFlavor(Flavor flavor) {
@@ -181,6 +195,9 @@ public class Scoop : MonoBehaviour
     private void OnMouseUpAsButton() {
         if(scoopStack != null && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
             board.ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
+        else if(board.devControls) {
+            Destroy(gameObject);
+        }
     }
 
     private void OnDrawGizmos() {

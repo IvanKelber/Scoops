@@ -21,6 +21,10 @@ public class Flavor {
         return a.color != b.color;
     }
 
+    public override string ToString() {
+        return "<color=" + color + "> " + name + "</color>";
+    }  
+
 }
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using TMPro;
 
 public class BoardManager : MonoBehaviour
@@ -55,7 +56,12 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    private LTDescr coneTween;
+
     private bool handlingSwipe = false;
+
+    public static event Action FreezeGame = delegate { };
+    public static event Action UnfreezeGame = delegate { };
 
     private void Awake()
     {
@@ -92,6 +98,9 @@ public class BoardManager : MonoBehaviour
         Gestures.OnSwipe += HandleSwipe;
         Gestures.SwipeEnded += EndSwipe;
 
+        BoardManager.FreezeGame += OnFreezeGame;
+        BoardManager.UnfreezeGame += OnUnfreezeGame;
+
     }
 
     private void IncrementCurrentConeIndex() {
@@ -119,20 +128,21 @@ public class BoardManager : MonoBehaviour
         }
 
         if(TutorialActive()) {
-            if(CurrentTutorialStep() == Tutorial.TutorialStep.Swipe) {
+            if(CurrentTutorialStep() == Tutorial.TutorialStep.WaitingForSwipe) {
                 if(swipe.Direction == SwipeInfo.SwipeDirection.RIGHT) {
-                    UnFreezeGame();
-                    AlertTutorial(Tutorial.TutorialStep.Tap);
+                    UnfreezeGame();
                 } else {
                     return;
                 }
             } else {
-                // Don't allow swiping unless the Tutorial Step is Swipe
+                // Don't allow swiping unless the Tutorial Step is WaitingForSwipe
                 return;
             }
         }
         handlingSwipe = true;
-        CurrentCone.MoveCone(swipe.Direction);
+        if(CurrentCone != null) {
+            coneTween = CurrentCone.MoveCone(swipe.Direction);
+        }
     }
     
     public void EndSwipe() {
@@ -148,20 +158,20 @@ public class BoardManager : MonoBehaviour
         CurrentCone.GameOver();
     }
 
+    public void Freeze() {
+        FreezeGame();
+    }
+
+    public void Unfreeze() {
+        UnfreezeGame();
+    }
+
     public void DropScoop() {
         audioManager.Play(audioSource, audioManager.DropScoopAudio);
         lives--;
         livesCounter.text = "" + lives;
         if(lives == 0) {
             GameOver();
-        }
-    }
-
-    public void AlertTutorial(Tutorial.TutorialStep newStep) {
-        tutorial.SetStep(newStep);
-        if(tutorial.GetStep() == Tutorial.TutorialStep.Done) {
-            scoopManager.spawning = true;
-            tutorial.Destroy();
         }
     }
 
@@ -173,16 +183,22 @@ public class BoardManager : MonoBehaviour
         return tutorial != null;
     }
 
-    public void FreezeGame() {
+    private void OnFreezeGame() {
         gameFrozen = true;
+        if(coneTween != null) {
+            LeanTween.pause(coneTween.id);
+        }
     }
 
-    public void UnFreezeGame() {
+    private void OnUnfreezeGame() {
         gameFrozen = false;
+        if(coneTween != null) {
+            LeanTween.resume(coneTween.id);
+        }
     }
 
     public int RandomLane() {
-        return Random.Range(0, numberOfLanes);
+        return UnityEngine.Random.Range(0, numberOfLanes);
     }
 
 

@@ -43,10 +43,11 @@ public class TutorialFinger : MonoBehaviour
         if(swiping) {
             swiping = false;
             LeanTween.pause(gameObject);
-            Fade(0,.3f).setOnComplete(Reset);
+            Fade(0,.3f);
         }
     }
     public void StartTap(Vector3 tapPosition) {
+        LeanTween.resume(gameObject);
         if(!tapping) {
             tapping = true;
             SetupTap(tapPosition);
@@ -57,8 +58,13 @@ public class TutorialFinger : MonoBehaviour
         if(tapping) {
             tapping = false;
             LeanTween.pause(gameObject);
-            Fade(0,.3f).setOnComplete(Reset);
+            Fade(0,.3f);
         }
+    }
+
+    public void StopTween() {
+        LeanTween.pause(gameObject);
+        Fade(0,.3f);
     }
 
     public void SetupTap(Vector3 tapPosition) {

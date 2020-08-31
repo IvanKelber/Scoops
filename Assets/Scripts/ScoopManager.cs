@@ -59,6 +59,9 @@ public class ScoopManager : MonoBehaviour
     {
         if(board != null) {
             board.scoopManager = this;
+        } else {
+            Debug.LogError("Board is null");
+            return;
         }
         speed = startScoopSpeed;
         spawnDelay = startSpawnDelay;
@@ -112,7 +115,6 @@ public class ScoopManager : MonoBehaviour
 
     public void SetScoop(Scoop scoop, Flavor flavor, float speed, Vector2Int startIndex) {
         scoop.SetFlavor(flavor);
-        scoop.SetSpeed(speed);
         scoop.Initialize(board, startIndex);
     }
 
