@@ -159,9 +159,13 @@ public class Scoop : MonoBehaviour
     }
     
     public void MoveToIndex(Vector2Int index) {
-        MoveScoopVertically(board.GetPosition(index), .05f).setOnComplete( () => {
+        MoveScoopVertically(board.GetPosition(index), .01f).setOnComplete( () => {
             currentIndex = index;
         });
+    }
+
+    public void Pop(Vector2Int index) {
+        MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setOnComplete(()=>MoveToIndex(index));
     }
 
 
@@ -188,7 +192,7 @@ public class Scoop : MonoBehaviour
     private void OnMouseUpAsButton() {
         if(scoopStack != null && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
             board.ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
-        else if(board.devControls) {
+        else if(board.devControls && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance) {
             Destroy(gameObject);
         }
     }

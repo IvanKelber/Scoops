@@ -421,7 +421,7 @@ MonoBehaviour:
   lives: 3
   gameFrozen: 0
   audioSource: {fileID: 0}
-  devControls: 0
+  devControls: 1
   livesCounter: {fileID: 861537848}
   audioManager: {fileID: 11400000, guid: e16f988e7e9514b8d9f21bc9f6a5394c, type: 2}
   tutorial: {fileID: 1439309503}

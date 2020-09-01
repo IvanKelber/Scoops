@@ -105,7 +105,6 @@ public class BoardManager : MonoBehaviour
         if(devControls) {
             foreach(char c in Input.inputString) {
                 if(c >= '0' && c <= '9') {
-                    Debug.Log("Character " + c + " pressed");
                     scoopManager.Dev_SpawnScoop((int)Char.GetNumericValue(c));
                 }
             }
@@ -193,7 +192,6 @@ public class BoardManager : MonoBehaviour
     }
 
     private void OnFreezeGame() {
-        Debug.Log("Freezing Game");
         gameFrozen = true;
         if(coneTween != null) {
             LeanTween.pause(coneTween.id);
@@ -201,7 +199,6 @@ public class BoardManager : MonoBehaviour
     }
 
     private void OnUnfreezeGame() {
-        Debug.Log("Unfreezing Game");
         gameFrozen = false;
         if(coneTween != null) {
             LeanTween.resume(coneTween.id);

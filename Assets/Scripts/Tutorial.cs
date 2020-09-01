@@ -69,7 +69,6 @@ public class Tutorial : MonoBehaviour
                 }
                 break;
             case TutorialStep.Done:
-                Debug.Log("Done");
                 Destroy();
                 break;
         }
