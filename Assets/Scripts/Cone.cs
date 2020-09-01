@@ -30,6 +30,8 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private float emptyConeBonus;
 
+    private bool handlingMatch;
+    private Coroutine handleMatchRoutine;
 
     private void Start()
     {
@@ -83,7 +85,7 @@ public class Cone : MonoBehaviour
         scoopStack.Push(scoop);
     
         if(CheckMatch()) {
-            StartCoroutine(HandleMatch(true));
+            handleMatchRoutine = StartCoroutine(HandleMatch(true));
         } else if (StackHeight() == board.numberOfRows + 1)
         {
             // Allow the user to be quick if their stack reaches the very top.
@@ -117,8 +119,9 @@ public class Cone : MonoBehaviour
 
     private IEnumerator HandleMatch(bool offTheTop)
     {
+        handlingMatch = true;
         comboMultiplier++;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
         audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
@@ -136,6 +139,7 @@ public class Cone : MonoBehaviour
 
             }
         }
+        handlingMatch = false;
     }
 
     private WaitForSeconds CrumbleCone() {
@@ -161,6 +165,9 @@ public class Cone : MonoBehaviour
     
     private IEnumerator PopScoops(int index) {
         // Debug_ScoopList("Before popping: ",scoopStack);
+        if(handlingMatch) {
+            StopCoroutine(handleMatchRoutine);
+        }
         Queue<Scoop> scoops = new Queue<Scoop>();
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
@@ -172,7 +179,8 @@ public class Cone : MonoBehaviour
         audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
         // Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         // Debug_ScoopList("Scoops List: ", scoops);
-        yield return StartCoroutine(AddScoopsToStack(scoops));
+        handleMatchRoutine = StartCoroutine(AddScoopsToStack(scoops));
+        yield return handleMatchRoutine;
         // Debug_ScoopList("ScoopStack after adding: ", scoopStack);
         if(CheckMatch()) {
             yield return StartCoroutine(HandleMatch(false));
