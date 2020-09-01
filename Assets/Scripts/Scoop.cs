@@ -86,7 +86,7 @@ public class Scoop : MonoBehaviour
 
     public void MoveScoopHorizontally(LTEvent e) {
         SwipeInfo.SwipeDirection direction = (SwipeInfo.SwipeDirection) e.data;
-        Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
+        Vector2Int nextIndex = board.GetNextIndex(new Vector2Int(board.ConeLane(), currentIndex.y), direction);
         Vector3 nextPosition = board.GetPosition(nextIndex);
         LeanTween.move(gameObject, nextPosition,.1f).setOnComplete(() => {
             currentIndex = nextIndex;
@@ -116,10 +116,10 @@ public class Scoop : MonoBehaviour
 
           
             board.AddScoopToCone(this);
-            // if(index != board.ConeStackHeight()) {
-            //     MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
-            // }
-            LeanTween.addListener(gameObject, 0, MoveScoopHorizontally);
+            if(index != board.ConeStackHeight()) {
+                MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
+            }
+            LeanTween.addListener(gameObject, (int) BoardManager.LeanTweenEvent.HorizontalSwipe, MoveScoopHorizontally);
             
         } else if(HitFloor() || HitMiddleStack()) {
             board.DropScoop();
@@ -153,7 +153,7 @@ public class Scoop : MonoBehaviour
 
     private void OnDestroy() {
         scoopStack = null;
-        LeanTween.removeListener(gameObject, 0, MoveScoopHorizontally);
+        LeanTween.removeListener(gameObject, (int) BoardManager.LeanTweenEvent.HorizontalSwipe, MoveScoopHorizontally);
         BoardManager.FreezeGame -= FreezeScoop;
         BoardManager.UnfreezeGame -= UnfreezeScoop;
     }

@@ -7,6 +7,10 @@ using TMPro;
 public class BoardManager : MonoBehaviour
 {
 
+    public enum LeanTweenEvent {
+        HorizontalSwipe
+    }
+
     public int numberOfLanes;
     public int numberOfRows;
     public Camera cam;

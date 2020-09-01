@@ -15,8 +15,7 @@ public class PointsManager
     public static event Action<int> PointsAdded = delegate {};
 
     public static float GetPointsFromMatch(int scoopsInMatch) {
-        // f(x) = 4(5^(x-1)) yields f(3) = 100, f(4) = 500, f(5) = 2500
-        return 4*Mathf.Pow(5, scoopsInMatch - 1); 
+        return 50 * (scoopsInMatch*scoopsInMatch + 1); 
     }
 
     public static float CalculatePoints(float points, int multiplier) {

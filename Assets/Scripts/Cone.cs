@@ -77,7 +77,7 @@ public class Cone : MonoBehaviour
         }
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
         Vector3 nextPosition = board.GetPosition(nextIndex);
-        LeanTween.dispatchEvent(0, direction);
+        LeanTween.dispatchEvent((int) BoardManager.LeanTweenEvent.HorizontalSwipe, direction);
         return LeanTween.move(gameObject, nextPosition, .1f).setOnComplete(() => {
             currentIndex = nextIndex;
         });
