@@ -121,7 +121,8 @@ public class Cone : MonoBehaviour
     {
         handlingMatch = true;
         comboMultiplier++;
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
+        handlingMatch = false;
         audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
@@ -139,7 +140,6 @@ public class Cone : MonoBehaviour
 
             }
         }
-        handlingMatch = false;
     }
 
     private WaitForSeconds CrumbleCone() {
@@ -158,7 +158,7 @@ public class Cone : MonoBehaviour
             }
         }
         if(!board.gameFrozen && !poppingScoops) {
-            poppingScoops = true;
+            // poppingScoops = true;
             StartCoroutine(PopScoops(index));
         }
     }
@@ -167,6 +167,7 @@ public class Cone : MonoBehaviour
         // Debug_ScoopList("Before popping: ",scoopStack);
         if(handlingMatch) {
             StopCoroutine(handleMatchRoutine);
+            comboMultiplier = 0;
         }
         Queue<Scoop> scoops = new Queue<Scoop>();
         int popCount = scoopStack.Count;

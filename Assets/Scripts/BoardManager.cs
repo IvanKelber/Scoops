@@ -27,9 +27,6 @@ public class BoardManager : MonoBehaviour
     public float lives = 3;
     public bool gameFrozen = false;
 
-    private float timeUntilScoreUpdate;
-    private float scoreUpdateDelay = 1f;
-
     public AudioSource audioSource;
 
     public bool devControls = false;
@@ -102,6 +99,17 @@ public class BoardManager : MonoBehaviour
         BoardManager.FreezeGame += OnFreezeGame;
         BoardManager.UnfreezeGame += OnUnfreezeGame;
 
+    }
+
+    private void Update() {
+        if(devControls) {
+            foreach(char c in Input.inputString) {
+                if(c >= '0' && c <= '9') {
+                    Debug.Log("Character " + c + " pressed");
+                    scoopManager.Dev_SpawnScoop((int)Char.GetNumericValue(c));
+                }
+            }
+        }
     }
 
     private void IncrementCurrentConeIndex() {

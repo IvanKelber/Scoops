@@ -116,9 +116,9 @@ public class Scoop : MonoBehaviour
 
           
             board.AddScoopToCone(this);
-            if(index != board.ConeStackHeight()) {
-                MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
-            }
+            // if(index != board.ConeStackHeight()) {
+            //     MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
+            // }
             LeanTween.addListener(gameObject, 0, MoveScoopHorizontally);
             
         } else if(HitFloor() || HitMiddleStack()) {

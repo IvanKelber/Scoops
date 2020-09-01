@@ -99,6 +99,14 @@ public class ScoopManager : MonoBehaviour
         }
     }
 
+    public void Dev_SpawnScoop(int flavorIndex) {
+        if(flavorIndex >= flavors.Length) {
+            return;
+        }
+        Scoop scoop = InstantiateScoop();
+        SetScoop(scoop, flavors[flavorIndex], speed, new Vector2Int(board.ConeLane(), board.ConeStackHeight() + 1));
+    }
+
     public Scoop InstantiateScoop() {
         Scoop scoop = Instantiate(scoopPrefab, transform.position, transform.rotation) as Scoop;
         return scoop;
