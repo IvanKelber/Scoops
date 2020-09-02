@@ -210,10 +210,6 @@ public class Cone : MonoBehaviour
         }
     }
 
-    private LTDescr PopAnimation() {
-        pop
-    }
-
     private IEnumerator AddScoopsToStack(Queue<Scoop> scoops) {
         while(scoops.Count > 0) {
             Flavor currentFlavor = GetTopFlavor();
