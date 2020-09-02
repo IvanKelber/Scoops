@@ -24,6 +24,9 @@ public class Tutorial : MonoBehaviour
 
     void Start()
     {
+        if(board.devControls) {
+            // Destroy(this);
+        }
         step = TutorialStep.Init;
         BoardManager.UnfreezeGame += IncrementStep;
     }
@@ -69,7 +72,7 @@ public class Tutorial : MonoBehaviour
                 }
                 break;
             case TutorialStep.Done:
-                Destroy();
+                StartCoroutine(Destroy());
                 break;
         }
     }
@@ -83,11 +86,13 @@ public class Tutorial : MonoBehaviour
         return step;
     }
 
-    public void Destroy() {
+    public IEnumerator Destroy() {
+        yield return new WaitForSeconds(.1f);
+        board.scoopManager.spawning = true;
         tutorialFinger.Destroy();
         BoardManager.UnfreezeGame -= IncrementStep;
-        board.scoopManager.spawning = true;
         Destroy(gameObject);
+        yield return null;
     }
 
 }

@@ -192,7 +192,7 @@ public class BoardManager : MonoBehaviour
     }
 
     public bool TutorialActive() {
-        return tutorial != null;
+        return tutorial != null && tutorial.GetStep() != Tutorial.TutorialStep.Done;
     }
 
     private void OnFreezeGame() {

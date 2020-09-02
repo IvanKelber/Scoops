@@ -141,11 +141,13 @@ public class Scoop : MonoBehaviour
 
     private void FreezeScoop() {
         if(verticalScoopTween != null) {
+            Debug.Log("Freezing scoop: " + flavor,gameObject);
             LeanTween.pause(verticalScoopTween.id);
         }
     }
 
     private void UnfreezeScoop() {
+        Debug.Log("Attempting to unfreeze scoop : " + flavor + ". VerticalScoopTween is " + verticalScoopTween, gameObject);
         if(verticalScoopTween != null) {
             LeanTween.resume(verticalScoopTween.id);
         }
@@ -160,6 +162,7 @@ public class Scoop : MonoBehaviour
     
     public void MoveToIndex(Vector2Int index) {
         MoveScoopVertically(board.GetPosition(index), .01f).setOnComplete( () => {
+            Debug.Log("Finished moving scoop: " + flavor + " to index " + index + "(" + board.GetPosition(index) + ")", gameObject);
             currentIndex = index;
         });
     }
