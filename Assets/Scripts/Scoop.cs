@@ -161,10 +161,8 @@ public class Scoop : MonoBehaviour
     }
     
     public void MoveToIndex(Vector2Int index) {
-        MoveScoopVertically(board.GetPosition(index), .1f).setOnComplete( () => {
-            Debug.Log("Finished moving scoop: " + flavor + " to index " + index + "(" + board.GetPosition(index) + ")", gameObject);
-            currentIndex = index;
-        });
+        MoveScoopVertically(board.GetPosition(index), .1f);
+        currentIndex = index;
     }
 
     public void DropDownAfterMatch(Vector2Int index) {
