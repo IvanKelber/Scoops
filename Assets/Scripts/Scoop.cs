@@ -117,7 +117,7 @@ public class Scoop : MonoBehaviour
           
             board.AddScoopToCone(this);
             if(index != board.ConeStackHeight()) {
-                MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
+                // MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
             }
             LeanTween.addListener(gameObject, (int) BoardManager.LeanTweenEvent.HorizontalSwipe, MoveScoopHorizontally);
             
@@ -161,14 +161,20 @@ public class Scoop : MonoBehaviour
     }
     
     public void MoveToIndex(Vector2Int index) {
-        MoveScoopVertically(board.GetPosition(index), .01f).setOnComplete( () => {
+        MoveScoopVertically(board.GetPosition(index), .1f).setOnComplete( () => {
             Debug.Log("Finished moving scoop: " + flavor + " to index " + index + "(" + board.GetPosition(index) + ")", gameObject);
             currentIndex = index;
         });
     }
 
+    public void DropDownAfterMatch(Vector2Int index) {
+        MoveScoopVertically(board.GetPosition(index), .1f).setEase(LeanTweenType.easeInExpo).setOnComplete( () => {
+            currentIndex = index;
+        });
+    }
+
     public void Pop(Vector2Int index) {
-        MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setOnComplete(()=>MoveToIndex(index));
+        MoveScoopVertically(board.GetPosition(index) + Vector3.up*.75f, 0.3f).setEase(LeanTweenType.easeInOutCirc).setOnComplete(()=>MoveToIndex(index));
     }
 
 

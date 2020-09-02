@@ -25,7 +25,7 @@ public class Tutorial : MonoBehaviour
     void Start()
     {
         if(board.devControls) {
-            // Destroy(this);
+            Destroy(gameObject);
         }
         step = TutorialStep.Init;
         BoardManager.UnfreezeGame += IncrementStep;
