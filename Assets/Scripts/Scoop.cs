@@ -168,7 +168,7 @@ public class Scoop : MonoBehaviour
     }
 
     public void Pop(Vector2Int index) {
-        MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setOnComplete(()=>MoveToIndex(index));
+        MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.2f).setEase(LeanTweenType.easeOutCirc).setOnComplete(()=>MoveToIndex(index));
     }
 
 

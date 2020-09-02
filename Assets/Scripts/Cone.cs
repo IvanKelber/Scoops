@@ -133,13 +133,14 @@ public class Cone : MonoBehaviour
         comboMultiplier++;
         yield return new WaitForSeconds(handleMatchDelay);
         handlingMatch = false;
-        audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
         int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
         for (int i = 0; i < matchingScoops; i++)
         {
             scoopStack.Pop().MeltScoop();
         }
+        audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
+
         if(offTheTop) {
             PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
             comboMultiplier = 0;
@@ -178,6 +179,7 @@ public class Cone : MonoBehaviour
         poppingScoops = true;
         Debug_ScoopList("Before popping: ",scoopStack);
         if(handlingMatch) {
+            board.Unfreeze();
             StopCoroutine(handleMatchRoutine);
             comboMultiplier = 0;
         }
@@ -189,14 +191,17 @@ public class Cone : MonoBehaviour
             poppedScoops.Enqueue(scoop);
             scoop.Pop(new Vector2Int(Lane(), popHeight));
         }
+        yield return new WaitForSeconds(.2f);
         audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
         Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         Debug_ScoopList("Scoops List: ", poppedScoops);
         yield return StartCoroutine(AddScoopsToStack(poppedScoops));
         Debug_ScoopList("ScoopStack after adding: ", scoopStack);
         if(CheckMatch()) {
+            board.Freeze();
             handleMatchRoutine = StartCoroutine(HandleMatch(false));
             yield return handleMatchRoutine;
+            board.Unfreeze();
 
         }
 
@@ -217,8 +222,10 @@ public class Cone : MonoBehaviour
                 PutScoopOnStack(scoops.Dequeue());
             } else {
                 if(CheckMatch()) {
+                    board.Freeze();
                     handleMatchRoutine = StartCoroutine(HandleMatch(false));
                     yield return handleMatchRoutine;
+                    board.Unfreeze();
                 } else {
                     PutScoopOnStack(scoops.Dequeue());
                 }
