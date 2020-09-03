@@ -92,12 +92,13 @@ public class Cone : MonoBehaviour
         scoop.CalculateConsecutiveFlavors(scoopStack);
         scoopStack.Add(scoop);
     
-        if(CheckMatch()) {
-            if(handlingMatch && GetTopFlavor() == scoop.flavor) {
-                StopCoroutine(handleMatchRoutine);
-            }
-            handleMatchRoutine = StartCoroutine(HandleMatch(true));
-        } else if (StackHeight() == board.numberOfRows + 1)
+        // if(CheckMatch()) {
+        //     if(handlingMatch && GetTopFlavor() == scoop.flavor) {
+        //         StopCoroutine(handleMatchRoutine);
+        //     }
+        //     handleMatchRoutine = StartCoroutine(HandleMatch(true));
+        // } else 
+        if (StackHeight() == board.numberOfRows + 1)
         {
             // Allow the user to be quick if their stack reaches the very top.
             // Also allows the user to catch falling scoops to make a match of 3 at the very top
@@ -182,6 +183,73 @@ public class Cone : MonoBehaviour
             StartCoroutine(PopScoops(index));
         }
     }
+
+    private List<StackNode> CheckMatch(List<Scoop> scoops) {
+        Stack<StackNode> stack = new Stack<StackNode>();
+        List<StackNode> indices = new List<StackNode>();
+        for(int i = 0; i < scoops.Count; i++) {
+            if(stack.Count == 0) {
+                //stack is empty, push node
+                stack.Push(new StackNode(flavor, i));
+            } else if(stack.Peek().flavor == scoops[i].flavor) {
+                //stack.peek is the same flavor, merge node
+                stack.Peek()++;
+            } else {
+                //stack.peek is different flavor, check/handle match
+                if(stack.Peek().consecutiveScoops >= 3) {
+                    // foudn match
+                    indices.Add(stack.pop());
+                    if(stack.Count > 0 && stack.Peek().flavor == scoops[i].flavor) {
+                        //merge same flavored node
+                        stack.Peek()++;
+                        continue;
+                    }
+                }
+                stack.Push(new StackNode(flavor, i));
+            }
+        }
+        if(stack.Count > 0 && stack.Peek().consecutiveScoops >= 3) {
+            // There is still a match that needs to be accounted for
+            indices.Add(stack.Pop());
+        }
+        return indices;
+    }
+
+    private IEnumerator HandleMatch(List<StackNode> matches) {
+        board.Freeze();
+        for(int i = 0; i < matches.Count; i++) {
+            // handle match i
+            //Destroy scoop game objects
+            yield return new WaitForSeconds(1);
+            for(int j = matches[i].startIndex; j < matches[i].startIndex + matches[i].consecutiveScoops; j++) {
+                scoopStack[i].MeltScoop();
+            }
+            // move everthing above matches[i].startIndex + matches[i].consecutiveScoops down
+            for(int j = matches[i].startIndex + matches[i].consecutiveScoops; j < scoopStack.Count; j++) {
+                scoopStack[j].DropAfterMatch(new Vector2Int(scoopStack[j].currentIndex.x, scoopStack[j].currentIndex.y - matches[i].consecutiveScoops) + 1);
+            }
+            scoopStack.RemoveRange(matches[i].startIndex, matches[i].consecutiveScoops);
+            yield return new WaitForSeconds(1);
+        }
+        board.Unfreeze();
+    }
+
+    struct StackNode {
+        public Flavor flavor;
+        public int consecutiveScoops;
+        public int startIndex;
+
+        public StackNode(Flavor flavor, int startIndex) {
+            this.flavor == flavor;
+            this.startIndex = startIndex;
+            consecutiveScoops = 1;
+        }
+
+        public static void operator ++(StackNode node) {
+            node.consecutiveScoops++;
+        }
+    }
+
     
     private IEnumerator PopScoops(int index) {
         poppingScoops = true;
@@ -206,10 +274,10 @@ public class Cone : MonoBehaviour
         Debug_ScoopList("Scoops List: ", poppedScoops);
         yield return StartCoroutine(AddScoopsToStack(poppedScoops));
         Debug_ScoopList("ScoopStack after adding: ", scoopStack);
-        if(CheckMatch()) {
-            handleMatchRoutine = StartCoroutine(HandleMatch(false));
-            yield return handleMatchRoutine;
-        }
+        // if(CheckMatch()) {
+        //     handleMatchRoutine = StartCoroutine(HandleMatch(false));
+        //     yield return handleMatchRoutine;
+        // }
 
         PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
         comboMultiplier = 0;
@@ -227,15 +295,15 @@ public class Cone : MonoBehaviour
             if(scoops.Peek().flavor == currentFlavor) {
                 PutScoopOnStack(scoops.Dequeue());
             } else {
-                if(CheckMatch()) {
-                    handleMatchRoutine = StartCoroutine(HandleMatch(false));
-                    yield return handleMatchRoutine;
-                } else {
+                // if(CheckMatch()) {
+                //     handleMatchRoutine = StartCoroutine(HandleMatch(false));
+                //     yield return handleMatchRoutine;
+                // } else {
                     PutScoopOnStack(scoops.Dequeue());
-                }
+                // }
             }
         }
-
+        yield return null;
     }
 
     private Flavor GetTopFlavor() {

@@ -113,15 +113,17 @@ public class Scoop : MonoBehaviour
         int index = HitStack();
         if(index != -1) {
             // We've hit the stack
-            Debug.Log("scoop " + flavor + " hit the stack at index: " + index, gameObject);
-
           
             board.AddScoopToCone(this);
             if(index != board.ConeStackHeight()) {
                 MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
             }
+            // Can now be swiped left and right
             LeanTween.addListener(gameObject, (int) BoardManager.LeanTweenEvent.HorizontalSwipe, MoveScoopHorizontally);
-            
+
+            // Can no longer be frozen/unfrozen
+            BoardManager.FreezeGame -= FreezeScoop;
+            BoardManager.UnfreezeGame -= UnfreezeScoop;
         } else if(HitFloor() || HitMiddleStack()) {
             board.DropScoop();
             Destroy(this.gameObject);
@@ -168,24 +170,24 @@ public class Scoop : MonoBehaviour
     
     public void MoveToIndex(Vector2Int index) {
         MoveScoopVertically(board.GetPosition(index), .01f).setOnComplete( () => {
-            Debug.Log("Finished moving scoop: " + flavor + " to index " + index + "(" + board.GetPosition(index) + ")", gameObject);
             currentIndex = index;
         });
     }
 
     public void Pop(Vector2Int index) {
         MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setEase(LeanTweenType.easeOutCirc).setOnComplete(()=> {
-            Debug.Log("Completed initial part of pop for scoop: " + flavor, gameObject);
             MoveToIndex(index);
         });
     }
 
+    public void DropAfterMatch() {
+        
+    }
 
     private void Fall() {
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
 
         verticalScoopTween = MoveScoopVertically(board.GetPosition(nextIndex), .2f).setOnComplete(() => {
-            Debug.Log("Done falling.  Checking new collisions");
             currentIndex = nextIndex;
             CheckCollisions();
         });
