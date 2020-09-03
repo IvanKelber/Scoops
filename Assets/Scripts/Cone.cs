@@ -20,7 +20,7 @@ public class Cone : MonoBehaviour
     [SerializeField]
     private RenderQuad renderQuad;
 
-    private Stack<Scoop> scoopStack = new Stack<Scoop>();
+    private List<Scoop> scoopStack = new List<Scoop>();
 
     private int comboMultiplier = 0;
     private float points = 0;
@@ -84,11 +84,13 @@ public class Cone : MonoBehaviour
     }
 
     public void AddScoop(Scoop scoop) {
-        if(scoop.scoopStack != null) {
+        // Debug_ScoopList("Adding scoop: " + scoop.flavor + " to scoop List", scoopStack);
+        // Debug_ScoopList("scoop.scoopStack: ",scoop.scoopStack);
+        if(scoop.scoopStack.Count > 0) {
             return;
         }
         scoop.CalculateConsecutiveFlavors(scoopStack);
-        scoopStack.Push(scoop);
+        scoopStack.Add(scoop);
     
         if(CheckMatch()) {
             if(handlingMatch && GetTopFlavor() == scoop.flavor) {
@@ -106,7 +108,7 @@ public class Cone : MonoBehaviour
 
     private void PutScoopOnStack(Scoop scoop) {
         scoop.CalculateConsecutiveFlavors(scoopStack);
-        scoopStack.Push(scoop);
+        scoopStack.Add(scoop);
         Debug.Log("Putting scoop : " + scoop.flavor + " on stack at index: " + new Vector2Int(Lane(), StackHeight() - 1));
         scoop.MoveToIndex(new Vector2Int(Lane(), StackHeight() - 1));
     }
@@ -119,7 +121,9 @@ public class Cone : MonoBehaviour
         int pops = StackHeight() - 1;
         for(int i = 0; i < pops; i++) {
             audioManager.Play(audioSource, audioManager.DropScoopAudio);
-            scoopStack.Pop().MeltScoop();
+            Scoop scoop = scoopStack[scoopStack.Count - 1];
+            scoopStack.RemoveAt(scoopStack.Count - 1);
+            scoop.MeltScoop();
             yield return new WaitForSeconds(.1f);
         }
         yield return CrumbleCone();
@@ -133,11 +137,13 @@ public class Cone : MonoBehaviour
         comboMultiplier++;
         yield return new WaitForSeconds(handleMatchDelay);
         handlingMatch = false;
-        int matchingScoops = scoopStack.Peek().ConsecutiveFlavorScoops;
+        int matchingScoops = scoopStack[scoopStack.Count - 1].ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
         for (int i = 0; i < matchingScoops; i++)
         {
-            scoopStack.Pop().MeltScoop();
+            Scoop scoop = scoopStack[scoopStack.Count - 1];
+            scoopStack.RemoveAt(scoopStack.Count - 1);
+            scoop.MeltScoop();
         }
         audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
 
@@ -170,7 +176,7 @@ public class Cone : MonoBehaviour
                 return;
             }
         }
-        if(!board.gameFrozen && !poppingScoops) {
+        if(!poppingScoops) {
             StartCoroutine(PopScoops(index));
         }
     }
@@ -187,11 +193,12 @@ public class Cone : MonoBehaviour
         int popCount = scoopStack.Count;
         for(int i = 0; i < popCount - index; i++) {
             int popHeight = i + index + 1;
-            Scoop scoop = scoopStack.Pop();
+            Scoop scoop = scoopStack[scoopStack.Count - 1];
+            scoopStack.RemoveAt(scoopStack.Count - 1);
             poppedScoops.Enqueue(scoop);
             scoop.Pop(new Vector2Int(Lane(), popHeight));
         }
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(.1f);
         audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
         Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         Debug_ScoopList("Scoops List: ", poppedScoops);
@@ -202,7 +209,6 @@ public class Cone : MonoBehaviour
             handleMatchRoutine = StartCoroutine(HandleMatch(false));
             yield return handleMatchRoutine;
             board.Unfreeze();
-
         }
 
         PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
@@ -222,10 +228,10 @@ public class Cone : MonoBehaviour
                 PutScoopOnStack(scoops.Dequeue());
             } else {
                 if(CheckMatch()) {
-                    board.Freeze();
+                    // board.Freeze();
                     handleMatchRoutine = StartCoroutine(HandleMatch(false));
                     yield return handleMatchRoutine;
-                    board.Unfreeze();
+                    // board.Unfreeze();
                 } else {
                     PutScoopOnStack(scoops.Dequeue());
                 }
@@ -237,12 +243,12 @@ public class Cone : MonoBehaviour
         if(scoopStack.Count == 0) {
             return new Flavor(Color.white, "null flavor");
         }
-        return scoopStack.Peek().flavor;
+        return scoopStack[scoopStack.Count - 1].flavor;
     }
 
     private bool CheckMatch()
     {
-        return scoopStack.Count >= 3 && scoopStack.Peek().ConsecutiveFlavorScoops >= 3;
+        return scoopStack.Count >= 3 && scoopStack[scoopStack.Count - 1].ConsecutiveFlavorScoops >= 3;
     }
 
     public int StackHeight()
@@ -263,7 +269,9 @@ public class Cone : MonoBehaviour
     {
         for (int i = 0; i < scoopStack.Count; i++)
         {
-            scoopStack.Pop().MeltScoop();
+            Scoop scoop = scoopStack[scoopStack.Count - 1];
+            scoopStack.RemoveAt(scoopStack.Count - 1);
+            scoop.MeltScoop();
         }
     }
 

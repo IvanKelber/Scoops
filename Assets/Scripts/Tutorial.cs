@@ -24,8 +24,8 @@ public class Tutorial : MonoBehaviour
 
     void Start()
     {
-        if(board.devControls) {
-            // Destroy(this);
+        if(!board.runTutorial) {
+            Destroy(gameObject);
         }
         step = TutorialStep.Init;
         BoardManager.UnfreezeGame += IncrementStep;
@@ -58,14 +58,14 @@ public class Tutorial : MonoBehaviour
             case TutorialStep.WaitingForTap: 
                 break;
             case TutorialStep.Swipe:
-                if(!board.gameFrozen && scoops[3].currentIndex.y < board.numberOfRows - 3) {
+                if(scoops[3].currentIndex.y < board.numberOfRows - 3) {
                     tutorialFinger.StartSwipe();
                     board.Freeze();
                     step = TutorialStep.WaitingForSwipe;
                 }
                 break;
             case TutorialStep.Tap:
-                if(!board.gameFrozen && board.ConeStackHeight() == scoops.Length + 1) {
+                if(board.ConeStackHeight() == scoops.Length + 1) {
                     tutorialFinger.StartTap(board.GetScreenPosition(scoops[1].currentIndex.x, scoops[1].currentIndex.y));
                     board.Freeze();
                     step = TutorialStep.WaitingForTap;

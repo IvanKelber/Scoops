@@ -64,6 +64,8 @@ public class BoardManager : MonoBehaviour
     public static event Action FreezeGame = delegate { };
     public static event Action UnfreezeGame = delegate { };
 
+    public bool runTutorial = false;
+
     private void Awake()
     {
         LeanTween.LISTENERS_MAX = 25;
@@ -124,6 +126,9 @@ public class BoardManager : MonoBehaviour
         IncrementCurrentConeIndex();
         CurrentCone.Show();
     }
+    public void DebugStack(string intro, List<Scoop> stack) {
+        CurrentCone.Debug_ScoopList(intro, stack);
+    }
 
     public void HandleSwipe(SwipeInfo swipe)
     {
@@ -138,7 +143,6 @@ public class BoardManager : MonoBehaviour
             // handlingSwipe = true;
             return;
         }
-
         if(TutorialActive()) {
             if(CurrentTutorialStep() == Tutorial.TutorialStep.WaitingForSwipe) {
                 if(swipe.Direction == SwipeInfo.SwipeDirection.RIGHT) {

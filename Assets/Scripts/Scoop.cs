@@ -22,7 +22,7 @@ public class Scoop : MonoBehaviour
     [HideInInspector]
     public int ConsecutiveFlavorScoops;
 
-    public Stack<Scoop> scoopStack;
+    public List<Scoop> scoopStack = null;
 
     private BoxCollider2D collider;
 
@@ -33,13 +33,13 @@ public class Scoop : MonoBehaviour
 
     //Should be called before scoop is part of stack
     private int DetermineConsecutiveFlavorScoops() {
-        if(scoopStack.Count == 0 || (scoopStack.Peek().flavor != this.flavor)) {
+        if(scoopStack.Count == 0 || (scoopStack[scoopStack.Count - 1].flavor != this.flavor)) {
             return 1; // Only one of this flavor consecutively
         }
-        return scoopStack.Peek().ConsecutiveFlavorScoops + 1;
+        return scoopStack[scoopStack.Count - 1].ConsecutiveFlavorScoops + 1;
     }
 
-    public int CalculateConsecutiveFlavors(Stack<Scoop> stack) {
+    public int CalculateConsecutiveFlavors(List<Scoop> stack) {
         this.scoopStack = stack;
         this.ConsecutiveFlavorScoops = DetermineConsecutiveFlavorScoops();
         return ConsecutiveFlavorScoops;
@@ -107,12 +107,13 @@ public class Scoop : MonoBehaviour
 
     // Checks collisions when a scoop has reached a new index
     private void CheckCollisions() {
-        if(scoopStack != null) {
+        if(scoopStack.Count > 0) {
             return;
         }
         int index = HitStack();
         if(index != -1) {
             // We've hit the stack
+            Debug.Log("scoop " + flavor + " hit the stack at index: " + index, gameObject);
 
           
             board.AddScoopToCone(this);
@@ -124,7 +125,7 @@ public class Scoop : MonoBehaviour
         } else if(HitFloor() || HitMiddleStack()) {
             board.DropScoop();
             Destroy(this.gameObject);
-        } else { 
+        } else {
             Fall();
         }
     }
@@ -168,13 +169,18 @@ public class Scoop : MonoBehaviour
     }
 
     public void Pop(Vector2Int index) {
-        MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.2f).setEase(LeanTweenType.easeOutCirc).setOnComplete(()=>MoveToIndex(index));
+        MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setEase(LeanTweenType.easeOutCirc).setOnComplete(()=> {
+            Debug.Log("Completed initial part of pop for scoop: " + flavor, gameObject);
+            MoveToIndex(index);
+        });
     }
 
 
     private void Fall() {
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, SwipeInfo.SwipeDirection.DOWN);
+
         verticalScoopTween = MoveScoopVertically(board.GetPosition(nextIndex), .2f).setOnComplete(() => {
+            Debug.Log("Done falling.  Checking new collisions");
             currentIndex = nextIndex;
             CheckCollisions();
         });
