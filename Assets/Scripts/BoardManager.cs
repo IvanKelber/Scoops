@@ -202,14 +202,14 @@ public class BoardManager : MonoBehaviour
     private void OnFreezeGame() {
         gameFrozen = true;
         if(coneTween != null) {
-            LeanTween.pause(coneTween.id);
+            // LeanTween.pause(coneTween.id);
         }
     }
 
     private void OnUnfreezeGame() {
         gameFrozen = false;
         if(coneTween != null) {
-            LeanTween.resume(coneTween.id);
+            // LeanTween.resume(coneTween.id);
         }
     }
 

@@ -150,7 +150,12 @@ public class Scoop : MonoBehaviour
     private void UnfreezeScoop() {
         Debug.Log("Attempting to unfreeze scoop : " + flavor + ". VerticalScoopTween is " + verticalScoopTween, gameObject);
         if(verticalScoopTween != null) {
+            try {
             LeanTween.resume(verticalScoopTween.id);
+            } catch (NullReferenceException e) {
+                Debug.Log(e);
+                return;
+            }
         }
     }
 
@@ -199,7 +204,7 @@ public class Scoop : MonoBehaviour
     }
 
     private void OnMouseUpAsButton() {
-        if(scoopStack != null && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
+        if(scoopStack.Count > 0 && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
             board.ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
         else if(board.devControls && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance) {
             Destroy(gameObject);

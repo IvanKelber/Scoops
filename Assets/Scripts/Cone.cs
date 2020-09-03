@@ -135,7 +135,9 @@ public class Cone : MonoBehaviour
     {
         handlingMatch = true;
         comboMultiplier++;
+        board.Freeze();
         yield return new WaitForSeconds(handleMatchDelay);
+        board.Unfreeze();
         handlingMatch = false;
         int matchingScoops = scoopStack[scoopStack.Count - 1].ConsecutiveFlavorScoops;
         points += PointsManager.GetPointsFromMatch(matchingScoops);
@@ -205,10 +207,8 @@ public class Cone : MonoBehaviour
         yield return StartCoroutine(AddScoopsToStack(poppedScoops));
         Debug_ScoopList("ScoopStack after adding: ", scoopStack);
         if(CheckMatch()) {
-            board.Freeze();
             handleMatchRoutine = StartCoroutine(HandleMatch(false));
             yield return handleMatchRoutine;
-            board.Unfreeze();
         }
 
         PointsManager.AddPoints(PointsManager.CalculatePoints(points, comboMultiplier));
@@ -228,15 +228,14 @@ public class Cone : MonoBehaviour
                 PutScoopOnStack(scoops.Dequeue());
             } else {
                 if(CheckMatch()) {
-                    // board.Freeze();
                     handleMatchRoutine = StartCoroutine(HandleMatch(false));
                     yield return handleMatchRoutine;
-                    // board.Unfreeze();
                 } else {
                     PutScoopOnStack(scoops.Dequeue());
                 }
             }
         }
+
     }
 
     private Flavor GetTopFlavor() {
