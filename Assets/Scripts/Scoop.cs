@@ -180,8 +180,10 @@ public class Scoop : MonoBehaviour
         });
     }
 
-    public void DropAfterMatch() {
-        
+    public void DropAfterMatch(Vector2Int index) {
+        MoveScoopVertically(board.GetPosition(index), .1f).setEase(LeanTweenType.easeInCirc).setOnComplete( () => {
+            currentIndex = index;
+        });
     }
 
     private void Fall() {
