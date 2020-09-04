@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7067049061320989232}
   - component: {fileID: 7067049061320989233}
   - component: {fileID: 7067049061320989391}
-  - component: {fileID: 8019099914496727671}
   m_Layer: 0
   m_Name: Scoop
   m_TagString: Untagged
@@ -53,6 +52,8 @@ MonoBehaviour:
   renderQuad: {fileID: 0}
   scoopIndicator: {fileID: 0}
   ConsecutiveFlavorScoops: 0
+  scoopStack: []
+  audioManager: {fileID: 11400000, guid: e16f988e7e9514b8d9f21bc9f6a5394c, type: 2}
 --- !u!114 &7067049061320989391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,21 +70,6 @@ MonoBehaviour:
   laneWidth: 0
   rowHeight: 0
   material: {fileID: 2100000, guid: 7da9b856e8d58a24f83b1906ce42ecd8, type: 2}
---- !u!114 &8019099914496727671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7067049061320989390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7da00d4b59fa5294ca8aef6c5d9cca9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 10
-  descriptor: 1
-  easeAmount: 0
 --- !u!1001 &1024870235383176993
 PrefabInstance:
   m_ObjectHideFlags: 0

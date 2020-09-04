@@ -18,21 +18,23 @@ public class IncreasingPitchAudioEvent : AudioEvent
     [Range(0,4)]
     public float startingPitch;
 
+    [Range(0,.2f)]
+    public float increment;
+
     private float pitch;
 
     public override void Play(AudioSource source) {
         if(clips.Length == 0) {
             return;
         }
-        if(pitch == 0 || pitch > startingPitch + 1) {
-            pitch = startingPitch;
-        }
-
         source.clip = clips[Random.Range(0, clips.Length)];
         source.volume = Random.Range(minVolume, maxVolume);
         source.pitch = pitch;
-        pitch += .1f;
         source.Play();
-
+        pitch += increment;
+    }
+    
+    public void Reset() {
+        this.pitch = startingPitch;
     }
 }

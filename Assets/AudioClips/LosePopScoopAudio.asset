@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43433c26b56ce194f97c8b3f2c77149c, type: 3}
   m_Name: LosePopScoopAudio
   m_EditorClassIdentifier: 
+  Name: 
+  loop: 0
   clips:
-  - {fileID: 8300000, guid: 32dcff4de7e0b2643aad9a0247880525, type: 3}
+  - {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
   minVolume: 1
   maxVolume: 1
-  minPitch: 1.27
-  maxPitch: 1.49
+  minPitch: 1
+  maxPitch: 1.05

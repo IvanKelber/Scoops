@@ -199,19 +199,19 @@ public class Cone : MonoBehaviour
                 yield return new WaitForSeconds(.01f);
             }
             points += PointsManager.GetPointsFromMatch(matches[i].consecutiveScoops);
-            audioManager.Play(audioSource, audioManager.ScoopsMatchAudio);
+            yield return audioManager.PlayAndWait(audioSource, audioManager.ScoopsMatchAudio);
             // move everthing above matches[i].startIndex + matches[i].consecutiveScoops down
             for(int j = matches[i].startIndex + matches[i].consecutiveScoops; j < scoopStack.Count; j++) {
                 Vector2Int newIndex = new Vector2Int(
                     scoopStack[j].currentIndex.x, 
-                    Mathf.Clamp(scoopStack[j].currentIndex.y - matches[i].consecutiveScoops, 0, scoopStack[j].currentIndex.y));
+                    Mathf.Clamp(scoopStack[j].currentIndex.y - matches[i].consecutiveScoops, 1, scoopStack[j].currentIndex.y));
                 scoopStack[j].DropAfterMatch(newIndex);
                 yield return new WaitForSeconds(.02f);
             }
             scoopStack.RemoveRange(matches[i].startIndex, matches[i].consecutiveScoops);
             yield return new WaitForSeconds(.3f);
         }
-      
+        (audioManager.ScoopsMatchAudio as IncreasingPitchAudioEvent).Reset();
 
         board.Unfreeze();
         PointsManager.AddPoints(PointsManager.CalculatePoints(points, matches.Count));
@@ -259,7 +259,8 @@ public class Cone : MonoBehaviour
             scoop.Pop(new Vector2Int(Lane(), popHeight));
         }
         yield return new WaitForSeconds(.1f);
-        audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
+        if(poppedScoops.Count > 1)
+            audioManager.Play(audioSource, audioManager.SwitchScoopsAudio);
         Debug_ScoopList("ScoopStack after popping: ", scoopStack);
         Debug_ScoopList("Scoops List: ", poppedScoops);
         yield return StartCoroutine(AddScoopsToStack(poppedScoops));
@@ -279,17 +280,7 @@ public class Cone : MonoBehaviour
 
     private IEnumerator AddScoopsToStack(Queue<Scoop> scoops) {
         while(scoops.Count > 0) {
-            Flavor currentFlavor = GetTopFlavor();
-            if(scoops.Peek().flavor == currentFlavor) {
-                PutScoopOnStack(scoops.Dequeue());
-            } else {
-                // if(CheckMatch()) {
-                //     handleMatchRoutine = StartCoroutine(HandleMatch(false));
-                //     yield return handleMatchRoutine;
-                // } else {
-                    PutScoopOnStack(scoops.Dequeue());
-                // }
-            }
+            PutScoopOnStack(scoops.Dequeue());
         }
         yield return null;
     }

@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: SwitchScoopAudio
   loop: 0
   clips:
-  - {fileID: 8300000, guid: a01ed2ed89f0a401ea780d6bbf585252, type: 3}
-  minVolume: 0.52
-  maxVolume: 0.76
-  minPitch: 1
-  maxPitch: 2
+  - {fileID: 8300000, guid: 2c5292ba5cf254919a6b9e2b18e04f49, type: 3}
+  minVolume: 1
+  maxVolume: 1
+  minPitch: 0.95
+  maxPitch: 1.05

@@ -12,7 +12,10 @@ public class AudioManager : ScriptableObject
     public AudioEvent ScoopsMatchAudio;
 
     public AudioEvent DestroyScoopAudio;
+
+    public AudioEvent ScoopLandAudio;
     
+    public AudioEvent PopScoopAudio;
     public void Play(AudioSource source, AudioEvent audioEvent) {
         audioEvent.Play(source);
     }

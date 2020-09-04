@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43433c26b56ce194f97c8b3f2c77149c, type: 3}
   m_Name: ScoopLand
   m_EditorClassIdentifier: 
-  clips: []
-  minVolume: 0
-  maxVolume: 0
-  minPitch: 0
-  maxPitch: 0
+  Name: scoopLand
+  loop: 0
+  clips:
+  - {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  minVolume: 1
+  maxVolume: 1
+  minPitch: 1
+  maxPitch: 1.05

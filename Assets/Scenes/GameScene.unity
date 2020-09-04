@@ -426,6 +426,7 @@ MonoBehaviour:
   audioManager: {fileID: 11400000, guid: e16f988e7e9514b8d9f21bc9f6a5394c, type: 2}
   tutorial: {fileID: 1439309503}
   conePrefab: {fileID: 6200816604209776014, guid: 72b3cd26c01734ac1adbf5602647c807, type: 3}
+  runTutorial: 1
 --- !u!1 &861537846
 GameObject:
   m_ObjectHideFlags: 0

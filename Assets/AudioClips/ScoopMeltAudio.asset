@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: ScoopsMatchAudio
   loop: 0
   clips:
-  - {fileID: 8300000, guid: 5ac6242608b593342802f2c42954d298, type: 3}
+  - {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   minVolume: 1
   maxVolume: 1
-  minPitch: 0.29
-  maxPitch: 0.48
+  minPitch: 0.95
+  maxPitch: 1.05

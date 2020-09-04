@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[System.Serializable]
 public class Scoop : MonoBehaviour
 {
 
@@ -30,6 +29,11 @@ public class Scoop : MonoBehaviour
 
     private Vector3 velocity;
     private LTDescr verticalScoopTween;
+
+    private AudioSource audioSource;
+    
+    [SerializeField]
+    private AudioManager audioManager;
 
     //Should be called before scoop is part of stack
     private int DetermineConsecutiveFlavorScoops() {
@@ -81,6 +85,7 @@ public class Scoop : MonoBehaviour
     }
 
     public void Start() {
+        audioSource = gameObject.AddComponent<AudioSource>();
         CheckCollisions();
     }
 
@@ -118,6 +123,8 @@ public class Scoop : MonoBehaviour
             if(index != board.ConeStackHeight()) {
                 MoveToIndex(new Vector2Int(board.ConeLane(), board.ConeStackHeight() - 1));
             }
+            audioManager.Play(audioSource, audioManager.ScoopLandAudio);
+
             // Can now be swiped left and right
             LeanTween.addListener(gameObject, (int) BoardManager.LeanTweenEvent.HorizontalSwipe, MoveScoopHorizontally);
 
@@ -175,6 +182,8 @@ public class Scoop : MonoBehaviour
     }
 
     public void Pop(Vector2Int index) {
+        audioManager.Play(audioSource, audioManager.PopScoopAudio);
+
         MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setEase(LeanTweenType.easeOutCirc).setOnComplete(()=> {
             MoveToIndex(index);
         });
@@ -183,6 +192,7 @@ public class Scoop : MonoBehaviour
     public void DropAfterMatch(Vector2Int index) {
         MoveScoopVertically(board.GetPosition(index), .1f).setEase(LeanTweenType.easeInCirc).setOnComplete( () => {
             currentIndex = index;
+            audioManager.Play(audioSource, audioManager.ScoopLandAudio);
         });
     }
 
