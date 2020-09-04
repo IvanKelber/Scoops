@@ -27,13 +27,16 @@ public class IncreasingPitchAudioEvent : AudioEvent
         if(clips.Length == 0) {
             return;
         }
+        if(pitch == 0) {
+            pitch = startingPitch;
+        }
         source.clip = clips[Random.Range(0, clips.Length)];
         source.volume = Random.Range(minVolume, maxVolume);
         source.pitch = pitch;
         source.Play();
         pitch += increment;
     }
-    
+
     public void Reset() {
         this.pitch = startingPitch;
     }

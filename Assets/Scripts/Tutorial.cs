@@ -24,7 +24,8 @@ public class Tutorial : MonoBehaviour
 
     void Start()
     {
-        if(!board.runTutorial) {
+        if(!board.RunTutorial) {
+            board.scoopManager.spawning = true;
             Destroy(gameObject);
         }
         step = TutorialStep.Init;

@@ -4,21 +4,10 @@ using UnityEngine;
 
 public class TapStart : MonoBehaviour
 {
-    public float yThreshold;
-    void Start()
-    {
-        Gestures.OnTap += StartGame;
+
+    public void StartGame() {
+        SceneState.LoadScene(1);
     }
 
-    private void StartGame(Vector3 position) {
-        if(position.y <= yThreshold) {
-            Gestures.OnTap -= StartGame;
-            SceneState.LoadScene(1);
-        }
-    }
-
-    private void OnDrawGizmos() {
-        Gizmos.DrawRay(new Vector3(0,yThreshold,1), Vector3.right * 10);
-    }
 
 }

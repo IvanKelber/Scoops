@@ -9,14 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43433c26b56ce194f97c8b3f2c77149c, type: 3}
-  m_Name: PopScoopAudio
+  m_Script: {fileID: 11500000, guid: f7b4a310ba40343e48c916a6dbe2f883, type: 3}
+  m_Name: MainSettings
   m_EditorClassIdentifier: 
-  Name: SwitchScoopAudio
-  loop: 0
-  clips:
-  - {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
-  minVolume: 0.3
-  maxVolume: 0.30111012
-  minPitch: 0.95
-  maxPitch: 1.05
+  devControls: 0
+  runTutorial: 1
+  musicVolume: 1
+  SFXVolume: 0.727

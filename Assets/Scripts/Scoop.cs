@@ -220,7 +220,7 @@ public class Scoop : MonoBehaviour
     private void OnMouseUpAsButton() {
         if(scoopStack.Count > 0 && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance)
             board.ScoopTapped(currentIndex.y - 1); // The index of the scoop within the stack
-        else if(board.devControls && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance) {
+        else if(board.DevControls && Vector3.Distance(tapDown, Input.mousePosition) < Gestures.minSwipeDistance) {
             Destroy(gameObject);
         }
     }

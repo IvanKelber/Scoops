@@ -16,12 +16,14 @@ public class AudioManager : ScriptableObject
     public AudioEvent ScoopLandAudio;
     
     public AudioEvent PopScoopAudio;
+
+    public Settings settings;
     public void Play(AudioSource source, AudioEvent audioEvent) {
-        audioEvent.Play(source);
+        audioEvent.PlayWithVolume(source, settings.SFXVolume);
     }
 
     public WaitForSeconds PlayAndWait(AudioSource source, AudioEvent audioEvent) {
-        return audioEvent.PlayAndWait(source);
+        return audioEvent.PlayAndWait(source, settings.SFXVolume);
     }
     
 }

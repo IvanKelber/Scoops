@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BackgroundMusic : MonoBehaviour
 {
+    [SerializeField]
+    private Settings settings;
     private AudioSource _audioSource;
     private static BackgroundMusic instance;
     private void Awake()
@@ -19,6 +21,9 @@ public class BackgroundMusic : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
     }
 
+    private void Update() {
+        _audioSource.volume = settings.musicVolume;
+    }
 
     private void Start() {
         PlayMusic();

@@ -67,7 +67,7 @@ public class ScoopManager : MonoBehaviour
         spawnDelay = startSpawnDelay;
         timeUntilScoreUpdate = startScoreUpdateDelay;
 
-        if(board.devControls) {
+        if(board.DevControls) {
             Gestures.OnSwipe += ControlSpawner;
             Gestures.SwipeEnded += OnSwipeEnd;
         }

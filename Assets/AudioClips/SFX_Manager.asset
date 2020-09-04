@@ -19,3 +19,4 @@ MonoBehaviour:
   DestroyScoopAudio: {fileID: 11400000, guid: 4d2b67af2a0844047904b154a9740615, type: 2}
   ScoopLandAudio: {fileID: 11400000, guid: 3741de7f9439054478b70cc31e973db1, type: 2}
   PopScoopAudio: {fileID: 11400000, guid: 77ebba404d3fc62499a07844c604d329, type: 2}
+  settings: {fileID: 11400000, guid: e0458f9ef6cf840c3af07222b0a2b705, type: 2}

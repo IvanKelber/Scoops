@@ -16,9 +16,4 @@ public class DefaultAudioEvent : AudioEvent
         source.clip = clips[Random.Range(0, clips.Length)];
         source.Play();
     }
-
-    public override WaitForSeconds PlayAndWait(AudioSource source) {
-        Play(source);
-        return new WaitForSeconds(source.clip.length);
-    }
 }

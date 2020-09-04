@@ -33,7 +33,6 @@ public class BoardManager : MonoBehaviour
 
     public AudioSource audioSource;
 
-    public bool devControls = false;
 
     [SerializeField]
     private TMP_Text livesCounter;
@@ -64,7 +63,21 @@ public class BoardManager : MonoBehaviour
     public static event Action FreezeGame = delegate { };
     public static event Action UnfreezeGame = delegate { };
 
-    public bool runTutorial = false;
+    public bool RunTutorial {
+        get {
+            return settings.runTutorial;
+        }
+    }
+
+    public bool DevControls {
+        get {
+            return settings.devControls;
+        }
+    }
+
+
+    [SerializeField]
+    private Settings settings;
 
     private void Awake()
     {
@@ -108,7 +121,7 @@ public class BoardManager : MonoBehaviour
     }
 
     private void Update() {
-        if(devControls) {
+        if(DevControls) {
             foreach(char c in Input.inputString) {
                 if(c >= '0' && c <= '9') {
                     scoopManager.Dev_SpawnScoop((int)Char.GetNumericValue(c));
