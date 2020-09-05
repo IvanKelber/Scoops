@@ -27,6 +27,7 @@ public class Tutorial : MonoBehaviour
         if(!board.RunTutorial) {
             board.scoopManager.spawning = true;
             Destroy(gameObject);
+            return;
         }
         step = TutorialStep.Init;
         BoardManager.UnfreezeGame += IncrementStep;

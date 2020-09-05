@@ -15,7 +15,6 @@ MonoBehaviour:
   Name: swish
   loop: 0
   clips:
-  - {fileID: 8300000, guid: fe0b1f9aeb45b41b089175aeeabd5d95, type: 3}
   - {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
   minVolume: 1
   maxVolume: 1

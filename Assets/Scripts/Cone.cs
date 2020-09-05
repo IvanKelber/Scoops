@@ -76,8 +76,13 @@ public class Cone : MonoBehaviour
             return null;
         }
         Vector2Int nextIndex = board.GetNextIndex(currentIndex, direction);
+        if(nextIndex == currentIndex) {
+            audioManager.Play(audioSource, audioManager.bumpConeAudio);
+            return null;
+        }
         Vector3 nextPosition = board.GetPosition(nextIndex);
         LeanTween.dispatchEvent((int) BoardManager.LeanTweenEvent.HorizontalSwipe, direction);
+        audioManager.Play(audioSource, audioManager.moveConeAudio);
         return LeanTween.move(gameObject, nextPosition, .1f).setOnComplete(() => {
             currentIndex = nextIndex;
         });
@@ -91,7 +96,7 @@ public class Cone : MonoBehaviour
         }
         scoop.CalculateConsecutiveFlavors(scoopStack);
         scoopStack.Add(scoop);
-
+        StartCoroutine(BounceScoops());
         List<StackNode> matches = CheckMatch(scoopStack);
         if(matches.Count > 0) {
             Debug.Log("mathces found: " + matches);
@@ -103,6 +108,13 @@ public class Cone : MonoBehaviour
             board.GameOver();
         }
         // Debug_ScoopList("ScoopStack after merging flying stack: ", scoopStack);
+    }
+
+    private IEnumerator BounceScoops() {
+        for(int i = 0; i < scoopStack.Count; i++) {
+            scoopStack[scoopStack.Count - 1 -i].Bounce();
+        }
+        yield return null;
     }
 
     private void PutScoopOnStack(Scoop scoop) {
@@ -190,6 +202,7 @@ public class Cone : MonoBehaviour
         handlingMatch = true;
         board.Freeze();
         float points = 0;
+        audioManager.Play(audioSource, audioManager.matchRisingAudio);
         yield return new WaitForSeconds(handleMatchDelay);
         for(int i = 0; i < matches.Count; i++) {
             // handle match i

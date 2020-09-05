@@ -93,9 +93,25 @@ public class Scoop : MonoBehaviour
         SwipeInfo.SwipeDirection direction = (SwipeInfo.SwipeDirection) e.data;
         Vector2Int nextIndex = board.GetNextIndex(new Vector2Int(board.ConeLane(), currentIndex.y), direction);
         Vector3 nextPosition = board.GetPosition(nextIndex);
-        LeanTween.move(gameObject, nextPosition,.1f).setOnComplete(() => {
+        Vector3 currentPosition = board.GetPosition(currentIndex);
+        float scaleMagnitude = .05f * Mathf.Clamp(currentIndex.y, 0, 10);
+
+        Vector3 intermediatePosition = new Vector3(currentPosition.x + (nextPosition.x - currentPosition.x)/(1+scaleMagnitude), currentPosition.y, currentPosition.z);
+        StretchStart(scaleMagnitude,.1f).setEase(LeanTweenType.easeInQuad);
+        LeanTween.move(gameObject, intermediatePosition,.1f).setOnComplete(() => {
             currentIndex = nextIndex;
+            StretchEnd(scaleMagnitude, .05f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.move(gameObject, nextPosition, .05f);
         });
+    }
+
+    private LTDescr StretchStart(float scaleMagnitude, float duration) {
+        return LeanTween.scaleX(gameObject, transform.localScale.x*(1+scaleMagnitude),duration);
+    }
+
+    private LTDescr StretchEnd(float scaleMagnitude, float duration) {
+        return LeanTween.scaleX(gameObject, transform.localScale.x/(1+scaleMagnitude),duration);
+
     }
 
     private bool HitFloor() {
@@ -186,6 +202,12 @@ public class Scoop : MonoBehaviour
 
         MoveScoopVertically(board.GetPosition(index) + Vector3.up, 0.1f).setEase(LeanTweenType.easeOutCirc).setOnComplete(()=> {
             MoveToIndex(index);
+        });
+    }
+
+    public void Bounce() {
+        MoveScoopVertically(board.GetPosition(currentIndex) - Vector3.up * .01f * currentIndex.y, 0.075f).setEase(LeanTweenType.easeOutBounce).setOnComplete( () => {
+            MoveToIndex(currentIndex);
         });
     }
 

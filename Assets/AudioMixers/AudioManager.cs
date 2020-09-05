@@ -17,6 +17,12 @@ public class AudioManager : ScriptableObject
     
     public AudioEvent PopScoopAudio;
 
+    public AudioEvent moveConeAudio;
+
+    public AudioEvent bumpConeAudio;
+
+    public AudioEvent matchRisingAudio;
+
     public Settings settings;
     public void Play(AudioSource source, AudioEvent audioEvent) {
         audioEvent.PlayWithVolume(source, settings.SFXVolume);

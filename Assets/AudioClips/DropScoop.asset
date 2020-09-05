@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: DropScoopAudio
   loop: 0
   clips:
-  - {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
-  minVolume: 0.6
-  maxVolume: 0.7
-  minPitch: 1.14
-  maxPitch: 1.71
+  - {fileID: 8300000, guid: d8d04c6f80a1140db85ede568dab1f51, type: 3}
+  minVolume: 1
+  maxVolume: 1
+  minPitch: 0.95
+  maxPitch: 1.05
