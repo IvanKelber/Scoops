@@ -15,11 +15,11 @@ public class DisplayLastScore : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int points = PointsManager.RoundedPoints();
+        int points = PointsManager.Points;
         if(points == 0) {
             Destroy(this.gameObject);
         } else {
-            scoreText.text = "Score: " + PointsManager.RoundedPoints();
+            scoreText.text = "Score: " + PointsManager.Points;
         }
     }
 }

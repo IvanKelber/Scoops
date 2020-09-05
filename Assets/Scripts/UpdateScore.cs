@@ -12,28 +12,45 @@ public class UpdateScore : MonoBehaviour
 
     private int pointsLeftToAdd = 0;
     private int pointsDisplayed = 0;
+
+    private int matchSum = 0;
+    private int multiplier = 0;
+
+    private LTDescr tweenPoints;
+
+    private int emptyCone;
+
     void Start()
     {
         scoreText.text = "" + 0;
         Fade(plusScoreText, 0,0);
         PointsManager.PointsAdded += UpdatePoints;
+        PointsManager.PointsAccrue += AccruePoints;
+        PointsManager.EmptyConeBonus += EmptyConeBonus;
     }
 
-
-    public void UpdatePoints(int pointsAdded) {
-        if(pointsAdded >  1) {
-            pointsLeftToAdd += pointsAdded;
-            SetPlusScore();
-            Fade(plusScoreText, 1, .2f).setOnComplete(() => {
-                TweenPoints(pointsLeftToAdd).setDelay(1).setOnComplete(() => {
-                    Fade(plusScoreText, 0, .5f);
-                    pointsDisplayed = PointsManager.RoundedPoints();
-                });
-            });
-        } else {
-            pointsDisplayed += pointsAdded;
-            SetScore();
+    void Update() {
+        if(matchSum > 0 && multiplier > 0 && plusScoreText.faceColor.a == 0) {
+            Debug.Log("Fading plusScore in");
+            Fade(plusScoreText, 1, .2f);
         }
+    }
+
+    public void UpdatePoints() {
+        pointsLeftToAdd += (matchSum * multiplier) + emptyCone;
+        if(pointsLeftToAdd == 0) {
+            // If it's called from something other than a match
+            pointsDisplayed = PointsManager.Points;
+            SetScore();
+            return;
+        }
+        matchSum = 0;
+        multiplier = 0;
+        emptyCone = 0;
+        tweenPoints = TweenPoints(pointsLeftToAdd).setDelay(1).setOnComplete(() => {
+            Fade(plusScoreText, 0, .5f);
+            pointsDisplayed = PointsManager.Points;
+        });
     }
 
     public LTDescr Fade(TMP_Text tmp, float finalAlpha, float duration) {
@@ -53,8 +70,18 @@ public class UpdateScore : MonoBehaviour
             SetPlusScore();
             SetScore();
         });
+    }
 
-        
+    private void AccruePoints(int matchSum, int multiplier) {
+        Debug.Log("Acrruing Points");
+        this.matchSum += matchSum;
+        this.multiplier = multiplier;
+        plusScoreText.text = "" + this.matchSum + (multiplier > 1 ? " X " + multiplier: "");
+    }
+
+    private void EmptyConeBonus() {
+        emptyCone = PointsManager.Empty_Cone_Bonus;
+        plusScoreText.text += " + " + emptyCone;
     }
 
     private void SetPlusScore() {

@@ -5,29 +5,42 @@ using System;
 
 public class PointsManager
 {
+    public static int Points = 0;
 
-    public const int Empty_Cone_Multiplier = 2;
 
-    public static float Points = 0f;
-
-    public static bool emptyConeBonusActive = false;
-
-    public static event Action<int> PointsAdded = delegate {};
-
-    public static float GetPointsFromMatch(int scoopsInMatch) {
-        return 50 * (scoopsInMatch*scoopsInMatch + 1); 
+    public static int Empty_Cone_Bonus {
+        get {
+            return GetPointsFromMatch(3);
+        }
     }
 
-    public static float CalculatePoints(float points, int multiplier) {
+
+    public static event Action PointsAdded = delegate {};
+    public static event Action<int, int> PointsAccrue = delegate {};
+    public static event Action EmptyConeBonus = delegate {};
+
+    private static int GetPointsFromMatch(int scoopsInMatch) {
+        return (int) 50 * (scoopsInMatch*scoopsInMatch + 1); 
+    }
+
+    public static int CalculatePoints(int points, int multiplier) {
         return points * multiplier;
     }
 
-    public static void AddPoints(float points) {
-        Points += points;
-        PointsAdded((int) points);
+    public static int AccruePoints(int scoopsInMatch, int comboMultiplier) {
+        int points = GetPointsFromMatch(scoopsInMatch);
+        PointsAccrue(points, comboMultiplier);
+        return points;
     }
-    public static int RoundedPoints() {
-        return (int) Points;
+
+    public static void AddPoints(int points) {
+        Points += points;
+        PointsAdded();
+    }
+
+    public static int AddEmptyConeBonus() {
+        EmptyConeBonus();
+        return Empty_Cone_Bonus;
     }
 
 

@@ -28,9 +28,6 @@ public class Cone : MonoBehaviour
     private bool poppingScoops = false;
 
     [SerializeField]
-    private float emptyConeBonus;
-
-    [SerializeField]
     private float handleMatchDelay = .3f;
 
     private bool handlingMatch;
@@ -100,6 +97,9 @@ public class Cone : MonoBehaviour
         List<StackNode> matches = CheckMatch(scoopStack);
         if(matches.Count > 0) {
             Debug.Log("mathces found: " + matches);
+            if(handlingMatch) {
+                StopCoroutine(handleMatchRoutine);
+            }
             handleMatchRoutine = StartCoroutine(HandleMatch(matches));
         } else if (StackHeight() == board.numberOfRows + 1)
         {
@@ -201,7 +201,7 @@ public class Cone : MonoBehaviour
     private IEnumerator HandleMatch(List<StackNode> matches) {
         handlingMatch = true;
         board.Freeze();
-        float points = 0;
+        int points = 0;
         audioManager.Play(audioSource, audioManager.matchRisingAudio);
         yield return new WaitForSeconds(handleMatchDelay);
         for(int i = 0; i < matches.Count; i++) {
@@ -211,9 +211,9 @@ public class Cone : MonoBehaviour
                 scoopStack[j].MeltScoop();
                 yield return new WaitForSeconds(.01f);
             }
-            points += PointsManager.GetPointsFromMatch(matches[i].consecutiveScoops);
+            points += PointsManager.AccruePoints(matches[i].consecutiveScoops, i + 1);
             yield return audioManager.PlayAndWait(audioSource, audioManager.ScoopsMatchAudio);
-            // move everthing above matches[i].startIndex + matches[i].consecutiveScoops down
+            // move everything above matches[i].startIndex + matches[i].consecutiveScoops down
             for(int j = matches[i].startIndex + matches[i].consecutiveScoops; j < scoopStack.Count; j++) {
                 Vector2Int newIndex = new Vector2Int(
                     scoopStack[j].currentIndex.x, 
@@ -227,12 +227,11 @@ public class Cone : MonoBehaviour
         (audioManager.ScoopsMatchAudio as IncreasingPitchAudioEvent).Reset();
 
         board.Unfreeze();
-        PointsManager.AddPoints(PointsManager.CalculatePoints(points, matches.Count));
         if(scoopStack.Count == 0) {
             // Apply emptyCone Bonus
-            PointsManager.AddPoints(emptyConeBonus * board.scoopManager.speed);
+            points += PointsManager.AddEmptyConeBonus();
         }
-
+        PointsManager.AddPoints(PointsManager.CalculatePoints(points, matches.Count));
         handlingMatch = false;
     }
 
